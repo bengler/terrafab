@@ -1,0 +1,28 @@
+{
+  "name": "terrafab",
+  "version": "0.0.0",
+  "description": "The terrafab front end",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "npm test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bengler/terrafab.git"
+  },
+  "author": "Bengler AS",
+  "bugs": {
+    "url": "https://github.com/bengler/terrafab/issues"
+  },
+  "dependencies": {
+    "express": "~3.3.8",
+    "jade": "*",
+    "stylus": "*",
+    "browserify": "~2.29.1",
+    "browserify-middleware": "~1.17.2",
+    "coffeeify": "~0.5.1",
+    "brfs": "0.0.7"
+  }
+}
