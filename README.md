@@ -8,7 +8,6 @@ TerraFab
 ## Getting up and running
 
 ```bash
-    $ npm install express -g
     $ npm install
     $ node server.js
 ```
