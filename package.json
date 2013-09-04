@@ -24,6 +24,7 @@
     "browserify-middleware": "~1.17.2",
     "coffeeify": "~0.5.1",
     "brfs": "0.0.7",
-    "three": "git://github.com/bjoerge/threejs-node"
+    "three": "git://github.com/bjoerge/threejs-node",
+    "leaflet": "~0.6.4"
   }
 }

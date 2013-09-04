@@ -7,7 +7,7 @@ var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHe
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 
-module.exports = {domElement: renderer.domElement};
+document.body.appendChild( renderer.domElement );
 
 var geometry = new THREE.SphereGeometry(2, 50, 50, 0);
 var attributes = {
