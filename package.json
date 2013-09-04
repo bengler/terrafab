@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "test": "npm test",
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "cp node_modules/leaflet/dist/leaflet.css public/stylesheets"
   },
   "repository": {
     "type": "git",
