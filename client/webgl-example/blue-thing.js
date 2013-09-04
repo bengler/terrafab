@@ -1,4 +1,4 @@
-var THREE = require("../thirdparty/three.js")
+var THREE = require("three");
 
 var fs = require("fs");
 var scene = new THREE.Scene();

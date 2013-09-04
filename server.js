@@ -25,7 +25,8 @@ app.use(require('stylus').middleware(__dirname + '/public'));
 //provide browserified versions of all the files in a directory
 app.use('/js', browserify('./client', {
   grep: /\.(?:js|coffee)$/,
-  transform: ['coffeeify', 'brfs']
+  transform: ['coffeeify', 'brfs'],
+  noparse: ['three']
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
