@@ -3,10 +3,8 @@
 leaflet = require("leaflet")
 $ = require("jquery")
 
-
 tilesUrl = 'http://skogsmaskin.asuscomm.com:3001/kartverk/{z}/{x}/{y}.png'
 tilesLayer = new L.TileLayer(tilesUrl);
-
 
 $ ->
   map = new L.Map('map');
