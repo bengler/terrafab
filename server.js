@@ -26,7 +26,7 @@ app.use(require('stylus').middleware(__dirname + '/public'));
 app.use('/js', browserify('./client', {
   grep: /\.(?:js|coffee)$/,
   transform: ['coffeeify', 'brfs'],
-  noparse: ['three']
+  noParse: ['three', 'jquery']
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));

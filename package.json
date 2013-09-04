@@ -20,11 +20,11 @@
     "express": "~3.3.8",
     "jade": "*",
     "stylus": "*",
-    "browserify": "~2.29.1",
     "browserify-middleware": "~1.17.2",
     "coffeeify": "~0.5.1",
     "brfs": "0.0.7",
     "three": "git://github.com/bjoerge/threejs-node",
-    "leaflet": "~0.6.4"
+    "leaflet": "~0.6.4",
+    "jquery": "git://github.com/bjoerge/jquery-node"
   }
 }
