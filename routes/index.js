@@ -34,12 +34,15 @@ exports.dtm = function(req, res){
 
   var png_file = "/tmp/"+box.join("_")+".png";
   var dtm_file = "/mnt/warez/dtm/dtm.vrt";
-  var command = "bash -c 'gdal_translate -q -scale 0 550 -ot Byte -of PNG -outsize "+outsize[0]+" "+outsize[1]+" -projwin " + box.join(', ') + " "+dtm_file+" "+png_file+"'";
+  var command = "bash -c 'gdal_translate -q -scale 0 550 -ot Byte -of PNG -outsize " +
+    outsize[0] + " " + outsize[1] +
+    " -projwin " + box.join(', ') +
+    " " + dtm_file + " " + png_file + "'";
 
   var exec = require('child_process').exec;
   var fs = require('fs');
 
-  function pipe(err,stdout, stderr) {
+  function pipe(err, stdout, stderr) {
     if (err) {
       err.error = stderr
       res.send(err);
