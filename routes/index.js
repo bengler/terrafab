@@ -14,10 +14,12 @@ exports.index = function(req, res){
 
 exports.dtm = function(req, res){
 
-  var box = req.query.box.split(','); // The bounding box from query
+  var box = req.query.box; // The bounding box from query
   if(box == null) {
     res.writeHead(500, { 'Content-Type': 'application/json' });
     return res.end('{"error": "No box param given. Should be in format: ?box=253723.176600653,6660500.4670516,267723.176600653,6646500.4670516"}');
+  } else {
+    box = box.split(',');
   }
   var outsize = req.query.outsize; // The output size of the tile
   if(outsize == null) {
