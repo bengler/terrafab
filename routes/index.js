@@ -1,5 +1,4 @@
-$ = require("jquery")
-config = $.extend({}, {}, require("../config/app"));
+config = require("../config/app");
 
 /*
  * GET home page.
