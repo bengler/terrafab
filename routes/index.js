@@ -52,25 +52,25 @@ exports.dtm = function(req, res){
     return res.end('{"error": "Not a valid number: '+non_number+'"}')
   }
 
-  // Do DTM png output
+  // Set up system command
   var png_file = "/tmp/"+require("crypto").createHash('sha1').update(box.join("_")).digest('hex')+".png";
   var command = "bash -c 'gdal_translate -q -scale 0 550 -ot Byte -of PNG -outsize " +
     outsize[0] + " " + outsize[1] +
     " -projwin " + box.join(', ') +
     " " + dtm_file + " " + png_file + "'";
-
   var exec = require('child_process').exec;
   var fs = require('fs');
 
-  function pipe(err, stdout, stderr) {
-    if (err) {
-      err.error = stderr
-      return res.send(500, err);
+  // Do DTM png output
+  exec(command, function (err, stdout, stderr) {
+      if (err) {
+        err.error = stderr
+        return res.send(500, err);
+      }
+      res.writeHead(200, {'Content-Type': 'image/png' });
+      var img = fs.readFileSync(png_file);
+      res.end(img, 'binary');
+      fs.unlinkSync(png_file);
     }
-    res.writeHead(200, {'Content-Type': 'image/png' });
-    var img = fs.readFileSync(png_file);
-    res.end(img, 'binary');
-    fs.unlinkSync(png_file);
-  }
-  exec(command, pipe);
+  );
 };
