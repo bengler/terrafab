@@ -27,6 +27,9 @@ exports.dtm = function(req, res){
     return res.end('{"error": "No outsize param given. Should be in format: ?outsize=1000,1000  (x,y)"}');
   } else {
     outsize = outsize.split(",");
+    if(outsize.length == 1) {
+      outsize = [outsize,outsize];
+    }
   }
 
   var png_file = "/tmp/"+box.join("_")+".png";
