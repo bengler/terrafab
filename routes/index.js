@@ -17,12 +17,12 @@ exports.dtm = function(req, res){
   var box = req.query.box.split(','); // The bounding box from query
   if(box == null) {
     res.writeHead(500, { 'Content-Type': 'application/json' });
-    return res.send('{"error": "No box param given. Should be in format: ?box=253723.176600653,6660500.4670516,267723.176600653,6646500.4670516"}');
+    return res.end('{"error": "No box param given. Should be in format: ?box=253723.176600653,6660500.4670516,267723.176600653,6646500.4670516"}');
   }
   var outsize = req.query.outsize; // The output size of the tile
   if(outsize == null) {
     res.writeHead(500, { 'Content-Type': 'application/json' });
-    return res.send('{"error": "No outsize param given. Should be in format: ?outsize=1000,1000  (x,y)"}');
+    return res.end('{"error": "No outsize param given. Should be in format: ?outsize=1000,1000  (x,y)"}');
   } else {
     outsize = outsize.split(",");
   }
