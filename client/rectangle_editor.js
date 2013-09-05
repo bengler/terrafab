@@ -6,9 +6,15 @@ L.RectangleEditor = L.Rectangle.extend ({
     constraints: {
       aspectRatio: 0.5
     },
-    icon: new L.DivIcon({
+    markerIcon: new L.DivIcon({
       iconSize: new L.Point(8, 8),
       className: 'leaflet-div-icon leaflet-editing-icon'
+    }),
+    dragMarkerIcon: new L.Icon({
+      iconUrl: '/images/glyphicons_186_move.png',
+      iconSize: [24, 24],
+      className: 'leaflet-div-icon leaflet-editing-icon moveable',
+      cursor: 'move'
     })
   },
 
@@ -49,14 +55,14 @@ L.RectangleEditor = L.Rectangle.extend ({
   createDragMarker: function(latlng) {
     return new L.Marker(latlng, {
       draggable: true,
-      icon: this.options.icon
+      icon: this.options.dragMarkerIcon
     });
   },
 
   createMarker: function (latlng) {
     var marker = new L.Marker(latlng, {
       draggable: true,
-      icon: this.options.icon
+      icon: this.options.markerIcon
     });
     marker.on('drag', this._onMarkerDrag, this);
     return marker;
