@@ -8,8 +8,8 @@ require("./ext_js/proj4leaflet.js")
 
 $ = require("jquery")
 
-#tilesUrl = 'http://skogsmaskin.asuscomm.com:3001/kartverk/{z}/{x}/{y}.png'
-tilesUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+tilesUrl = 'http://skogsmaskin.asuscomm.com:3001/kartverk/{z}/{x}/{y}.png'
+#tilesUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
 tilesLayer = new L.TileLayer(tilesUrl);
 
 $ ->
