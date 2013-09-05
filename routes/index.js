@@ -1,3 +1,5 @@
+$ = require("jquery")
+config = $.extend({}, {}, require("../config/app"));
 
 /*
  * GET home page.
@@ -14,8 +16,7 @@ exports.index = function(req, res){
 
 exports.dtm = function(req, res){
 
-  // The dtm.vrt file, TODO: make this configruable in application config.
-  var dtm_file = "/mnt/warez/dtm/dtm.vrt";
+  var dtm_file = config.dtmFile;
 
   // The bounding box from query
   var box = req.query.box;

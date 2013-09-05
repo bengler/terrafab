@@ -1,7 +1,3 @@
-config = {
-  tilesUrl: 'http://144.76.137.99:3001/kartverk/{z}/{x}/{y}.png'
-}
-
 leaflet = require("leaflet")
 
 require("./rectangle_editor")
@@ -9,6 +5,8 @@ require("./ext_js/proj4js-compressed.js")
 require("./ext_js/proj4leaflet.js")
 
 $ = require("jquery")
+
+config = $.extend({}, {}, require("../config/app.json"))
 
 $ ->
 
