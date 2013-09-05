@@ -51,9 +51,7 @@ exports.dtm = function(req, res){
   function pipe(err, stdout, stderr) {
     if (err) {
       err.error = stderr
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(err);
-      return;
+      return res.send(err);
     }
     res.writeHead(200, {'Content-Type': 'image/png' });
     var img = fs.readFileSync(png_file);
