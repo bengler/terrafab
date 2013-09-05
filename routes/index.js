@@ -15,9 +15,17 @@ exports.index = function(req, res){
 exports.dtm = function(req, res){
 
   var box = req.query.box.split(','); // The bounding box from query
+  var outsize = req.query.outsize; // The output size of the tile
+  if(outsize == null) {
+    outsize = 2000;
+  }
+  var png_file = "/tmp/"+box.join("_")+".png";
+  var dtm_file = "/mnt/warez/dtm/dtm.vrt";
+  var command = "bash -c 'gdal_translate -q -scale 0 550 -ot Byte -of PNG -outsize "+outsize+" "+outsize+" -projwin " + box.join(', ') + " "+dtm_file+" "+png_file+"'";
+
   var exec = require('child_process').exec;
   var fs = require('fs');
-  var filename = "/tmp/"+box.join("_")+".png";
+
   function pipe(err,stdout, stderr) {
     if (err) {
       err.error = stderr
@@ -25,10 +33,9 @@ exports.dtm = function(req, res){
       return;
     }
     res.writeHead(200, {'Content-Type': 'image/png' });
-    var img = fs.readFileSync(filename);
+    var img = fs.readFileSync(png_file);
     res.end(img, 'binary');
-    fs.unlinkSync(filename);
+    fs.unlinkSync(png_file);
   }
-  var command = "bash -c 'gdal_translate -q -scale 0 550 -ot Byte -of PNG -outsize 2000 2000 -projwin " + box.join(', ') + " /mnt/warez/dtm/dtm.vrt "+filename+"'"
   exec(command, pipe);
 };
