@@ -38,8 +38,22 @@ exports.dtm = function(req, res){
       outsize = [outsize,outsize];
     }
   }
+  // Sanity check input params for security's sake
+  var non_number = false;
+  outsize.concat(box).forEach(function(i) {
+      if(!(typeof i === 'number' && isFinite(i))) {
+        non_number = i;
+        return;
+      }
+    }
+  );
+  if(non_number) {
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    return res.end('{"error": "Not a valid number: "'+non_number;
+  }
 
-  var png_file = "/tmp/"+box.join("_")+".png";
+  // Do DTM png output
+  var png_file = "/tmp/"+require("crypto").createHash('sha1').update(box.join("_")).digest('hex')+".png";
   var command = "bash -c 'gdal_translate -q -scale 0 550 -ot Byte -of PNG -outsize " +
     outsize[0] + " " + outsize[1] +
     " -projwin " + box.join(', ') +
