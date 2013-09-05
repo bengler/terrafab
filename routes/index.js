@@ -41,7 +41,7 @@ exports.dtm = function(req, res){
   // Sanity check input params for security's sake
   var non_number = false;
   outsize.concat(box).forEach(function(i) {
-      if(!(typeof i === 'number' && isFinite(i))) {
+      if(!(typeof Number(i) === 'number' && isFinite(Number(i)))) {
         non_number = i;
         return;
       }
@@ -49,7 +49,7 @@ exports.dtm = function(req, res){
   );
   if(non_number) {
     res.writeHead(500, { 'Content-Type': 'application/json' });
-    return res.end('{"error": "Not a valid number: "'+non_number;
+    return res.end('{"error": "Not a valid number: '+non_number+'"}')
   }
 
   // Do DTM png output
