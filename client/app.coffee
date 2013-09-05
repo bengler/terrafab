@@ -1,3 +1,5 @@
+config = require("../config/app.json")
+
 leaflet = require("leaflet")
 
 require("./rectangle_editor")
@@ -5,8 +7,6 @@ require("./ext_js/proj4js-compressed.js")
 require("./ext_js/proj4leaflet.js")
 
 $ = require("jquery")
-
-config = $.extend({}, {}, require("../config/app.json"))
 
 $ ->
 
