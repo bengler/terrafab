@@ -84,8 +84,7 @@ exports.map = function(req, res){
 
   // Set up system command
   var png_file = config.tmpFilePath+"/"+helpers.fileHash("mapbox_"+box.join("_"));
-  var command = "bash -c '"+config.mapboxScript+" -i "+config.mapnikFile+" -o "+png_file+" --outsize "+outsize.join(',')+"--box "+box.join(',')+"'";
-
+  var command = "bash -c '"+config.mapboxScript+" -i "+config.mapnikFile+" -o "+png_file+" --outsize "+outsize.join(',')+" --box "+box.join(',')+"'";
   if(config.cacheImages && fs.existsSync(png_file)) {
     // Output cached file
     res.writeHead(200, {'Content-Type': 'image/png' });
