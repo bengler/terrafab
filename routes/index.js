@@ -33,7 +33,7 @@ exports.dtm = function(req, res){
   }
 
   // Set up system command
-  var png_file = config.tmpFilePath+"/"+helpers.fileHash("dtm_"+box.join("_"));
+  var png_file = config.tmpFilePath+"/"+helpers.fileHash("dtm_"+box.join("_")+outsize.join('_'));
   var command = "bash -c 'gdal_translate -q -scale 0 550 -ot Byte -of PNG -outsize " +
     outsize[0] + " " + outsize[1] +
     " -projwin " + box.join(', ') +
@@ -83,7 +83,7 @@ exports.map = function(req, res){
   }
 
   // Set up system command
-  var png_file = config.tmpFilePath+"/"+helpers.fileHash("mapbox_"+box.join("_"));
+  var png_file = config.tmpFilePath+"/"+helpers.fileHash("mapbox_"+box.join("_")+outsize.join('_'));
   var command = "bash -c '"+config.mapboxScript+" -i "+config.mapnikFile+" -o "+png_file+" --outsize "+outsize.join(',')+" --box "+box.join(',')+"'";
   if(config.cacheImages && fs.existsSync(png_file)) {
     // Output cached file
