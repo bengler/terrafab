@@ -47,7 +47,7 @@ helpers = {
     return !non_number;
   },
   fileHash: function(filename) {
-    crypto.createHash('sha1').update(filename).digest('hex')+".png"
+    return crypto.createHash('sha1').update(filename).digest('hex')+".png";
   }
 }
 module.exports = helpers;
