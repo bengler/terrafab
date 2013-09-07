@@ -6,9 +6,21 @@ require("./rectangle_editor")
 require("./ext_js/proj4js-compressed.js")
 require("./ext_js/proj4leaflet.js")
 
+Terrain = require('./terrain')
+
 $ = require("jquery")
 
 $ ->
+  canvas = $('canvas#terrain')[0]
+  if false && canvas?
+    ctx = canvas.getContext('2d')
+    ctx.moveTo(0,0)
+    ctx.lineTo(800,800)
+    ctx.stroke()
+
+  terrain = new Terrain(canvas)
+  terrain.run()
+
 
   resolutions = [
     5545984, 2772992, 1386496, 693248,
