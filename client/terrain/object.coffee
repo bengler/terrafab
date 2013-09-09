@@ -6,7 +6,7 @@ THREE.Object3D.prototype.constructor = THREE.Object3D
 class TerrainObject extends THREE.Object3D
   constructor: (lat, lon, radius) ->
     super
-    @builder = new TerrainBuilder(200, 200, 1.3, 0.001)
+    @builder = new TerrainBuilder(200, 200, 1, 0.0008)
     @builder.applyElevation()
     @textureCanvas = document.createElement("canvas")
     @textureCanvas.width = 400
