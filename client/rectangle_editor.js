@@ -4,7 +4,7 @@ L.RectangleEditor = L.Rectangle.extend ({
   options: {
     draggable: true,
     constraints: {
-      aspectRatio: 0.5
+      aspectRatio: 1
     },
     markerIcon: new L.DivIcon({
       iconSize: new L.Point(8, 8),
@@ -102,7 +102,7 @@ L.RectangleEditor = L.Rectangle.extend ({
       draggedMarker.setLatLng(markerLatLng)
     }
     if (draggedMarker == this.markers.sw) {
-      this.markers.nw.setLatLng([nwLatLng.lat, markerLatLng.lng]) 
+      this.markers.nw.setLatLng([nwLatLng.lat, markerLatLng.lng])
       this.markers.se.setLatLng([markerLatLng.lat, seLatLng.lng])
     }
     else if (draggedMarker == this.markers.nw) {
@@ -121,7 +121,7 @@ L.RectangleEditor = L.Rectangle.extend ({
     this.fire('change', {bounds: this.getMarkerBounds()[0]})
   },
   _onMarkerDrag: function (e) {
-    var marker = e.target;    
+    var marker = e.target;
     this.extendTo(marker)
     this.setBounds(this.getMarkerBounds())
     this.redraw();

@@ -11,19 +11,6 @@ Terrain = require('./terrain')
 $ = require("jquery")
 
 $ ->
-  canvas = $('canvas#terrain')[0]
-  if false && canvas?
-    ctx = canvas.getContext('2d')
-    ctx.moveTo(0,0)
-    ctx.lineTo(800,800)
-    ctx.stroke()
-
-  terrain = new Terrain(canvas)
-  terrain.run()
-
-  syncTerrainWithSelector = ->
-    console.log "Sync"
-    terrain.show(crs.project(eRect.getMarkerBounds()[0].getNorthWest()), crs.project(eRect.getMarkerBounds()[0].getSouthEast()))
 
   resolutions = [
     5545984, 2772992, 1386496, 693248,
@@ -41,6 +28,7 @@ $ ->
       }
     )
 
+  rectangle_editor = new L.RectangleEditor([[59.9,10.7],[59.928893,10.769715]])
   map = new L.Map('map', {
     crs: crs,
     scale: (zoom) ->
@@ -57,14 +45,25 @@ $ ->
     center: [59.918893,10.739715],
     zoom: 18
   });
+  rectangle_editor.addTo(map)
 
-  eRect = new L.RectangleEditor([[59.9,10.7],[59.928893,10.769715]],);
-  map.addLayer(eRect);
+  syncTerrainWithSelector = ->
+    console.log "Sync"
+    terrain.show(crs.project(rectangle_editor.getMarkerBounds()[0].getNorthWest()), crs.project(rectangle_editor.getMarkerBounds()[0].getSouthEast()))
 
-
-  timer = null
-  eRect.on 'change', (event) ->
+  rectangle_editor.on 'change', (event) ->
     console.log "Change"
     clearTimeout(timer) if timer?
     timer = setTimeout(syncTerrainWithSelector, 1000)
+
+
+  canvas = $('canvas#terrain')[0]
+  if false && canvas?
+    ctx = canvas.getContext('2d')
+    ctx.moveTo(0,0)
+    ctx.lineTo(800,800)
+    ctx.stroke()
+
+  terrain = new Terrain(canvas)
+  terrain.run()
   syncTerrainWithSelector()
