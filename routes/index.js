@@ -2,6 +2,9 @@ config = require("../config/app");
 helpers = require("./helpers")
 exec = require('child_process').exec;
 fs = require('fs');
+request = require('request');
+
+ProductionServerUrl = "http://144.76.137.99:3000"
 
 /*
  * GET home page.
@@ -48,8 +51,10 @@ exports.dtm = function(req, res){
     // Generate file
     exec(command, function (err, stdout, stderr) {
         if (err) {
-          err.error = stderr
-          return res.send(500, err);
+          console.error(err);
+          console.log("Deferring to production server.")
+          request.get(ProductionServerUrl+req.url).pipe(res);
+          return;
         }
         res.writeHead(200, {'Content-Type': 'image/png' });
         var img = fs.readFileSync(png_file);
@@ -94,8 +99,11 @@ exports.map = function(req, res){
     // Generate file
     exec(command, function (err, stdout, stderr) {
         if (err) {
-          err.error = stderr
-          return res.send(500, err);
+          console.error(err);
+          console.log("Deferring to production server")
+          // Try to serve the request by passing the request to a productino server
+          request.get(ProductionServerUrl+req.url).pipe(res);
+          return;
         }
         res.writeHead(200, {'Content-Type': 'image/png' });
         var img = fs.readFileSync(png_file);

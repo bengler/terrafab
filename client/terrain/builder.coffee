@@ -10,7 +10,7 @@ class TerrainBuilder
   terrainCoordinateToVector: (x,y) ->
     new THREE.Vector3((x-@width/2)*@xyScale, 0, (y-@height/2)*@xyScale)
   terrainCoordinateToUV: (x,y) ->
-    new THREE.Vector2(1.0*x / @width, 1.0*y / @height)
+    new THREE.Vector2(1.0*x / @width, 1.0-(1.0*y / @height))
   terrainCoordinateToVertexIndex: (x,y) ->
     x+y*@width
   buildTerrainMesh: ->
@@ -52,7 +52,7 @@ class TerrainBuilder
       @terrainCoordinateToVector(xMax, yMax)   # NE
     ]
     # Place all the base vertices a little bit below the water line
-    vertex.y = -100 for vertex in vertices
+    vertex.y = -30 for vertex in vertices
     # Remember the index of the first bottom vertex
     index = @geom.vertices.length
     # Append the vertices to the geometry

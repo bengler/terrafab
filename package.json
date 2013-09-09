@@ -26,6 +26,7 @@
     "brfs": "0.0.7",
     "three": "git://github.com/bjoerge/threejs-node",
     "leaflet": "~0.6.4",
-    "jquery": "git://github.com/bjoerge/jquery-node"
+    "jquery": "git://github.com/bjoerge/jquery-node",
+    "request": "*"
   }
 }

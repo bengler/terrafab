@@ -16,5 +16,7 @@ class TerrainComponent
       @scene.advance()
       @renderer.render(@scene, @scene.camera)
     animate()
+  show: (nwPoint, sePoint) ->
+    @scene.terrain.show(arguments...)
 
 module.exports = TerrainComponent
