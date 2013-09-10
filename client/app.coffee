@@ -24,11 +24,13 @@ $ ->
   crs = new L.Proj.CRS('EPSG:32633',
       '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs',
       {
-        resolutions: resolutions
+        resolutions: resolutions,
+        # transformation:  new L.Transformation(1, -4200000, -1, -2000000)
       }
     )
 
-  rectangle_editor = new L.RectangleEditor([[59.9,10.7],[59.928893,10.769715]])
+  rectangle_editor = new L.RectangleEditor([[67.177414,15.212889],[67.035306,15.674314]])
+  rectangle_editor.crs = crs;
   map = new L.Map('map', {
     crs: crs,
     scale: (zoom) ->
@@ -36,13 +38,15 @@ $ ->
     ,
     layers: [
       new L.TileLayer(config.tilesUrl, {
+        attribution: "N50 UTM33 (Bengler)",
         minZoom: 1,
         maxZoom: resolutions.length-1,
         continuousWorld: true,
-        worldCopyJump: false
+        worldCopyJump: false,
+        noWrap: true
       })
     ],
-    center: [59.918893,10.739715],
+    center: [67.098449,15.449095],
     zoom: 18
   });
   rectangle_editor.addTo(map)
