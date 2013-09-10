@@ -55,6 +55,7 @@ class TerrainTile
 
 class TerrainStreamer
   constructor: (@pxWidth) ->
+    @pxHeight = @pxWidth
     @terrain = document.createElement("canvas")
     @terrain.width =  @pxWidth
     @terrain.height = @pxWidth
@@ -99,12 +100,12 @@ class TerrainStreamer
     if tile.terrainImage.width > 0
       @terrainCtx.drawImage(tile.terrainImage,
         sourceRect.min.x, (tile.pxHeight-sourceRect.max.y), sourceRect.getSize().x, sourceRect.getSize().y,
-        targetRect.min.x, targetRect.min.y, targetRect.getSize().x, targetRect.getSize().y)
+        targetRect.min.x, (@pxHeight-targetRect.max.y), targetRect.getSize().x, targetRect.getSize().y)
     # Only draw if the map has been loaded
     if tile.mapImage.width > 0
       @mapCtx.drawImage(tile.mapImage,
         sourceRect.min.x*MAP_SCALE, (tile.pxHeight-sourceRect.max.y)*MAP_SCALE, sourceRect.getSize().x*MAP_SCALE, sourceRect.getSize().y*MAP_SCALE,
-        targetRect.min.x*MAP_SCALE, targetRect.min.y*MAP_SCALE, targetRect.getSize().x*MAP_SCALE, targetRect.getSize().y*MAP_SCALE)
+        targetRect.min.x*MAP_SCALE, (@pxHeight-targetRect.max.y)*MAP_SCALE, targetRect.getSize().x*MAP_SCALE, targetRect.getSize().y*MAP_SCALE)
     # We will return the effective resolution even if the tile was not actually loaded yet. Even if that resolution is only incoming
     # we will consider it present in the system.
     effectiveResolution
