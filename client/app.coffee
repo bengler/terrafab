@@ -32,10 +32,11 @@ $ ->
       }
     )
 
+  zoom = 15
   if localStorage
     rectangle = JSON.parse(localStorage.getItem('rectangle'))
     rectangle_editor = new L.RectangleEditor([[rectangle._southWest.lat, rectangle._southWest.lng],[rectangle._northEast.lat, rectangle._northEast.lng]])
-
+    zoom = localStorage.getItem('zoom') || zoom
   else
     rectangle_editor = new L.RectangleEditor([[67.177414,15.212889],[67.035306,15.674314]])
   rectangle_editor.crs = crs;
@@ -56,7 +57,7 @@ $ ->
       })
     ],
     center: [67.098449,15.449095],
-    zoom: 15
+    zoom: zoom
   });
   rectangle_editor.addTo(map)
 
@@ -67,6 +68,7 @@ $ ->
     syncTerrainWithSelector()
     if localStorage
       localStorage.setItem('rectangle', JSON.stringify(event.bounds))
+      localStorage.setItem('zoom', map.getZoom())
 
   canvas = $('canvas#terrain')[0]
   if false && canvas?
