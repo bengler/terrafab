@@ -4,8 +4,6 @@ exec = require('child_process').exec;
 fs = require('fs');
 request = require('request');
 
-ProductionServerUrl = "http://144.76.137.99:3000"
-
 /*
  * GET home page.
  */
@@ -37,7 +35,7 @@ exports.dtm = function(req, res){
 
   // Set up system command
   var png_file = config.tmpFilePath+"/"+helpers.fileHash("dtm_"+box.join("_")+outsize.join('_'));
-  var command = "bash -c 'gdal_translate -q -scale 0 550 -ot Byte -of PNG -outsize " +
+  var command = "bash -c 'gdal_translate -q -scale 0 2469 -ot Byte -of PNG -outsize " +
     outsize[0] + " " + outsize[1] +
     " -projwin " + box.join(', ') +
     " " + dtm_file + " " + png_file + "'";
@@ -52,8 +50,7 @@ exports.dtm = function(req, res){
     exec(command, function (err, stdout, stderr) {
         if (err) {
           console.error(err);
-          console.log("Deferring to production server.")
-          request.get(ProductionServerUrl+req.url).pipe(res);
+          request.get(config.AlternativePngUrl+req.url).pipe(res);
           return;
         }
         res.writeHead(200, {'Content-Type': 'image/png' });
@@ -101,8 +98,7 @@ exports.map = function(req, res){
         if (err) {
           console.error(err);
           console.log("Deferring to production server")
-          // Try to serve the request by passing the request to a productino server
-          request.get(ProductionServerUrl+req.url).pipe(res);
+          request.get(config.AlternativePngUrl+req.url).pipe(res);
           return;
         }
         res.writeHead(200, {'Content-Type': 'image/png' });
