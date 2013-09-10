@@ -2,6 +2,8 @@ config = require("../config/app.json")
 
 leaflet = require("leaflet")
 
+localStorage = require('localStorage')
+
 require("./rectangle_editor")
 require("./ext_js/proj4js-compressed.js")
 require("./ext_js/proj4leaflet.js")
@@ -30,8 +32,14 @@ $ ->
       }
     )
 
-  rectangle_editor = new L.RectangleEditor([[67.177414,15.212889],[67.035306,15.674314]])
+  if localStorage
+    rectangle = JSON.parse(localStorage.getItem('rectangle'))
+    rectangle_editor = new L.RectangleEditor([[rectangle._southWest.lat, rectangle._southWest.lng],[rectangle._northEast.lat, rectangle._northEast.lng]])
+
+  else
+    rectangle_editor = new L.RectangleEditor([[67.177414,15.212889],[67.035306,15.674314]])
   rectangle_editor.crs = crs;
+
   map = new L.Map('map', {
     crs: crs,
     scale: (zoom) ->
@@ -57,6 +65,8 @@ $ ->
 
   rectangle_editor.on 'change', (event) ->
     syncTerrainWithSelector()
+    if localStorage
+      localStorage.setItem('rectangle', JSON.stringify(event.bounds))
 
   canvas = $('canvas#terrain')[0]
   if false && canvas?
