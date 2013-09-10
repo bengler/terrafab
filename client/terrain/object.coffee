@@ -16,8 +16,8 @@ class TerrainObject extends THREE.Object3D
     ctx.fillRect(0,0,1024,1024)
     @textureMaterial =  new THREE.MeshLambertMaterial
         map: new THREE.Texture(@textureCanvas)
-        color: 0xdddddd
-        ambient: 0xdddddd
+        color: 0xcccccc
+        ambient: 0xcccccc
         shading: THREE.SmoothShading
     @material = new THREE.MeshFaceMaterial([
       @textureMaterial
@@ -25,8 +25,8 @@ class TerrainObject extends THREE.Object3D
         color: 0xffdddd
         shading: THREE.FlatShading
     ])
-    @textureMaterial.map.wrapS = THREE.RepeatWrapping;
-    @textureMaterial.map.wrapT = THREE.RepeatWrapping;
+    #@textureMaterial.map.wrapS = THREE.RepeatWrapping;
+    #@textureMaterial.map.wrapT = THREE.RepeatWrapping;
 
     #@material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } )
     @mesh = new THREE.Mesh(@builder.geom, @material)
