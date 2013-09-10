@@ -909,6 +909,11 @@
           }
         }
       }
+    },
+    "browsernizr": {
+      "version": "1.0.0",
+      "from": "browsernizr@*",
+      "resolved": "https://registry.npmjs.org/browsernizr/-/browsernizr-1.0.0.tgz"
     }
   }
 }
