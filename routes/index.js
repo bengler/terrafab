@@ -32,18 +32,38 @@ exports.dtm = function(req, res){
   if(!helpers.numericParams(outsize.concat(box), res)) {
     return;
   }
-
+  var outformat;
+  var out_extension;
+  var out_type;
+  var out_header;
+  var scale;
+  switch(req.query.format) {
+    case "bin":
+      out_extension  = "bin";
+      out_format = "ENVI";
+      out_type = "UInt16";
+      scale = "0 10000";
+      out_content_type = {'Content-Type': 'application/octet-stream' };
+      break;
+    default:
+      out_extension  = "png";
+      out_format = "PNG";
+      out_type = "Byte";
+      scale = "0 2469";
+      out_content_type = {'Content-Type': 'image/png' };
+  }
   // Set up system command
-  var png_file = config.tmpFilePath+"/"+helpers.fileHash("dtm_"+box.join("_")+outsize.join('_'));
-  var command = "bash -c 'gdal_translate -q -scale 0 2469 -ot Byte -of PNG -outsize " +
+  var out_file = config.tmpFilePath+"/"+helpers.fileHash("dtm_"+box.join("_")+outsize.join('_'), out_extension);
+
+  var command = "bash -c 'gdal_translate -q -scale "+scale+" -ot "+out_type+" -of "+out_format+" -outsize " +
     outsize[0] + " " + outsize[1] +
     " -projwin " + box.join(', ') +
-    " " + dtm_file + " " + png_file + "'";
+    " " + dtm_file + " " + out_file + "'";
 
-  if(config.cacheImages && fs.existsSync(png_file)) {
+  if(config.cacheImages && fs.existsSync(out_file)) {
     // Output cached file
-    res.writeHead(200, {'Content-Type': 'image/png' });
-    var img = fs.readFileSync(png_file);
+    res.writeHead(200, out_content_type);
+    var img = fs.readFileSync(out_file);
     res.end(img, 'binary');
   } else {
     // Generate file
@@ -53,11 +73,11 @@ exports.dtm = function(req, res){
           request.get(config.AlternativePngUrl+req.url).pipe(res);
           return;
         }
-        res.writeHead(200, {'Content-Type': 'image/png' });
-        var img = fs.readFileSync(png_file);
+        res.writeHead(200, out_content_type);
+        var img = fs.readFileSync(out_file);
         res.end(img, 'binary');
         if(!config.cacheImages) {
-          fs.unlinkSync(png_file);
+          fs.unlinkSync(out_file);
         }
       }
     );
