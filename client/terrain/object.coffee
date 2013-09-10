@@ -1,6 +1,8 @@
 THREE = require "three"
 TerrainBuilder = require('./builder.coffee')
+TerrainStreamer = require('./streamer.coffee')
 $ = require('jquery')
+L = require('leaflet')
 
 THREE.Object3D.prototype.constructor = THREE.Object3D
 class TerrainObject extends THREE.Object3D
@@ -8,6 +10,7 @@ class TerrainObject extends THREE.Object3D
     super
     @builder = new TerrainBuilder(200, 200, 1, 0.0008)
     @builder.applyElevation()
+    @streamer = new TerrainStreamer(200)
     @textureCanvas = document.createElement("canvas")
     @textureCanvas.width = 400
     @textureCanvas.height = 400
@@ -38,16 +41,15 @@ class TerrainObject extends THREE.Object3D
     # @t = 0.0
 
   show: (nwPoint, sePoint) ->
-    @mapImage = new Image()
-    @mapImage.src = "/map?box=#{[nwPoint.x, nwPoint.y, sePoint.x, sePoint.y].join(',')}&outsize=400,400"
-    @terrainImage = new Image()
-    @terrainImage.src = "/dtm?box=#{[nwPoint.x, nwPoint.y, sePoint.x, sePoint.y].join(',')}&outsize=200,200"
-    $(@terrainImage).load =>
-      @builder.ctx.drawImage(@terrainImage, 0, 0)
-      @builder.applyElevation()
-    $(@mapImage).load =>
-      @textureCanvas.getContext('2d').drawImage(@mapImage, 0, 0)
-      @textureMaterial.map.needsUpdate = true
+    console.log arguments
+    @streamer.update(new L.Bounds(nwPoint, sePoint))
+
+  tick: ->
+    @streamer.update()
+    @builder.ctx.drawImage(@streamer.terrain, 0, 0)
+    @builder.applyElevation()
+    @textureCanvas.getContext('2d').drawImage(@streamer.map, 0, 0)
+    @textureMaterial.map.needsUpdate = true
 
   _tick: ->
     @t += 0.4

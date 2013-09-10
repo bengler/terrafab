@@ -7,6 +7,7 @@ require("./ext_js/proj4js-compressed.js")
 require("./ext_js/proj4leaflet.js")
 
 Terrain = require('./terrain')
+TerrainStreamer = require('./terrain/streamer.coffee')
 
 $ = require("jquery")
 
@@ -52,13 +53,11 @@ $ ->
   rectangle_editor.addTo(map)
 
   syncTerrainWithSelector = ->
-    console.log "Sync"
     terrain.show(crs.project(rectangle_editor.getMarkerBounds()[0].getNorthWest()), crs.project(rectangle_editor.getMarkerBounds()[0].getSouthEast()))
 
   rectangle_editor.on 'change', (event) ->
     console.log "Change"
-    clearTimeout(timer) if timer?
-    timer = setTimeout(syncTerrainWithSelector, 1000)
+    syncTerrainWithSelector()
 
 
   canvas = $('canvas#terrain')[0]
@@ -71,3 +70,4 @@ $ ->
   terrain = new Terrain(canvas)
   terrain.run()
   syncTerrainWithSelector()
+

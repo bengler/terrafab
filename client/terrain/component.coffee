@@ -5,7 +5,7 @@ TerrainScene = require('./scene.coffee')
 class TerrainComponent
   constructor: (@el) ->
     @renderer = new THREE.WebGLRenderer(canvas: @el)
-    @renderer.setClearColorHex(0x0, 0.0)
+    @renderer.setClearColor(0x0, 0.0)
     @resize()
     @scene = new TerrainScene()
   resize: ->
