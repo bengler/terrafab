@@ -32,7 +32,7 @@ exports.dtm = function(req, res){
   if(!helpers.numericParams(outsize.concat(box), res)) {
     return;
   }
-  var outformat;
+  var out_format;
   var out_extension;
   var out_type;
   var out_header;
@@ -69,6 +69,11 @@ exports.dtm = function(req, res){
     // Generate file
     exec(command, function (err, stdout, stderr) {
         if (err) {
+          if(stderr && stderr.substring('Computed -srcwin falls outside raster size')) {
+            res.writeHead(404);
+            res.end(stderr);
+            return;
+          }
           console.error(err);
           request.get(config.AlternativePngUrl+req.url).pipe(res);
           return;
