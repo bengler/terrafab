@@ -13,6 +13,9 @@ class TerrainBuilder
     new THREE.Vector2(1.0*x / @width, 1.0-(1.0*y / @height))
   terrainCoordinateToVertexIndex: (x,y) ->
     x+y*@width
+
+  # Bulds the top of the mesh. The patch of triangles that will be elevated to
+  # display the terrain.
   buildTerrainMesh: ->
   # builds the default mesh without applying any elevation
     # An array of texture coordinates in vertex order
@@ -37,6 +40,7 @@ class TerrainBuilder
         # Triangle two
         @geom.faces.push(new THREE.Face3(bottom_left, bottom_right, top_left))
         @geom.faceVertexUvs[0].push([uvs[bottom_left], uvs[bottom_right], uvs[top_left]])
+  # The vertices below the terrain that will provide vertices for the sides of the terrain
   buildBottomVertices: ->
     # Generate the vertices of the bottom
     xMax = @width-1
@@ -71,13 +75,12 @@ class TerrainBuilder
   # a count of terrain vertices and a function (indexOfTerrainVertex) producing terrain
   # vertex indicies along the desired edge.
   buildSide: (left, center, right, count, indexOfTerrainVertex) ->
-    console.log arguments
-    console.log @geom.vertices.length
     for n in [0...count-1]
       @geom.faces.push(new THREE.Face3(center, indexOfTerrainVertex(n), indexOfTerrainVertex(n+1)))
     @geom.faces.push(new THREE.Face3(center, left, indexOfTerrainVertex(0)))
     @geom.faces.push(new THREE.Face3(center, indexOfTerrainVertex(count-1), right))
 
+  # Builds each side of the mesh coming across as a "base"
   buildBase: ->
     @buildBottomVertices()
     faceIndex = @geom.faces.length
@@ -89,6 +92,7 @@ class TerrainBuilder
     for n in [faceIndex...@geom.faces.length]
       @geom.faces[n].materialIndex = 1
 
+  # (re)builds the geometry(!)
   buildGeometry: ->
     @geom = new THREE.Geometry()
     @buildTerrainMesh();
@@ -96,17 +100,23 @@ class TerrainBuilder
 
   # Applies the elevation data to the mesh by reading the red-component from the pixels in the
   # canvas.
-  applyElevation: ->
+  applyElevation: (image, options = {}) ->
+    # Make sure we have a geometry to elevate
     @buildGeometry() unless @geom?
+    # Clear the scratch canvas
+    @ctx.clearRect(0, 0, @width, @height)
+    # Scale the provided image to the target canvas size
+    @ctx.drawImage(image, 0, 0, @width, @height) if image?
+    # Get the image data as raw binary
     pixels = @ctx.getImageData(0, 0, @width, @height).data
+    # Use the values in each pixel to calculate an altitude for each terrain vertex and place it
     for n in [0...(@width*@height)]
-      value = pixels[n*4+1]|(pixels[n*4]<<8)
-      @geom.vertices[n].y = value*@zScale*@xyScale
+      value = pixels[n*4]
+      @geom.vertices[n].y = value*(options.zScale||1.0)*@xyScale
+    # These are required steps to make sure the mesh renders correctly
     @geom.computeFaceNormals()
     @geom.computeVertexNormals()
     @geom.verticesNeedUpdate = true
     @geom.normalsNeedUpdate = true
-  clear: ->
-    @ctx.clearRect(0,0, @width, @height)
 
 module.exports = TerrainBuilder

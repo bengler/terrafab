@@ -1,67 +1,61 @@
+# This is the 3D object representing the terrain. It stitches together the TerrainBuilder,
+# and TerrainStreamer and provides a renderable object to the 3D engine THREE.
+
 THREE = require "three"
 TerrainBuilder = require('./builder.coffee')
 TerrainStreamer = require('./streamer.coffee')
 $ = require('jquery')
 L = require('leaflet')
 
+# What does 255 represent in meters when using 8 bit terrain data?
+RANGE_8BIT = 2404
+
+# The number of samples per dimension of the terrain model
+SAMPLES_PER_SIDE = 200
+
+
 THREE.Object3D.prototype.constructor = THREE.Object3D
 class TerrainObject extends THREE.Object3D
   constructor: (lat, lon, radius) ->
     super
-    @builder = new TerrainBuilder(200, 200, 1, 0.0008)
+    # Builds the mesh
+    @builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, 1, 0.2)
     @builder.applyElevation()
-    @streamer = new TerrainStreamer(200)
-    @textureCanvas = document.createElement("canvas")
-    @textureCanvas.width = 400
-    @textureCanvas.height = 400
-    ctx = @textureCanvas.getContext('2d')
-    ctx.fillStyle = '#dddddd'
-    ctx.fillRect(0,0,1024,1024)
+    # Streams terrain data
+    @streamer = new TerrainStreamer SAMPLES_PER_SIDE, =>
+      @textureMaterial.map.needsUpdate = true
+      @builder.applyElevation(@streamer.terrain, zScale: @currentTerrainZScale())
+    # The material for the terrain texture
     @textureMaterial =  new THREE.MeshLambertMaterial
-        map: new THREE.Texture(@textureCanvas)
+        map: new THREE.Texture(@streamer.map)
         color: 0xcccccc
         ambient: 0xcccccc
         shading: THREE.SmoothShading
+    # The meta-material containing both the texture-material, and a
+    # material for the sides.
     @material = new THREE.MeshFaceMaterial([
       @textureMaterial
       new THREE.MeshLambertMaterial
         color: 0xffdddd
         shading: THREE.FlatShading
     ])
-    #@textureMaterial.map.wrapS = THREE.RepeatWrapping;
-    #@textureMaterial.map.wrapT = THREE.RepeatWrapping;
-
-    #@material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } )
+    # The mesh for the terrain
     @mesh = new THREE.Mesh(@builder.geom, @material)
     @add(@mesh)
-    # @mapImage = new Image()
-    # @mapImage.src = "/map?box=253723.176600653,6660500.4670516,267723.176600653,6646500.4670516&outsize=2000,2000"
-    # @terrainImage = new Image()
-    # @terrainImage.src = "/dtm?box=253723.176600653,6660500.4670516,267723.176600653,6646500.4670516&outsize=2000,2000"
-    # @t = 0.0
 
+  # Called by the client when it wants to update which area is being watched.
+  # Currently the area _must_ be a _square_ block of UTM33.
   show: (nwPoint, sePoint) ->
-    @streamer.update(new L.Bounds(nwPoint, sePoint))
+    @streamer.setBounds(new L.Bounds(nwPoint, sePoint))
 
-  tick: ->
-    @streamer.update()
-    @builder.ctx.drawImage(@streamer.terrain, 0, 0)
-    @builder.applyElevation()
-    @textureCanvas.getContext('2d').drawImage(@streamer.map, 0, 0)
-    @textureMaterial.map.needsUpdate = true
-
-  _tick: ->
-    @t += 0.4
-    x = Math.sin(@t/200)
-    y = Math.cos(@t/130)
-    if @terrainImage.width > 0
-      @builder.clear()
-      ctx = @builder.ctx
-      ctx.drawImage(@terrainImage, x*300-500, y*300-500)
-      @builder.applyElevation()
-    if @mapImage.width > 0
-      ctx = @textureCanvas.getContext('2d')
-      ctx.drawImage(@mapImage, x*300-500, y*300-500)
-      @textureMaterial.map.needsUpdate = true
+  currentTerrainZScale: ->
+    return 0.0 unless @streamer.bounds?
+    # Multiplying one sample by this factor gives the value in meters
+    metersPerIncrement = RANGE_8BIT/255
+    # One quad of the terrain is this wide in meters right now
+    metersPerTerrainSample = @streamer.bounds.getSize().x/SAMPLES_PER_SIDE
+    # When multiplying one value this value gives the altitude in multiples of
+    # one width of a quad.
+    return metersPerIncrement/metersPerTerrainSample
 
 module.exports = TerrainObject

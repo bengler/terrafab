@@ -48,7 +48,7 @@ $ ->
       })
     ],
     center: [67.098449,15.449095],
-    zoom: 18
+    zoom: 15
   });
   rectangle_editor.addTo(map)
 
@@ -56,9 +56,7 @@ $ ->
     terrain.show(crs.project(rectangle_editor.getMarkerBounds()[0].getNorthWest()), crs.project(rectangle_editor.getMarkerBounds()[0].getSouthEast()))
 
   rectangle_editor.on 'change', (event) ->
-    console.log "Change"
     syncTerrainWithSelector()
-
 
   canvas = $('canvas#terrain')[0]
   if false && canvas?

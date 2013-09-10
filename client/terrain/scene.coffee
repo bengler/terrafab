@@ -1,3 +1,6 @@
+# An object representing the Scene as required by Three.js. It sets the light and camera
+# mainly.
+
 THREE = require "three"
 TerrainObject = require('./object.coffee')
 
@@ -5,7 +8,7 @@ THREE.Scene.prototype.constructor = THREE.Scene
 class TerrainScene extends THREE.Scene
   constructor: ->
     super
-    @camera = new THREE.PerspectiveCamera(45);
+    @camera = new THREE.PerspectiveCamera(35)
     @camera.position.y = 300
     @camera.position.z = -500
     @camera.lookAt(new THREE.Vector3(0,-100,0))

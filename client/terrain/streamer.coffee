@@ -1,12 +1,13 @@
-L = require("leaflet")
+# TerrainStreamer loads terrain and map data via a cache to provide real time feedback
+# when manipulating the selected area.
 
+L = require("leaflet")
 
 min = (a,b) ->
   if a<b then a else b
 
 max = (a,b) ->
   if a>b then a else b
-
 
 # Returns a new bounds where the bounds have been clipped to the provided clip boundaries
 L.Bounds.prototype.clipTo = (clip) ->
@@ -28,18 +29,20 @@ meterSelectionToPixelBounds = (selection, bounds, pixelsPerMeter, scale) ->
   ])
 
 # How many times higher resolutions should the maps have in relation to the terrain pxWidth
-MAP_SCALE = 2
+MAP_SCALE = 1
 
 # How many tiles should we keep in the cache
 TILE_CACHE_LIMIT = 40
 
 class TerrainTile
-  constructor: (@bounds, @pxWidth) ->
+  constructor: (@bounds, @pxWidth, onload = null) ->
     @pxHeight = Math.round(@pxWidth/@meterWidth()*@meterHeight())
     @resolution = @pxWidth/@meterWidth()
     @terrainImage = new Image()
+    @terrainImage.onload = onload
     @terrainImage.src = "/dtm?box=#{[@bounds.min.x, @bounds.max.y, @bounds.max.x, @bounds.min.y].join(',')}&outsize=#{@pxWidth},#{@pxHeight}"
     @mapImage = new Image()
+    @mapImage.onload = onload
     @mapImage.src = "/map?box=#{[@bounds.min.x, @bounds.max.y, @bounds.max.x, @bounds.min.y].join(',')}&outsize=#{@pxWidth*MAP_SCALE},#{@pxHeight*MAP_SCALE}"
   meterHeight: ->
     Math.abs(@bounds.max.y-@bounds.min.y)
@@ -54,26 +57,37 @@ class TerrainTile
     meterSelectionToPixelBounds(selection, @bounds, @resolution, MAP_SCALE)
 
 class TerrainStreamer
-  constructor: (@pxWidth) ->
+  # pxWidth is the amount of pixels along one side of the terrain image. The terrain will be square.
+  # The map will be loaded in a higher resolution as dictated by the MAP_SCALE 'constant'.
+  # Optionally a function may be provided that will be called whenever the output bitmaps are updated.
+  constructor: (@pxWidth, @onupdate = null) ->
     @pxHeight = @pxWidth
+    # The canvas where the terrain will be updated
     @terrain = document.createElement("canvas")
     @terrain.width =  @pxWidth
     @terrain.height = @pxWidth
     @terrainCtx = @terrain.getContext('2d')
+    # The canvas where the corresponding map will be output
     @map = document.createElement("canvas")
     @map.width = @pxWidth*MAP_SCALE
     @map.height = @pxWidth*MAP_SCALE
     @mapCtx = @map.getContext('2d')
+    # A cache of loaded tiles of terrain and map data
     @tiles = []
+    # This variable will contain a Leaflet.Bounds-instance specifying the area the streamer should attempt
+    # to represent.
     @bounds = null
+  # Loads data for the provided bounds using a bitmap with 'width' pixels horizontally.
   load: (bounds, width) ->
-    console.log "load", arguments
-    @tiles.push(new TerrainTile(bounds, width))
+    @tiles.push(new TerrainTile(bounds, width, (=> @update())))
     @purgeCache()
+  # Purges the cache of old tiles
   purgeCache: ->
     # A naïve purging strategy for now. Just throw away the older tiles
     while @tiles.length > TILE_CACHE_LIMIT
       @tiles.shift()
+  # Fetches the relevant tiles for the current @bounds area. Sorts them according to resolution from coarse
+  # to fine.
   relevantTiles: ->
     result = []
     return result unless @bounds?
@@ -84,6 +98,7 @@ class TerrainStreamer
     result.sort (a, b) ->
       a.resolution - b.resolution
     result
+  # Draws a given tile scaled and positioned correctly into the output canvases
   drawTile: (tile) ->
     return unless @bounds?
     # Determine what area of the tile overlaps the current target bounds
@@ -109,34 +124,45 @@ class TerrainStreamer
     # We will return the effective resolution even if the tile was not actually loaded yet. Even if that resolution is only incoming
     # we will consider it present in the system.
     effectiveResolution
+  # Loads a tile covering the current @bounds-area. An areaFactor of 1.0 loads exactly that area. An areaFactor of 3.0 will load
+  # three times as much data around the area to allow for scrubbing. Similarly a scaleFactor of 1.0 loads the area in the exact
+  # resolution required to display at current scale. A factor of 1.3 will allow the user to zoom 30% before needing to load more
+  # data.
   loadExtended: (areaFactor, scaleFactor) ->
-    areaFactor -= 2.0
+    f = (areaFactor-1.0)/2
     size = @bounds.getSize()
     newBounds =
       new L.Bounds([
-          [@bounds.min.x-size.x*areaFactor, @bounds.min.y-size.y*areaFactor],
-          [@bounds.max.x+size.x*areaFactor, @bounds.max.y+size.y*areaFactor]
+          [@bounds.min.x-size.x*f, @bounds.min.y-size.y*f],
+          [@bounds.max.x+size.x*f, @bounds.max.y+size.y*f]
         ])
-    # Load the area with 30% extra pixels to allow for some resizing too
-    @load(newBounds, Math.floor(@pxWidth*3*scaleFactor))
-
-  update: (bounds) ->
+    @load(newBounds, Math.floor(@pxWidth*scaleFactor*areaFactor))
+  setBounds: (bounds) ->
+    @bounds = bounds
+    @update()
+  # Call this to allow the streamer to update its output canvases and load more data as needed
+  update: ->
+    # Clear ouptut canvases
     @terrainCtx.clearRect(0,0,@pxWidth,@pxWidth)
-    @mapCtx.clearRect(0,0,@pxWidth*MAP_SCALE,@pxWidth*MAP_SCALE)
+    @mapCtx.fillStyle = "#aaa"
+    @mapCtx.fillRect(0,0,@pxWidth*MAP_SCALE,@pxWidth*MAP_SCALE)
     @bounds = bounds if bounds?
-    resolution = 0
-    for tile in @relevantTiles()
-      effectiveResolution = @drawTile(tile)
-      # We keep track of the effective resolution of the highest resolution tile that covers the whole area
-      if tile.bounds.contains(@bounds)
-        resolution = effectiveResolution
-        break if resolution >= 1.0
-    # If there is no data at all, we need to load a new atlas area
-    unless resolution >= 0.05
-      @loadExtended(30.0, 1.3)
-    # If the effective resolution is anything less than full, we will order some more data from the server allowing for
-    # some scrolling and resizing
-    unless resolution >= 1.0
-      @loadExtended(3.0, 1.3)
+    if @bounds?
+      # This variable keeps track of the best resolution we had covering the entire output region
+      resolution = 0
+      for tile in @relevantTiles()
+        effectiveResolution = @drawTile(tile)
+        # We keep track of the effective resolution of the highest resolution tile that covers the whole area
+        if tile.bounds.contains(@bounds)
+          resolution = effectiveResolution
+          break if resolution >= 1.0
+      # If there is no coarse data to provide adequate preview, we need to load a new atlas area
+      unless resolution >= 0.05
+        @loadExtended(30.0, 0.3)
+      # If the effective resolution is anything less than full, we will order some more data from the server allowing for
+      # some scrolling and resizing
+      unless resolution >= 1.0
+        @loadExtended(3.0, 1.3)
+    @onupdate() if @onupdate
 
 module.exports = TerrainStreamer

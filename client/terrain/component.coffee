@@ -1,5 +1,6 @@
-THREE = require "three"
+# The interface between the DOM and the Terrain-rendering stack.
 
+THREE = require "three"
 TerrainScene = require('./scene.coffee')
 
 class TerrainComponent
