@@ -41,7 +41,6 @@ class TerrainObject extends THREE.Object3D
     # @t = 0.0
 
   show: (nwPoint, sePoint) ->
-    console.log arguments
     @streamer.update(new L.Bounds(nwPoint, sePoint))
 
   tick: ->
