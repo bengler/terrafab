@@ -99,20 +99,30 @@ class TerrainBuilder
     @buildBase()
 
   # Applies the elevation data to the mesh by reading the red-component from the pixels in the
-  # canvas.
+  # canvas. image may be either a canvas, a DOM image, or a TerrainRawRez-instance. The provided
+  # image _must_ have the same aspect ratio as the terrain model, or there will be glitches.
   applyElevation: (image, options = {}) ->
     # Make sure we have a geometry to elevate
     @buildGeometry() unless @geom?
-    # Clear the scratch canvas
-    @ctx.clearRect(0, 0, @width, @height)
-    # Scale the provided image to the target canvas size
-    @ctx.drawImage(image, 0, 0, @width, @height) if image?
-    # Get the image data as raw binary
-    pixels = @ctx.getImageData(0, 0, @width, @height).data
-    # Use the values in each pixel to calculate an altitude for each terrain vertex and place it
-    for n in [0...(@width*@height)]
-      value = pixels[n*4]
-      @geom.vertices[n].y = value*(options.zScale||1.0)*@xyScale
+    if image? && image.getSample?
+      # This is a TerrainRawRez object
+      for y in [0...@height]
+        for x in [0...@width]
+          value = image.getSample(x,y) || 0
+          console.log value if x == 0 && y == 0
+          @geom.vertices[x+y*@width].y = value*(options.zScale||1.0)*@xyScale
+    else
+      # This is an image
+      # Clear the scratch canvas
+      @ctx.clearRect(0, 0, @width, @height)
+      # Scale the provided image to the target canvas size
+      @ctx.drawImage(image, 0, 0, @width, @height) if image?
+      # Get the image data as raw binary
+      pixels = @ctx.getImageData(0, 0, @width, @height).data
+      # Use the values in each pixel to calculate an altitude for each terrain vertex and place it
+      for n in [0...(@width*@height)]
+        value = pixels[n*4]
+        @geom.vertices[n].y = value*(options.zScale||1.0)*@xyScale
     # These are required steps to make sure the mesh renders correctly
     @geom.computeFaceNormals()
     @geom.computeVertexNormals()

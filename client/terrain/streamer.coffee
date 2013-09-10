@@ -56,6 +56,28 @@ class TerrainTile
   meterSelectionToMapPixelBounds: (selection) ->
     meterSelectionToPixelBounds(selection, @bounds, @resolution, MAP_SCALE)
 
+class TerrainRawRez
+  constructor: (@bounds, @pxWidth, onload = null) ->
+    console.log "Getting!"
+    size = @bounds.getSize()
+    @pxHeight = Math.round(@pxWidth/size.x*size.y)
+    req = new XMLHttpRequest()
+    req.responseType = 'arraybuffer'
+    req.open('GET', "/dtm?box=#{[@bounds.min.x, @bounds.max.y, @bounds.max.x, @bounds.min.y].join(',')}&outsize=#{@pxWidth},#{@pxHeight}&format=bin", true)
+    req.onload = (event) =>
+      arrayBuffer = req.response
+      window.ab = arrayBuffer
+      console.log arrayBuffer.length
+      if arrayBuffer
+        @data = new Uint16Array(arrayBuffer)
+        console.log @data.length
+      onload() if onload?
+    req.send(null)
+  isLoaded: ->
+    @data?
+  getSample: (x,y) ->
+    @data[x+y*@pxWidth]
+
 class TerrainStreamer
   # pxWidth is the amount of pixels along one side of the terrain image. The terrain will be square.
   # The map will be loaded in a higher resolution as dictated by the MAP_SCALE 'constant'.
@@ -77,15 +99,18 @@ class TerrainStreamer
     # This variable will contain a Leaflet.Bounds-instance specifying the area the streamer should attempt
     # to represent.
     @bounds = null
+
   # Loads data for the provided bounds using a bitmap with 'width' pixels horizontally.
   load: (bounds, width) ->
     @tiles.push(new TerrainTile(bounds, width, (=> @update())))
     @purgeCache()
+
   # Purges the cache of old tiles
   purgeCache: ->
     # A naïve purging strategy for now. Just throw away the older tiles
     while @tiles.length > TILE_CACHE_LIMIT
       @tiles.shift()
+
   # Fetches the relevant tiles for the current @bounds area. Sorts them according to resolution from coarse
   # to fine.
   relevantTiles: ->
@@ -98,6 +123,7 @@ class TerrainStreamer
     result.sort (a, b) ->
       a.resolution - b.resolution
     result
+
   # Draws a given tile scaled and positioned correctly into the output canvases
   drawTile: (tile) ->
     return unless @bounds?
@@ -124,6 +150,7 @@ class TerrainStreamer
     # We will return the effective resolution even if the tile was not actually loaded yet. Even if that resolution is only incoming
     # we will consider it present in the system.
     effectiveResolution
+
   # Loads a tile covering the current @bounds-area. An areaFactor of 1.0 loads exactly that area. An areaFactor of 3.0 will load
   # three times as much data around the area to allow for scrubbing. Similarly a scaleFactor of 1.0 loads the area in the exact
   # resolution required to display at current scale. A factor of 1.3 will allow the user to zoom 30% before needing to load more
@@ -137,10 +164,25 @@ class TerrainStreamer
           [@bounds.max.x+size.x*f, @bounds.max.y+size.y*f]
         ])
     @load(newBounds, Math.floor(@pxWidth*scaleFactor*areaFactor))
+
+  # "RawResolution" means the landscape in the current @bounds in full 16 bit resolution
+  resetRawRez: ->
+    @rawRez = null
+    clearTimeout(@rawRezTimer)
+    @rawRezTimer = setTimeout((=> @loadRawRez()), 2300)
+  loadRawRez: ->
+    @rawRez = new TerrainRawRez @bounds, @pxWidth, =>
+      @onupdate() if @onupdate?
+  hasRawRez: ->
+    console.log @rawRez?, if @rawRez? then @rawRez.isLoaded()
+    @rawRez? && @rawRez.isLoaded()
+  # Call this to change what area the streamer is showing
   setBounds: (bounds) ->
     @bounds = bounds
     @update()
-  # Call this to allow the streamer to update its output canvases and load more data as needed
+    @resetRawRez()
+
+  # Called when new data arrive or bounds are updated to redraw map and terrain
   update: ->
     # Clear ouptut canvases
     @terrainCtx.clearRect(0,0,@pxWidth,@pxWidth)
