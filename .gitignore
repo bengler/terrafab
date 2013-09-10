@@ -7,7 +7,7 @@ lib-cov
 *.out
 *.pid
 *.gz
-
+config/app.json
 npm-debug.log
 node_modules
 public/stylesheets/*.css
