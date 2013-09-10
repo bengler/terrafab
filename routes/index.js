@@ -78,7 +78,7 @@ exports.dtm = function(req, res){
     // Generate file
     exec(command, function (err, stdout, stderr) {
         if (err) {
-          if(stderr && stderr.substring(
+          if(stderr && stderr.indexOf(
             'Computed -srcwin falls outside raster size') !== -1
           ) {
             res.writeHead(404);
