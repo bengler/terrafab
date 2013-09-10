@@ -27,8 +27,7 @@ $ ->
   crs = new L.Proj.CRS('EPSG:32633',
       '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs',
       {
-        resolutions: resolutions,
-        # transformation:  new L.Transformation(1, -4200000, -1, -2000000)
+        resolutions: resolutions
       }
     )
 
@@ -60,9 +59,13 @@ $ ->
     zoom: zoom
   });
   rectangle_editor.addTo(map)
+  map.fitBounds(rectangle_editor.getMarkerBounds())
 
   syncTerrainWithSelector = ->
-    terrain.show(crs.project(rectangle_editor.getMarkerBounds()[0].getNorthWest()), crs.project(rectangle_editor.getMarkerBounds()[0].getSouthEast()))
+    terrain.show(
+      crs.project(rectangle_editor.getMarkerBounds()[0].getNorthWest()),
+      crs.project(rectangle_editor.getMarkerBounds()[0].getSouthEast())
+    )
 
   rectangle_editor.on 'change', (event) ->
     syncTerrainWithSelector()
