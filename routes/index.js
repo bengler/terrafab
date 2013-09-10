@@ -42,7 +42,7 @@ exports.dtm = function(req, res){
       out_extension  = "bin";
       out_format = "ENVI";
       out_type = "UInt16";
-      scale = "0 10000";
+      scale = "0 2469 0 32767";
       out_content_type = {'Content-Type': 'application/octet-stream' };
       break;
     default:
@@ -105,7 +105,7 @@ exports.map = function(req, res){
   }
 
   // Set up system command
-  var png_file = config.tmpFilePath+"/"+helpers.fileHash("mapbox_"+box.join("_")+outsize.join('_'));
+  var png_file = config.tmpFilePath+"/"+helpers.fileHash("mapbox_"+box.join("_")+outsize.join('_'), "png");
   var command = "bash -c '"+config.mapboxScript+" -i "+config.mapnikFile+" -o "+png_file+" --outsize "+outsize.join(',')+" --box "+box.join(',')+"'";
   if(config.cacheImages && fs.existsSync(png_file)) {
     // Output cached file
