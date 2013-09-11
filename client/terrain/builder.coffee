@@ -56,7 +56,7 @@ class TerrainBuilder
       @terrainCoordinateToVector(xMax, yMax)   # NE
     ]
     # Place all the base vertices a little bit below the water line
-    vertex.y = -30 for vertex in vertices
+    vertex.y = -15 for vertex in vertices
     # Remember the index of the first bottom vertex
     index = @geom.vertices.length
     # Append the vertices to the geometry
@@ -98,6 +98,15 @@ class TerrainBuilder
     @buildTerrainMesh();
     @buildBase()
 
+  # Moves all terrain points down so that the lowest point is at y == 0.0
+  eliminateBias: ->
+    min = 9999999.0
+    for n in [0...(@width*@height)]
+      value = @geom.vertices[n].y
+      min = value if value < min
+    for n in [0...(@width*@height)]
+      @geom.vertices[n].y -= min
+
   # Applies the elevation data to the mesh by reading the red-component from the pixels in the
   # canvas. image may be either a canvas, a DOM image, or a TerrainRawRez-instance. The provided
   # image _must_ have the same aspect ratio as the terrain model, or there will be glitches.
@@ -122,10 +131,13 @@ class TerrainBuilder
       for n in [0...(@width*@height)]
         value = pixels[n*4]
         @geom.vertices[n].y = value*(options.zScale||1.0)*@xyScale
+    @eliminateBias()
     # These are required steps to make sure the mesh renders correctly
     @geom.computeFaceNormals()
     @geom.computeVertexNormals()
     @geom.verticesNeedUpdate = true
     @geom.normalsNeedUpdate = true
+    @geom.computeBoundingSphere()
+    console.log  @geom.boundingSphere.radius
 
 module.exports = TerrainBuilder

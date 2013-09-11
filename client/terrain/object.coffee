@@ -33,7 +33,7 @@ class TerrainObject extends THREE.Object3D
     @material = new THREE.MeshFaceMaterial([
       @textureMaterial
       new THREE.MeshLambertMaterial
-        color: 0xffdddd
+        color: 0xeeeeee
         shading: THREE.FlatShading
     ])
     # The mesh for the terrain
