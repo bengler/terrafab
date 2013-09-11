@@ -40,6 +40,22 @@ class TerrainObject extends THREE.Object3D
     @mesh = new THREE.Mesh(@builder.geom, @material)
     @add(@mesh)
 
+    # A material for square drop shadows
+    shadowMaterial = new THREE.MeshLambertMaterial
+      map: new THREE.ImageUtils.loadTexture("/images/dropshadow.png")
+      shading: THREE.FlatShading
+      transparent: true
+      opacity: 0.3
+    # A mesh to put the drop shadow on, below the landscape
+    shadow = new THREE.Mesh(new THREE.PlaneGeometry(220, 220, 1, 1), shadowMaterial)
+    # Place it below
+    shadow.position.y = -25
+    # Turn it on its side
+    shadow.rotation.x = -Math.PI/2
+    # Add to scene
+    @add(shadow)
+
+
   # Called by the client when it wants to update which area is being watched.
   # Currently the area is forced to become square
   show: (nwPoint, sePoint) ->

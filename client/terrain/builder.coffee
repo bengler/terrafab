@@ -138,6 +138,5 @@ class TerrainBuilder
     @geom.verticesNeedUpdate = true
     @geom.normalsNeedUpdate = true
     @geom.computeBoundingSphere()
-    console.log  @geom.boundingSphere.radius
 
 module.exports = TerrainBuilder
