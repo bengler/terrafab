@@ -41,9 +41,16 @@ class TerrainObject extends THREE.Object3D
     @add(@mesh)
 
   # Called by the client when it wants to update which area is being watched.
-  # Currently the area _must_ be a _square_ block of UTM33.
+  # Currently the area is forced to become square
   show: (nwPoint, sePoint) ->
-    @streamer.setBounds(new L.Bounds(nwPoint, sePoint))
+    area = new L.Bounds(nwPoint, sePoint)
+    center = area.getCenter()
+    size = area.getSize()
+    halfside = (size.x+size.y)/4
+    @streamer.setBounds(new L.Bounds(
+        [center.x-halfside, center.y-halfside],
+        [center.x+halfside, center.y+halfside]
+      ))
 
   terrainUpdateHandler: ->
     @textureMaterial.map.needsUpdate = true
