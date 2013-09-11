@@ -32,7 +32,14 @@ $ ->
     )
 
   zoom = 15
-  if localStorage and localStorage.getItem('rectangle')
+
+  # Restore map from either hash or localstorage
+  if location.hash
+    rectangle = decodeURIComponent(location.hash).substring(1,location.hash.length).split(',')
+    rectangle = [[rectangle[0],rectangle[1]],[rectangle[2], rectangle[3]]]
+    rectangle_editor = new L.RectangleEditor(rectangle)
+    zoom = localStorage.getItem('zoom') || zoom
+  else if localStorage and localStorage.getItem('rectangle')
     rectangle = JSON.parse(localStorage.getItem('rectangle'))
     rectangle_editor = new L.RectangleEditor([[rectangle._southWest.lat, rectangle._southWest.lng],[rectangle._northEast.lat, rectangle._northEast.lng]])
     zoom = localStorage.getItem('zoom') || zoom
@@ -72,6 +79,10 @@ $ ->
     if localStorage
       localStorage.setItem('rectangle', JSON.stringify(event.bounds))
       localStorage.setItem('zoom', map.getZoom())
+    window.location.hash =  encodeURIComponent([
+        [event.bounds._northEast.lat, event.bounds._northEast.lng],
+        [event.bounds._southWest.lat, event.bounds._southWest.lng]
+      ])
 
   canvas = $('canvas#terrain')[0]
   if false && canvas?
