@@ -8,7 +8,7 @@ $ = require('jquery')
 L = require('leaflet')
 
 # What does the maximum value of terrain data represent in meters when using 8 bit terrain data?
-OUT_RANGE = 2404
+OUT_RANGE = 2469
 
 # The number of samples per dimension of the terrain model
 SAMPLES_PER_SIDE = 200
