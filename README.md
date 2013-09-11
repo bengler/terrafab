@@ -26,6 +26,10 @@ Renders a UTM 33 terrain model for a given bound (box).
 
 ```outsize``` : The image dimensions in pixels given as 'X,Y'.
 
+
+```format``` (optional): Either 'png' or 'bin' (16bit binary in ENVI-format).
+
+
 #### Example
 ```
 /dtm?box=253723.176600653,6660500.4670516,267723.176600653,6646500.4670516&outsize=1000,1000
@@ -33,7 +37,7 @@ Renders a UTM 33 terrain model for a given bound (box).
 
 ### /map
 
-Renders a UTM 33 map for a given bound (box).
+Renders a UTM 33 map tile for a given bound (box).
 
 #### Params
 ```box``` : A bounding box for the map given in UTM 33 coordinates given as 'NWx,NWy,SEx,SEy'.
