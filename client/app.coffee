@@ -1,39 +1,24 @@
-config = require("../config/app.json")
-
-leaflet = require("leaflet")
+config = require('../config/app.json')
 
 localStorage = require('localStorage')
-
-require("./rectangle_editor")
-require("./ext_js/proj4js-compressed.js")
-require("./ext_js/proj4leaflet.js")
-
+Map = require('./map.coffee')
 Terrain = require('./terrain')
 TerrainStreamer = require('./terrain/streamer.coffee')
 
-$ = require("jquery")
+$ = require('jquery')
 
 $ ->
 
-  resolutions = [
-    5545984, 2772992, 1386496, 693248,
-    346624, 173312, 86656, 43328,
-    21664, 10832, 5416, 2708,
-    1354, 677, 338.5,
-    169.25, 84.625, 42.3125, 21.15625,
-    10.578125, 5.2890625, 1
-  ];
+  $('#locations').on('change', (e) ->
+    location.hash = $('#locations option:selected').val()
+    location.reload()
+  )
+  if location.hash
+    $('#locations option[value="'+location.hash+'"]').attr('selected', 'selected')
 
-  crs = new L.Proj.CRS('EPSG:32633',
-      '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs',
-      {
-        resolutions: resolutions
-      }
-    )
-
+  # Restore map from either location hash or localstorage
+  rectangle = null
   zoom = 15
-
-  # Restore map from either hash or localstorage
   if location.hash
     rectangle = decodeURIComponent(location.hash).substring(1,location.hash.length).split(',')
     rectangle = [[rectangle[0],rectangle[1]],[rectangle[2], rectangle[3]]]
@@ -44,37 +29,24 @@ $ ->
     rectangle_editor = new L.RectangleEditor([[rectangle._southWest.lat, rectangle._southWest.lng],[rectangle._northEast.lat, rectangle._northEast.lng]])
     zoom = localStorage.getItem('zoom') || zoom
   else
-    rectangle_editor = new L.RectangleEditor([[67.177414,15.212889],[67.035306,15.674314]])
-  rectangle_editor.crs = crs;
+    location.hash = "#67.31285290844802%2C14.441993143622962%2C67.25053169095976%2C14.2774269944074"
+    location.reload()
 
-  map = new L.Map('map', {
-    crs: crs,
-    scale: (zoom) ->
-        return 1 / resolutions[zoom]
-    ,
-    layers: [
-      new L.TileLayer(config.tilesUrl, {
-        attribution: "N50 UTM33 (Bengler)",
-        minZoom: 1,
-        maxZoom: resolutions.length-1,
-        continuousWorld: true,
-        worldCopyJump: false,
-        noWrap: true
-      })
-    ],
-    center: [67.098449,15.449095],
-    zoom: zoom
-  });
-  rectangle_editor.addTo(map)
-  setTimeout((-> map.fitBounds(rectangle_editor.getMarkerBounds())), 1)
+  map = new Map(config.tilesUrl, {
+      attribution: "N50 UTM33 (Bengler)",
+      zoom: zoom,
+      rectangleEditor: rectangle_editor
+    }
+  )
 
   syncTerrainWithSelector = ->
     terrain.show(
-      crs.project(rectangle_editor.getMarkerBounds()[0].getNorthWest()),
-      crs.project(rectangle_editor.getMarkerBounds()[0].getSouthEast())
+      map.crs.project(rectangle_editor.getMarkerBounds()[0].getNorthWest()),
+      map.crs.project(rectangle_editor.getMarkerBounds()[0].getSouthEast())
     )
 
-  rectangle_editor.on 'change', (event) ->
+
+  map.on 'change', (event) ->
     syncTerrainWithSelector()
     if localStorage
       localStorage.setItem('rectangle', JSON.stringify(event.bounds))
@@ -94,4 +66,3 @@ $ ->
   terrain = new Terrain(canvas)
   terrain.run()
   syncTerrainWithSelector()
-
