@@ -29,7 +29,7 @@ meterSelectionToPixelBounds = (selection, bounds, pixelsPerMeter, scale) ->
   ])
 
 # How many times higher resolutions should the maps have in relation to the terrain pxWidth
-MAP_SCALE = 1
+MAP_SCALE = 2
 
 # How many tiles should we keep in the cache
 TILE_CACHE_LIMIT = 40
