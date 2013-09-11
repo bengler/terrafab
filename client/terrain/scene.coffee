@@ -14,7 +14,6 @@ class TerrainScene extends THREE.Scene
     @camera.lookAt(new THREE.Vector3(0,-100,0))
 
     @terrain = new TerrainObject()
-    console.log @terrain
     @terrain.position.y = -120
     @add(@terrain)
 

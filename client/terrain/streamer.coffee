@@ -58,7 +58,6 @@ class TerrainTile
 
 class TerrainRawRez
   constructor: (@bounds, @pxWidth, onload = null) ->
-    console.log "Getting!"
     size = @bounds.getSize()
     @pxHeight = Math.round(@pxWidth/size.x*size.y)
     req = new XMLHttpRequest()
@@ -67,10 +66,8 @@ class TerrainRawRez
     req.onload = (event) =>
       arrayBuffer = req.response
       window.ab = arrayBuffer
-      console.log arrayBuffer.length
       if arrayBuffer
         @data = new Uint16Array(arrayBuffer)
-        console.log @data.length
       onload() if onload?
     req.send(null)
   isLoaded: ->
@@ -174,7 +171,6 @@ class TerrainStreamer
     @rawRez = new TerrainRawRez @bounds, @pxWidth, =>
       @onupdate() if @onupdate?
   hasRawRez: ->
-    console.log @rawRez?, if @rawRez? then @rawRez.isLoaded()
     @rawRez? && @rawRez.isLoaded()
 
   # Call this to change what area the streamer is showing

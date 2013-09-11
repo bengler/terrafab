@@ -109,7 +109,6 @@ class TerrainBuilder
       for y in [0...@height]
         for x in [0...@width]
           value = image.getSample(x,y) || 0
-          console.log value if x == 0 && y == 0
           @geom.vertices[x+y*@width].y = value*(options.zScale||1.0)*@xyScale
     else
       # This is an image
