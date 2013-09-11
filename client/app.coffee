@@ -32,7 +32,7 @@ $ ->
     )
 
   zoom = 15
-  if localStorage
+  if localStorage and localStorage.getItem('rectangle')
     rectangle = JSON.parse(localStorage.getItem('rectangle'))
     rectangle_editor = new L.RectangleEditor([[rectangle._southWest.lat, rectangle._southWest.lng],[rectangle._northEast.lat, rectangle._northEast.lng]])
     zoom = localStorage.getItem('zoom') || zoom
