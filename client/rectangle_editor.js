@@ -32,6 +32,7 @@ L.RectangleEditor = L.Rectangle.extend ({
     this.markers = this.createMarkers();
     this._dragMarker = this.createDragMarker(this.getBounds().getCenter());
     this._dragMarker.on('drag', this._onDragMarkerDrag, this)
+    this._dragMarker.on('dragend', this._onDragEnd, this)
     var allLayers = Object.keys(this.markers).map(function(k) { return this.markers[k]}, this).concat([this._dragMarker]);
     var markerGroup = new L.LayerGroup(allLayers);
     map.addLayer(markerGroup)
@@ -122,9 +123,12 @@ L.RectangleEditor = L.Rectangle.extend ({
   },
   _onMarkerDrag: function (e) {
     var marker = e.target;
-    this.extendTo(marker)
-    this.setBounds(this.getMarkerBounds())
+    this.extendTo(marker);
+    this.setBounds(this.getMarkerBounds());
     this.redraw();
+  },
+  _onDragEnd: function (e) {
+    this.fire('dragend', {bounds: this.getMarkerBounds()[0]})
   },
   setCenterLatLng: function(latLng) {
     var ne = this.markers.ne.getLatLng()
@@ -142,6 +146,14 @@ L.RectangleEditor = L.Rectangle.extend ({
   _onDragMarkerDrag: function (e) {
     this.setCenterLatLng(e.target.getLatLng())
     this.redraw();
+  },
+
+  tearDown: function() {
+    this._map.removeLayer(this.markers.sw);
+    this._map.removeLayer(this.markers.se);
+    this._map.removeLayer(this.markers.nw);
+    this._map.removeLayer(this.markers.ne);
+    this._map.removeLayer(this._dragMarker);
   }
 
 });

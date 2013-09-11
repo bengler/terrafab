@@ -9,28 +9,35 @@ $ = require('jquery')
 
 $ ->
 
+  should_refresh = true
+
+  hashToProjection = (hash) ->
+    projection = {}
+    uncoded = decodeURIComponent(hash)
+    rectangle = uncoded.split('|')[0].substring(1,hash.length).split(',')
+    projection.rectangle = [[rectangle[0],rectangle[1]],[rectangle[2], rectangle[3]]]
+    projection.zoom = uncoded.split('|')[1]
+    projection
+
+  $(window).on('hashchange', ->
+    if should_refresh
+      map.project(hashToProjection(location.hash))
+      syncTerrainWithSelector()
+      $('#locations option[value="'+location.hash+'"]').attr('selected', 'selected')
+  )
+
   $('#locations').on('change', (e) ->
     location.hash = $('#locations option:selected').val()
-    location.reload()
   )
-  if location.hash
-    $('#locations option[value="'+location.hash+'"]').attr('selected', 'selected')
 
   # Restore map from either location hash or localstorage
-  rectangle = null
-  zoom = 15
   if location.hash
-    rectangle = decodeURIComponent(location.hash).substring(1,location.hash.length).split(',')
-    rectangle = [[rectangle[0],rectangle[1]],[rectangle[2], rectangle[3]]]
-    rectangle_editor = new L.RectangleEditor(rectangle)
-    zoom = localStorage.getItem('zoom') || zoom
+    rectangle_editor = new L.RectangleEditor(hashToProjection(location.hash).rectangle)
+    zoom = hashToProjection(location.hash).zoom
   else if localStorage and localStorage.getItem('rectangle')
     rectangle = JSON.parse(localStorage.getItem('rectangle'))
     rectangle_editor = new L.RectangleEditor([[rectangle._southWest.lat, rectangle._southWest.lng],[rectangle._northEast.lat, rectangle._northEast.lng]])
-    zoom = localStorage.getItem('zoom') || zoom
-  else
-    location.hash = "#67.31285290844802%2C14.441993143622962%2C67.25053169095976%2C14.2774269944074"
-    location.reload()
+    zoom = localStorage.getItem('zoom')
 
   map = new Map(config.tilesUrl, {
       attribution: "N50 UTM33 (Bengler)",
@@ -41,20 +48,20 @@ $ ->
 
   syncTerrainWithSelector = ->
     terrain.show(
-      map.crs.project(rectangle_editor.getMarkerBounds()[0].getNorthWest()),
-      map.crs.project(rectangle_editor.getMarkerBounds()[0].getSouthEast())
+      map.crs.project(map.rectangleEditor.getMarkerBounds()[0].getNorthWest()),
+      map.crs.project(map.rectangleEditor.getMarkerBounds()[0].getSouthEast())
     )
-
+    map.rectangleEditor.on 'dragend', (event) ->
+      location.hash = encodeURIComponent([
+          [event.bounds._northEast.lat, event.bounds._northEast.lng],
+          [event.bounds._southWest.lat, event.bounds._southWest.lng]
+        ])+'|'+map.getZoom()
 
   map.on 'change', (event) ->
     syncTerrainWithSelector()
     if localStorage
       localStorage.setItem('rectangle', JSON.stringify(event.bounds))
       localStorage.setItem('zoom', map.getZoom())
-    window.location.hash =  encodeURIComponent([
-        [event.bounds._northEast.lat, event.bounds._northEast.lng],
-        [event.bounds._southWest.lat, event.bounds._southWest.lng]
-      ])
 
   canvas = $('canvas#terrain')[0]
   if false && canvas?
