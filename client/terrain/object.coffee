@@ -46,7 +46,6 @@ class TerrainObject extends THREE.Object3D
     @streamer.setBounds(new L.Bounds(nwPoint, sePoint))
 
   terrainUpdateHandler: ->
-    console.log "Update"
     @textureMaterial.map.needsUpdate = true
     if @streamer.hasRawRez()
       @builder.applyElevation(@streamer.rawRez, zScale: @terrainZScale(32767, OUT_RANGE))

@@ -169,13 +169,14 @@ class TerrainStreamer
   resetRawRez: ->
     @rawRez = null
     clearTimeout(@rawRezTimer)
-    @rawRezTimer = setTimeout((=> @loadRawRez()), 2300)
+    @rawRezTimer = setTimeout((=> @loadRawRez()), 1700)
   loadRawRez: ->
     @rawRez = new TerrainRawRez @bounds, @pxWidth, =>
       @onupdate() if @onupdate?
   hasRawRez: ->
     console.log @rawRez?, if @rawRez? then @rawRez.isLoaded()
     @rawRez? && @rawRez.isLoaded()
+
   # Call this to change what area the streamer is showing
   setBounds: (bounds) ->
     @bounds = bounds
