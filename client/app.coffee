@@ -66,11 +66,12 @@ $ ->
       crs.project(rectangle_editor.getMarkerBounds()[0].getNorthWest()),
       crs.project(rectangle_editor.getMarkerBounds()[0].getSouthEast())
     )
-    rectangle_editor.on 'change', (event) ->
-      syncTerrainWithSelector()
-      if localStorage
-        localStorage.setItem('rectangle', JSON.stringify(event.bounds))
-        localStorage.setItem('zoom', map.getZoom())
+
+  rectangle_editor.on 'change', (event) ->
+    syncTerrainWithSelector()
+    if localStorage
+      localStorage.setItem('rectangle', JSON.stringify(event.bounds))
+      localStorage.setItem('zoom', map.getZoom())
 
   canvas = $('canvas#terrain')[0]
   if false && canvas?
