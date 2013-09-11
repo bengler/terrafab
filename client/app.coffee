@@ -59,7 +59,7 @@ $ ->
     zoom: zoom
   });
   rectangle_editor.addTo(map)
-  map.fitBounds(rectangle_editor.getMarkerBounds()) if rectangle
+  setTimeout((-> map.fitBounds(rectangle_editor.getMarkerBounds())), 1)
 
   syncTerrainWithSelector = ->
     terrain.show(
