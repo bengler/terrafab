@@ -911,6 +911,10 @@
     "localStorage": {
       "version": "1.0.2",
       "from": "localStorage@*"
+    },
+    "events": {
+      "version": "0.5.0",
+      "from": "events@*"
     }
   }
 }

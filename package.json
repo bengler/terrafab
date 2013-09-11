@@ -28,6 +28,7 @@
     "leaflet": "~0.6.4",
     "jquery": "git://github.com/bjoerge/jquery-node",
     "request": "*",
-    "localStorage": "*"
+    "localStorage": "*",
+    "events": "*"
   }
 }
