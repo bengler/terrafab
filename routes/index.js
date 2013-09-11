@@ -49,6 +49,7 @@ exports.dtm = function(req, res){
       out_format = "ENVI";
       out_type = "UInt16";
       out_scale = "0 2469 0 32767";
+      out_options = null
       out_content_type = {'Content-Type': 'application/octet-stream'};
       break;
     default:
@@ -56,6 +57,7 @@ exports.dtm = function(req, res){
       out_format = "PNG";
       out_type = "Byte";
       out_scale = "0 2469 0 255";
+      out_options = null;
       out_content_type = {'Content-Type': 'image/png'};
   }
   // Set up gdal_translate command
@@ -65,13 +67,16 @@ exports.dtm = function(req, res){
         "dtm_"+box.join("_")+outsize.join('_'), out_extension);
 
   var command = "bash -c '" +
-      "gdal_translate -q -scale " + out_scale +
+      "gdal_translate -q" +
+        " -scale " + out_scale +
         " -ot " + out_type +
+        (out_options ? " -co " + out_options + " " : "") +
         " -of " + out_format +
         " -outsize " + outsize[0] + " " + outsize[1] +
         " -projwin " + box.join(', ') +
         " " + dtm_file + " " + out_file +
     "'";
+  console.log("Running command:" + command);
 
   // Output cached file if exists
   if(config.files.cache && fs.existsSync(out_file)) {
