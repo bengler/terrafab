@@ -9,7 +9,11 @@ request = require('request');
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Hello Terra!', version: require("../package.json").version });
+  res.render('index', {
+      title: 'Hello Terra!',
+      version: require("../package.json").version
+    }
+  );
 };
 
 
@@ -45,14 +49,14 @@ exports.dtm = function(req, res){
       out_format = "ENVI";
       out_type = "UInt16";
       out_scale = "0 2469 0 32767";
-      out_content_type = {'Content-Type': 'application/octet-stream' };
+      out_content_type = {'Content-Type': 'application/octet-stream'};
       break;
     default:
       out_extension  = "png";
       out_format = "PNG";
       out_type = "Byte";
       out_scale = "0 2469 0 255";
-      out_content_type = {'Content-Type': 'image/png' };
+      out_content_type = {'Content-Type': 'image/png'};
   }
   // Set up gdal_translate command
   var out_file = config.files.tmpPath +
@@ -78,10 +82,11 @@ exports.dtm = function(req, res){
     // Generate file
     exec(command, function (err, stdout, stderr) {
         if (err) {
-          if(stderr && stderr.match('Computed -srcwin falls outside raster size')) {
-            res.writeHead(404);
-            res.end(stderr);
-            return;
+          if(stderr && stderr.match(
+            'Computed -srcwin falls outside raster size')) {
+              res.writeHead(404);
+              res.end(stderr);
+              return;
           }
           console.error(err);
           request.get(config.imageUrl+req.url).pipe(res);
@@ -117,15 +122,21 @@ exports.map = function(req, res){
   if(!helpers.numericParams(outsize.concat(box), res)) {
     return;
   }
-  var content_type = {'Content-Type': 'image/png' };
+
+  var content_type = {'Content-Type': 'image/png'};
+  var png_file = config.files.tmpPath+"/" +
+    helpers.fileHash(
+      "mapbox_"+box.join("_")+outsize.join('_'), "png"
+    );
+
   // Set up mapbox command
-  var png_file = config.files.tmpPath+"/"+helpers.fileHash("mapbox_"+box.join("_")+outsize.join('_'), "png");
   var command = "bash -c '" + config.lib.mapboxScript +
       " -i " + config.lib.mapnikFile +
       " -o "+png_file +
       " --outsize "+outsize.join(',') +
       " --box "+box.join(',') +
     "'";
+
   if(config.cache && fs.existsSync(png_file)) {
     // Output cached file
     res.writeHead(200, content_type);
