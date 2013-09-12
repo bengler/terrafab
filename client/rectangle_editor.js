@@ -6,12 +6,8 @@ L.RectangleEditor = L.Rectangle.extend ({
     constraints: {
       aspectRatio: 1
     },
-    markerIcon: new L.DivIcon({
-      iconSize: new L.Point(8, 8),
-      className: 'leaflet-div-icon leaflet-editing-icon'
-    }),
     dragMarkerIcon: new L.Icon({
-      iconUrl: '/images/glyphicons_186_move.png',
+      iconUrl: '/images/transparent.png',
       iconSize: [24, 24],
       className: 'leaflet-div-icon leaflet-editing-icon moveable',
       cursor: 'move'
@@ -31,20 +27,37 @@ L.RectangleEditor = L.Rectangle.extend ({
   setup: function(map) {
     this.markers = this.createMarkers();
     this._dragMarker = this.createDragMarker(this.getBounds().getCenter());
-    this._dragMarker.on('drag', this._onDragMarkerDrag, this)
-    this._dragMarker.on('dragend', this._onDragEnd, this)
+    this._dragMarker.on('drag', this._onDragMarkerDrag, this);
+    this._dragMarker.on('dragend', this._onDragEnd, this);
     var allLayers = Object.keys(this.markers).map(function(k) { return this.markers[k]}, this).concat([this._dragMarker]);
     var markerGroup = new L.LayerGroup(allLayers);
-    map.addLayer(markerGroup)
+    map.addLayer(markerGroup);
+    this.on('change', function(e) {
+      this.resizeDragMarker();
+    });
+  },
+
+  resizeDragMarker: function(e) {
+    setTimeout(function() {
+      if(this._parts && this._parts[0]) {
+        this._dragMarker.setIcon(new L.Icon({
+            iconUrl: '/images/transparent.png',
+            iconSize: [this._parts[0][2].x-this._parts[0][0].x,this._parts[0][2].x-this._parts[0][0].x],
+            className: 'leaflet-div-icon leaflet-editing-icon moveable',
+            cursor: 'move'
+          })
+        );
+      }
+    }.bind(this), 100);
   },
 
   createMarkers: function () {
     var myBounds = this.getBounds();
     var markers = {};
-    markers.sw = this.createMarker(myBounds.getSouthWest());
-    markers.se = this.createMarker(myBounds.getSouthEast());
-    markers.nw = this.createMarker(myBounds.getNorthWest());
-    markers.ne = this.createMarker(myBounds.getNorthEast());
+    markers.sw = this.createMarker(myBounds.getSouthWest(), 'sw');
+    markers.se = this.createMarker(myBounds.getSouthEast(), 'se');
+    markers.nw = this.createMarker(myBounds.getNorthWest(), 'nw');
+    markers.ne = this.createMarker(myBounds.getNorthEast(), 'ne');
     this._opposites = {
       se: 'nw',
       nw: 'se',
@@ -54,16 +67,26 @@ L.RectangleEditor = L.Rectangle.extend ({
     return markers;
   },
   createDragMarker: function(latlng) {
+    // [this._parts[2].x-this._parts[0].x, this._parts[2].y-this._parts[0].y]
+    var icon = new L.Icon({
+      iconUrl: '/images/glyphicons_186_move.png',
+      iconSize: [100,100],
+      className: 'leaflet-div-icon leaflet-editing-icon moveable',
+      cursor: 'move'
+    });
     return new L.Marker(latlng, {
       draggable: true,
-      icon: this.options.dragMarkerIcon
+      icon: icon
     });
   },
-
-  createMarker: function (latlng) {
+  createMarker: function (latlng, cornerClass) {
+    var markerIcon = new L.DivIcon({
+      iconSize: new L.Point(8, 8),
+      className: 'leaflet-div-icon leaflet-editing-icon corner-'+cornerClass
+    });
     var marker = new L.Marker(latlng, {
       draggable: true,
-      icon: this.options.markerIcon
+      icon: markerIcon
     });
     marker.on('drag', this._onMarkerDrag, this);
     marker.on('dragend', this._onMarkerMouseUp, this);
@@ -141,7 +164,7 @@ L.RectangleEditor = L.Rectangle.extend ({
     this.markers.se.setLatLng(theBounds.getSouthEast());
     this.markers.nw.setLatLng(theBounds.getNorthWest());
     this.markers.ne.setLatLng(theBounds.getNorthEast());
-    this._dragMarker.setLatLng(theBounds.getCenter())
+    this._dragMarker.setLatLng(theBounds.getCenter());
     this.setBounds(this.getMarkerBounds());
     this.redraw();
   },

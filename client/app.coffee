@@ -60,7 +60,6 @@ $ ->
       localStorage.setItem('rectangle', JSON.stringify(event.bounds))
       localStorage.setItem('zoom', map.getZoom())
 
-
   canvas = $('canvas#terrain')[0]
   if false && canvas?
     ctx = canvas.getContext('2d')
