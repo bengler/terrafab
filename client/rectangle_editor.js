@@ -66,6 +66,7 @@ L.RectangleEditor = L.Rectangle.extend ({
       icon: this.options.markerIcon
     });
     marker.on('drag', this._onMarkerDrag, this);
+    marker.on('dragend', this._onMarkerMouseUp, this);
     return marker;
   },
   getMarkerBounds: function() {
@@ -127,8 +128,12 @@ L.RectangleEditor = L.Rectangle.extend ({
     this.setBounds(this.getMarkerBounds());
     this.redraw();
   },
+  _onMarkerMouseUp: function(e) {
+    this.fire('mouseup', {bounds: this.getMarkerBounds()[0]})
+  },
   _onDragEnd: function (e) {
     this.fire('dragend', {bounds: this.getMarkerBounds()[0]})
+    this.fire('mouseup', {bounds: this.getMarkerBounds()[0]})
   },
   setCenterLatLng: function(latLng) {
     var ne = this.markers.ne.getLatLng()

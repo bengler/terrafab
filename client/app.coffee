@@ -51,21 +51,14 @@ $ ->
   map.on 'change', (event) ->
     syncTerrainWithSelector()
 
-
-  savePosition = (event) ->
-    if localStorage
-      localStorage.setItem('rectangle', JSON.stringify(event.bounds))
-      localStorage.setItem('zoom', map.getZoom())
-
-  map.rectangleEditor.on 'change', (event) ->
-    savePosition(event)
-
-  map.rectangleEditor.on 'dragend', (event) ->
-    savePosition(event)
+  map.rectangleEditor.on 'mouseup', (event) ->
     location.hash = encodeURIComponent([
         [event.bounds._northEast.lat, event.bounds._northEast.lng],
         [event.bounds._southWest.lat, event.bounds._southWest.lng]
       ])+'|'+map.getZoom()
+    if localStorage
+      localStorage.setItem('rectangle', JSON.stringify(event.bounds))
+      localStorage.setItem('zoom', map.getZoom())
 
 
   canvas = $('canvas#terrain')[0]
