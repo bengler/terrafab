@@ -1,7 +1,6 @@
 config = require('../config/app.json')
-
-localStorage = require('localStorage')
 Map = require('./map.coffee')
+localStorage = require('localStorage')
 Terrain = require('./terrain')
 TerrainStreamer = require('./terrain/streamer.coffee')
 
@@ -16,7 +15,6 @@ $ ->
     projection.rectangle = [[rectangle[0],rectangle[1]],[rectangle[2], rectangle[3]]]
     projection.zoom = uncoded.split('|')[1]
     projection
-
 
   $('#locations').on('change', (e) ->
     location.hash = $('#locations option:selected').val()
@@ -33,6 +31,9 @@ $ ->
     rectangle = JSON.parse(localStorage.getItem('rectangle'))
     rectangle_editor = new L.RectangleEditor([[rectangle._southWest.lat, rectangle._southWest.lng],[rectangle._northEast.lat, rectangle._northEast.lng]])
     zoom = localStorage.getItem('zoom')
+  else
+    rectangle_editor = new L.RectangleEditor([[67.31285290844802, 14.441993143622962],[67.25053169095976, 14.2774269944074]])
+    zoom = 19
 
   map = new Map(config.tilesUrl, {
       attribution: "N50 UTM33 (Bengler)",
@@ -46,17 +47,26 @@ $ ->
       map.crs.project(map.rectangleEditor.getMarkerBounds()[0].getNorthWest()),
       map.crs.project(map.rectangleEditor.getMarkerBounds()[0].getSouthEast())
     )
-    map.rectangleEditor.on 'dragend', (event) ->
-      location.hash = encodeURIComponent([
-          [event.bounds._northEast.lat, event.bounds._northEast.lng],
-          [event.bounds._southWest.lat, event.bounds._southWest.lng]
-        ])+'|'+map.getZoom()
 
   map.on 'change', (event) ->
     syncTerrainWithSelector()
+
+
+  savePosition = (event) ->
     if localStorage
       localStorage.setItem('rectangle', JSON.stringify(event.bounds))
       localStorage.setItem('zoom', map.getZoom())
+
+  map.rectangleEditor.on 'change', (event) ->
+    savePosition(event)
+
+  map.rectangleEditor.on 'dragend', (event) ->
+    savePosition(event)
+    location.hash = encodeURIComponent([
+        [event.bounds._northEast.lat, event.bounds._northEast.lng],
+        [event.bounds._southWest.lat, event.bounds._southWest.lng]
+      ])+'|'+map.getZoom()
+
 
   canvas = $('canvas#terrain')[0]
   if false && canvas?
