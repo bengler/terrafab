@@ -50,10 +50,7 @@ class Map extends EventEmitter
       @emit('change', e)
     )
   project: (projection) ->
-    @map.removeLayer(@rectangleEditor)
-    @rectangleEditor = new L.RectangleEditor(projection.rectangle)
-    @_registerCallbacks()
-    @rectangleEditor.addTo(@map)
+    @rectangleEditor.project(projection.rectangle)
     setTimeout(=>
       @map.fitBounds(@rectangleEditor.getBounds())
     , 1000)

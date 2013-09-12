@@ -129,12 +129,23 @@ L.RectangleEditor = L.Rectangle.extend ({
     this.redraw();
   },
   _onMarkerMouseUp: function(e) {
-    this.fire('mouseup', {bounds: this.getMarkerBounds()[0]})
+    this.fire('mouseup', {bounds: this.getMarkerBounds()[0]});
   },
   _onDragEnd: function (e) {
-    this.fire('dragend', {bounds: this.getMarkerBounds()[0]})
-    this.fire('mouseup', {bounds: this.getMarkerBounds()[0]})
+    this.fire('dragend', {bounds: this.getMarkerBounds()[0]});
+    this.fire('mouseup', {bounds: this.getMarkerBounds()[0]});
   },
+  project: function(rectangle) {
+    var theBounds = new L.LatLngBounds(rectangle);
+    this.markers.sw.setLatLng(theBounds.getSouthWest());
+    this.markers.se.setLatLng(theBounds.getSouthEast());
+    this.markers.nw.setLatLng(theBounds.getNorthWest());
+    this.markers.ne.setLatLng(theBounds.getNorthEast());
+    this._dragMarker.setLatLng(theBounds.getCenter())
+    this.setBounds(this.getMarkerBounds());
+    this.redraw();
+  },
+
   setCenterLatLng: function(latLng) {
     var ne = this.markers.ne.getLatLng()
     var nw = this.markers.nw.getLatLng()
