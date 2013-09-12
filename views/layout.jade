@@ -6,4 +6,19 @@ html
     script(src='/js/app.coffee', async)
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    .navbar.navbar-fixed-top
+      .navbar-inner
+        div.brand
+          a(href='http://bengler.no') BENGLER
+        .nav-collapse.collapse
+          ul.nav
+            li
+              a(href="/work") Work
+            li
+              a(href="/blog") Blog
+            li
+              a(href="/team") Team
+            li
+              a.contactLink(href="#contact") Contact
+
     block content

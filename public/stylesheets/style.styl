@@ -1,13 +1,33 @@
 @import 'leaflet.css'
-
+@import 'nav'
 body
   height: 100%
   width: 100%
   padding: 0
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif
   overflow: hidden
+  user-select: none
+  -webkit-user-select: none
+  -moz-user-select: none
 a
   color: #00B7FF
+#map
+  .leaflet-control-container
+    .leaflet-left
+      top: 60px !important
+      margin-left: 50px !important
+.leaflet-marker-pane
+  .leaflet-div-icon
+    background-color: transparent
+    border: none
+  .corner-nw
+    cursor: nw-resize
+  .corner-sw
+    cursor: sw-resize
+  .corner-se
+    cursor: se-resize
+  .corner-ne
+    cursor: ne-resize
 
 #interface
   position: absolute
