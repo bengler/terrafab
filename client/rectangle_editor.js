@@ -5,13 +5,7 @@ L.RectangleEditor = L.Rectangle.extend ({
     draggable: true,
     constraints: {
       aspectRatio: 1
-    },
-    dragMarkerIcon: new L.Icon({
-      iconUrl: '/images/transparent.png',
-      iconSize: [24, 24],
-      className: 'leaflet-div-icon leaflet-editing-icon moveable',
-      cursor: 'move'
-    })
+    }
   },
 
   onAdd: function (map) {
@@ -35,6 +29,7 @@ L.RectangleEditor = L.Rectangle.extend ({
     this.on('change', function(e) {
       this.resizeDragMarker();
     });
+    this.resizeDragMarker();
   },
 
   resizeDragMarker: function(e) {
