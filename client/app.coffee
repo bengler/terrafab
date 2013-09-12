@@ -17,14 +17,12 @@ $ ->
     projection.zoom = uncoded.split('|')[1]
     projection
 
-  $(window).on('hashchange', ->
-    map.project(hashToProjection(location.hash))
-    syncTerrainWithSelector()
-    $('#locations option[value="'+location.hash+'"]').attr('selected', 'selected')
-  )
 
   $('#locations').on('change', (e) ->
     location.hash = $('#locations option:selected').val()
+    map.project(hashToProjection(location.hash))
+    syncTerrainWithSelector()
+    $('#locations option[value="'+location.hash+'"]').attr('selected', 'selected')
   )
 
   # Restore map from either location hash or localstorage
