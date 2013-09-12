@@ -9,8 +9,6 @@ $ = require('jquery')
 
 $ ->
 
-  should_refresh = true
-
   hashToProjection = (hash) ->
     projection = {}
     uncoded = decodeURIComponent(hash)
@@ -20,10 +18,8 @@ $ ->
     projection
 
   $(window).on('hashchange', ->
-    if should_refresh
-      map.project(hashToProjection(location.hash))
-      syncTerrainWithSelector()
-      $('#locations option[value="'+location.hash+'"]').attr('selected', 'selected')
+    map.project(hashToProjection(location.hash))
+    $('#locations option[value="'+location.hash+'"]').attr('selected', 'selected')
   )
 
   $('#locations').on('change', (e) ->
