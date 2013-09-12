@@ -19,6 +19,7 @@ $ ->
 
   $(window).on('hashchange', ->
     map.project(hashToProjection(location.hash))
+    syncTerrainWithSelector()
     $('#locations option[value="'+location.hash+'"]').attr('selected', 'selected')
   )
 

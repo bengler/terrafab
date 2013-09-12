@@ -56,8 +56,10 @@ class Map extends EventEmitter
     @rectangleEditor.addTo(@map)
     setTimeout(=>
       @map.fitBounds(@rectangleEditor.getBounds())
+    , 1000)
+    setTimeout(=>
       @map.setZoom(projection.zoom || @zoom)
-    , 100)
+    , 1000)
 
 
   getZoom: ->
