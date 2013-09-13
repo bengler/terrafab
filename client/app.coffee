@@ -3,7 +3,7 @@ Map = require('./map.coffee')
 localStorage = require('localStorage')
 Terrain = require('./terrain')
 TerrainStreamer = require('./terrain/streamer.coffee')
-
+ElasticSearchClient = require('./elastic.coffee')
 $ = require('jquery')
 
 $ ->
@@ -51,6 +51,10 @@ $ ->
     syncTerrainWithSelector()
     $("#utm").html(""+map.rectangleEditor.getCenterLatLng()[1])
     $("#wgs84").html(""+map.rectangleEditor.getCenterLatLng()[0])
+
+  $('#panic').on('click', (e) ->
+    location.reload()
+  )
 
   map.on 'change', (event) ->
     syncSelection()

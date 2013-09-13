@@ -13,5 +13,10 @@ block content
         | Kvikstadheia
     #utm.location
     #wgs84.location
-
+    #search
+      input(name='q', placeholder='Name of place')
+      button
+        | Search
+    button#panic
+      | Panic!
   canvas(width=800 height=800)#terrain.overlay
