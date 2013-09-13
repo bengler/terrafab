@@ -167,7 +167,15 @@ L.RectangleEditor = L.Rectangle.extend ({
     this.setBounds(this.getMarkerBounds());
     this.redraw();
   },
-
+  getCenterLatLng: function() {
+    var ne = this.markers.ne.getLatLng()
+    var nw = this.markers.nw.getLatLng()
+    var sw = this.markers.sw.getLatLng()
+    var distLng = ((ne.lng - nw.lng)/2);
+    var distLat = ((ne.lat - sw.lat)/ 2);
+    var latLng = new L.LatLng((ne.lat - distLat),(sw.lng-distLng))
+    return this.crs ? [latLng,this.crs.project(latLng)] : [latLang]
+  },
   setCenterLatLng: function(latLng) {
     var ne = this.markers.ne.getLatLng()
     var nw = this.markers.nw.getLatLng()

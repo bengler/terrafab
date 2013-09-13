@@ -47,9 +47,13 @@ $ ->
       map.crs.project(map.rectangleEditor.getMarkerBounds()[0].getNorthWest()),
       map.crs.project(map.rectangleEditor.getMarkerBounds()[0].getSouthEast())
     )
+  syncSelection = ->
+    syncTerrainWithSelector()
+    $("#utm").html(""+map.rectangleEditor.getCenterLatLng()[1])
+    $("#wgs84").html(""+map.rectangleEditor.getCenterLatLng()[0])
 
   map.on 'change', (event) ->
-    syncTerrainWithSelector()
+    syncSelection()
 
   map.rectangleEditor.on 'mouseup', (event) ->
     location.hash = encodeURIComponent([

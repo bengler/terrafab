@@ -27,7 +27,9 @@ class TerrainObject extends THREE.Object3D
         map: new THREE.Texture(@streamer.map)
         color: 0xcccccc
         ambient: 0xcccccc
-        shading: THREE.SmoothShading
+        shading: THREE.SmoothShading,
+        magFilter: THREE.LinearFilter,
+        minFilter: THREE.LinearMipMapLinearFilter
     # The meta-material containing both the texture-material, and a
     # material for the sides.
     @material = new THREE.MeshFaceMaterial([

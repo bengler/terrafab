@@ -23,7 +23,9 @@ class Map extends EventEmitter
           {resolutions: @resolutions})
     @zoom = @options.zoom || 15
     @rectangleEditor = options.rectangleEditor || new L.RectangleEditor()
-    @_registerCallbacks()
+    @rectangleEditor.on('change', (e) =>
+      @emit('change', e)
+    )
     @map = new L.Map('map', {
       crs: @crs,
       scale: (zoom) ->
@@ -42,13 +44,16 @@ class Map extends EventEmitter
       center: @options.center || [67.098449,15.449095],
       zoom: @zoom
     })
-    @rectangleEditor.addTo(@map)
-    setTimeout((=> @map.fitBounds(@rectangleEditor.getMarkerBounds())), 1)
-    @
-  _registerCallbacks: ->
-    @rectangleEditor.on('change', (e) =>
+    @map.on('zoomend', (e) =>
       @emit('change', e)
     )
+    @map.on('contextmenu', (e) =>
+      @rectangleEditor.setCenterLatLng(e.latlng)
+    )
+    @rectangleEditor.addTo(@map)
+    @rectangleEditor.crs = @crs
+    setTimeout((=> @map.fitBounds(@rectangleEditor.getMarkerBounds())), 1)
+    @
   project: (projection) ->
     @rectangleEditor.project(projection.rectangle)
     setTimeout(=>
