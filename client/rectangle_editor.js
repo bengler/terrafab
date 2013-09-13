@@ -187,6 +187,7 @@ L.RectangleEditor = L.Rectangle.extend ({
     this.markers.se.setLatLng([latLng.lat - distLat, latLng.lng + distLng]);
     this.markers.sw.setLatLng([latLng.lat - distLat, latLng.lng - distLng]);
     this.setBounds(this.getMarkerBounds())
+    this._dragMarker.setLatLng(latLng);
     this.fire('change', {bounds: this.getMarkerBounds()[0]})
   },
   _onDragMarkerDrag: function (e) {
