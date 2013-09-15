@@ -18,7 +18,7 @@ class TerrainObject extends THREE.Object3D
   constructor: (lat, lon, radius) ->
     super
     # Builds the mesh
-    @builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, 1, 0.2)
+    @builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, 1)
     @builder.applyElevation()
     # Streams terrain data
     @streamer = new TerrainStreamer SAMPLES_PER_SIDE, (=> @terrainUpdateHandler())
@@ -38,6 +38,7 @@ class TerrainObject extends THREE.Object3D
         color: 0xeeeeee
         shading: THREE.FlatShading
     ])
+    #@material = new THREE.MeshBasicMaterial(wireframe: true, color: 0xff0000)
     # The mesh for the terrain
     @mesh = new THREE.Mesh(@builder.geom, @material)
     @add(@mesh)

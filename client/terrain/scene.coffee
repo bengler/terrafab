@@ -24,10 +24,13 @@ class TerrainScene extends THREE.Scene
     @light = new THREE.PointLight(0xffffff, 0.8, 0)
     @light.position.set(400, 550, -450)
     @add(@light)
+    @t = 0.0
 
   advance: (time) ->
+    @t += time || 1.0
     # Spinning the terrain
-    @terrain.rotation.y += 0.005
+    @terrain.rotation.y = Math.sin(@t/200)*Math.PI/20+Math.PI
+    @terrain.rotation.x = Math.sin(@t/240)*Math.PI/30
 
     # Looks at the size of the geometry and zooms out if it gets too big
     @targetFov = 35+(@terrain.mesh.geometry.boundingSphere.radius-142.0)*0.4
