@@ -33,7 +33,6 @@ class SuggestionCompleter extends EventEmitter
             @index = 0
           else
             @index++
-          console.log @index
           suggestionEls.removeClass('selected')
           $(suggestionEls[@index]).addClass('selected')
           @emit('arrowdown', $("##{@listEl.attr('id')} li.selected").first())
@@ -50,11 +49,7 @@ class SuggestionCompleter extends EventEmitter
           @payload = $("##{@listEl.attr('id')} li.selected").first().data("payload")
           @emit('submit', {el: $("##{@listEl.attr('id')} li.selected").first(), payload: @payload})
           $("##{@listEl.attr('id')} li.selected").first().addClass("current")
-      false
-    )
-    @inputEl.on('submit', (e) =>
-      e.preventDefault()
-      @emit('submit', {el: $("##{@listEl.attr('id')} li.selected").first(), payload: @payload})
+          e.preventDefault()
       false
     )
 
