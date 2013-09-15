@@ -20,6 +20,8 @@ class SuggestionCompleter extends EventEmitter
                 JSON.stringify(completion.payload) +
                   "'>"+completion.text+"</li>")
             li.on('click', (e) =>
+              $("##{@listEl.attr('id')} li").removeClass('selected')
+              li.addClass('selected')
               @submit(e)
             )
             @listEl.append(li)
@@ -57,8 +59,6 @@ class SuggestionCompleter extends EventEmitter
       switch keycode
         when 9 # Tab
           @submit(e)
-          return false
-      true
     )
 
   submit: (e) ->
@@ -67,8 +67,6 @@ class SuggestionCompleter extends EventEmitter
     @emit('submit', {el: $("##{@listEl.attr('id')} li.selected").first(), payload: @payload})
     $("##{@listEl.attr('id')} li.selected").first().addClass("current")
     e.preventDefault()
-    #@inputEl.focus()
-
 
   getAutoCompleteResults: (q) ->
     params = '{"' +
