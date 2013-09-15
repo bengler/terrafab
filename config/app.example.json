@@ -1,13 +1,19 @@
 {
-	"tilesUrl": "http://144.76.137.99:81/map/{z}/{x}/{y}.png",
-	"imageUrl": "http://144.76.137.99:80",
-	"lib": {
-		"mapnikFile": "/home/kartverk/kartverk_vm_services/tilestache/mapnik.xml",
-		"dtmFile": "/home/kartverk/kartverk_data_seed/dtm/dtm.vrt",
-		"mapboxScript": "/home/kartverk/kartverk_vm_services/bin/mapbox"
-	},
-	"files": {
-		"cache": false,
-		"tmpPath": "/tmp"
-	}
+  "tilesUrl": "http://144.76.137.99:81/map/{z}/{x}/{y}.png",
+  "imageUrl": "http://144.76.137.99:80",
+  "lib": {
+    "mapnikFile": "/home/kartverk/kartverk_vm_services/tilestache/mapnik.xml",
+    "dtmFile": "/home/kartverk/kartverk_data_seed/dtm/dtm.vrt",
+    "mapboxScript": "/home/kartverk/kartverk_vm_services/bin/mapbox"
+  },
+  "files": {
+    "cache": false,
+    "tmpPath": "/tmp"
+  },
+  "elasticSearch": {
+      "server": {
+        "host": "144.76.137.99",
+        "port": 9200
+      }
+    }
 }
