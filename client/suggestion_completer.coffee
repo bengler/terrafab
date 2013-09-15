@@ -11,14 +11,18 @@ class SuggestionCompleter extends EventEmitter
     @inputEl.on('input', (e) =>
       q = $("#q").val()
       @listEl.empty()
-      if q.length > 2
+      if q.length >= 2
         @getAutoCompleteResults(q).then (result) =>
           @emit('result', result)
           completions = result[@suggestionName][0].options
           $.map(completions, (completion) =>
-            @listEl.append("<li data-payload='" +
+            li = $("<li data-payload='" +
                 JSON.stringify(completion.payload) +
                   "'>"+completion.text+"</li>")
+            li.on('click', (e) =>
+              @submit(e)
+            )
+            @listEl.append(li)
           )
     )
     @index = 0
@@ -45,20 +49,33 @@ class SuggestionCompleter extends EventEmitter
           $(suggestionEls[@index]).addClass('selected')
           @emit('arrowup', $("##{@listEl.attr('id')} li.selected").first())
         when 13 # Enter
-          $("##{@listEl.attr('id')} li").removeClass("current")
-          @payload = $("##{@listEl.attr('id')} li.selected").first().data("payload")
-          @emit('submit', {el: $("##{@listEl.attr('id')} li.selected").first(), payload: @payload})
-          $("##{@listEl.attr('id')} li.selected").first().addClass("current")
-          e.preventDefault()
+          @submit(e)
       false
     )
+    @inputEl.on('keydown', (e) =>
+      keycode = event.which || event.keyCode
+      switch keycode
+        when 9 # Tab
+          @submit(e)
+          return false
+      true
+    )
+
+  submit: (e) ->
+    $("##{@listEl.attr('id')} li").removeClass("current")
+    @payload = $("##{@listEl.attr('id')} li.selected").first().data("payload")
+    @emit('submit', {el: $("##{@listEl.attr('id')} li.selected").first(), payload: @payload})
+    $("##{@listEl.attr('id')} li.selected").first().addClass("current")
+    e.preventDefault()
+    #@inputEl.focus()
+
 
   getAutoCompleteResults: (q) ->
     params = '{"' +
       @suggestionName + '": {"text": "' +
         q + '", "completion": {"field": "' +
           @suggestionField +
-            '"}}}'
+            '", "size": 6}}}'
     $.post('http://'+@host + ':' +
         @port +
           '/'+@indexName+'/_suggest', params
