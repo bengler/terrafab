@@ -3,20 +3,12 @@ block content
   #map
   #interface
     p TerraFab v#{version}
-    | Locations:
-    select(id='locations')
-      option
-        | Choose
-      option(value='#67.31285290844802%2C14.441993143622962%2C67.25053169095976%2C14.2774269944074|19')
-        | Bodø
-      option(value='#67.23079986760212%2C14.89273128530718%2C67.2223265624676%2C14.87078033845352|20')
-        | Kvikstadheia
-    #utm.location
-    #wgs84.location
-    #search
-      input(name='q', placeholder='Name of place')
-      button
-        | Search
-    button#panic
-      | Panic!
+    form#search
+      input#q(type='search', autocomplete='off', placeholder='Find place')
+      ul#autocomplete
+    #position
+      input(type='text', id='utm').location
+      br
+      input(type='text', id='wgs84').location
+
   canvas(width=800 height=800)#terrain.overlay

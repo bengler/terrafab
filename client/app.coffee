@@ -3,10 +3,18 @@ Map = require('./map.coffee')
 localStorage = require('localStorage')
 Terrain = require('./terrain')
 TerrainStreamer = require('./terrain/streamer.coffee')
-ElasticSearchClient = require('./elastic.coffee')
+SuggestionCompleter = require('./suggestion_completer.coffee')
 $ = require('jquery')
 
 $ ->
+
+  suggestionCompleter = new SuggestionCompleter($("#q"), $("#autocomplete"),
+      {host: config.elasticSearch.server.host}
+  )
+  suggestionCompleter.on('submit', (completion) ->
+    point = JSON.parse(completion.payload.point)
+    map.setPosition(new L.LatLng(point.coordinates[1], point.coordinates[0]))
+  )
 
   hashToProjection = (hash) ->
     projection = {}
@@ -49,13 +57,12 @@ $ ->
     )
   syncSelection = ->
     syncTerrainWithSelector()
-    $("#utm").html(""+map.rectangleEditor.getCenterLatLng()[1])
-    $("#wgs84").html(""+map.rectangleEditor.getCenterLatLng()[0])
+    $("#utm").val(""+map.rectangleEditor.getCenterLatLng()[1])
+    $("#wgs84").val(""+map.rectangleEditor.getCenterLatLng()[0])
 
   $('#panic').on('click', (e) ->
     location.reload()
   )
-
   map.on 'change', (event) ->
     syncSelection()
 
@@ -78,3 +85,4 @@ $ ->
   terrain = new Terrain(canvas)
   terrain.run()
   syncTerrainWithSelector()
+  $("#q").focus()
