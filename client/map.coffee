@@ -63,6 +63,11 @@ class Map extends EventEmitter
       @map.setZoom(projection.zoom || @zoom)
     , 1000)
 
+  setPosition: (latLng) ->
+    @rectangleEditor.setCenterLatLng(latLng)
+    @map.setView(latLng, @zoom)
+    @map.fitBounds(@rectangleEditor.getBounds())
+
 
   getZoom: ->
     return @map.getZoom()
