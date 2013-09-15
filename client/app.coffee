@@ -12,8 +12,7 @@ $ ->
       {host: config.elasticSearch.server.host}
   )
   suggestionCompleter.on('submit', (completion) ->
-    point = JSON.parse(completion.payload.point)
-    map.setPosition(new L.LatLng(point.coordinates[1], point.coordinates[0]))
+    map.setPosition(new L.LatLng(completion.payload.lat, completion.payload.lng))
   )
 
   hashToProjection = (hash) ->
