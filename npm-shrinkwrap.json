@@ -945,6 +945,10 @@
       "version": "0.5.0",
       "from": "events@0.5.0",
       "resolved": "https://registry.npmjs.org/events/-/events-0.5.0.tgz"
+    },
+    "coffee-script": {
+      "version": "1.6.3",
+      "from": "coffee-script@*"
     }
   }
 }
