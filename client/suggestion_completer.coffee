@@ -35,6 +35,7 @@ class SuggestionCompleter extends EventEmitter
 
   onInput: (e) ->
     q = $("#q").val()
+    @listEl.empty() if q.length < 2
     if q.length >= 2 and q != @q
       @q = q
       @getResults(q).then (result) =>
