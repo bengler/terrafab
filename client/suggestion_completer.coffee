@@ -8,13 +8,15 @@ class SuggestionCompleter extends EventEmitter
     @suggestionField = @options.suggestionField || "suggest"
     @suggestionName = @options.suggestionName || "placesuggest"
     @indexName = @options.indexName || "places"
+    @term = null
     @inputEl.on('input', (e) =>
       q = $("#q").val()
-      @listEl.empty()
-      if q.length >= 2
+      if q.length >= 2 and q != @term
+        @term = q
         @getAutoCompleteResults(q).then (result) =>
           @emit('result', result)
           completions = result[@suggestionName][0].options
+          @listEl.empty()
           $.map(completions, (completion) =>
             li = $("<li data-payload='" +
                 JSON.stringify(completion.payload) +
@@ -54,7 +56,7 @@ class SuggestionCompleter extends EventEmitter
           @emit('arrowup',
             $("##{@listEl.attr('id')} li.selected").first()
           )
-        when 13, 9 # Enter
+        when 13, 9 # Enter, tab
           @submit(e)
     )
 
