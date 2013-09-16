@@ -47,51 +47,53 @@ class SuggestionCompleter extends EventEmitter
               JSON.stringify(completion.payload) +
                 "'>"+completion.text+"</li>")
           li.on('click', (e) =>
-              $(e.target).addClass('selected')
-              @submit(e)
+              @select($(e.target))
+              @submit($(e.target))
+              @inputEl.focus()
           )
           @listEl.append(li)
         )
 
-  select: ->
-    @selectedEl = $("##{@listEl.attr('id')} li.selected").first()
+  select: (targetEl) ->
+    @selectedEl = targetEl || $("##{@listEl.attr('id')} li.selected").first()
     @suggestionEls = $("##{@listEl.attr('id')} li")
-    @suggestionEls.removeClass('selected')
+    @suggestionEls.removeClass("selected")
     $(@suggestionEls[@index]).addClass('selected')
-
-  onKeyDown: (e) ->
-    keycode = event.which || event.keyCode
     @index = @suggestionEls.index($("##{@listEl.attr('id')} li.selected"))
+  onKeyDown: (e) ->
     @select()
+    keycode = event.which || event.keyCode
     switch keycode
       when 40 # Arrow Down
         if @index == -1 or @index > @suggestionEls.length-2
           @index = 0
         else
           @index++
-        @select()
         @emit('arrowdown', @selectedEl)
       when 38 # Arrow Up
         if @index < 0
           @index = @suggestionEls.length-1
         else
           @index--
-        @select()
         @emit('arrowup', @selectedEl)
       when 13, 9 # Enter, tab (submits)
         if keycode == 9
           @emit('tab', @selectedEl)
         else
           @emit('enter', @selectedEl)
-        @submit(e)
+        @select()
+        @submit(@selectedEl)
+        e.preventDefault()
 
-  submit: (e) ->
     @select()
+
+  submit: (selectedEl) ->
+    selectedEl ||= $(e.target)
     @suggestionEls.removeClass("current")
-    @selectedEl.addClass("current")
+    @suggestionEls.removeClass("selected")
+    selectedEl.addClass('current')
     @payload = @selectedEl.data("payload")
     @emit('submit', {el: @selectedEl, payload: @payload})
-    e.preventDefault() if event.which || event.keyCode
 
   getResults: (q) ->
     @q = q
