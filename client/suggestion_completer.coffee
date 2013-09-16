@@ -96,17 +96,15 @@ class SuggestionCompleter extends EventEmitter
   getResults: (q) ->
     @q = q
     params = {
-      "placesuggest": {
-        "text": q,
-        "completion": {
-          "field": @suggestionField,
-          "size": @nrOfResults
-        }
+      "text": q,
+      "completion": {
+        "field": @suggestionField,
+        "size": @nrOfResults
       }
     }
     $.post('http://'+@host + ':' +
-        @port +
-          '/'+@indexName+'/_suggest', JSON.stringify(params)
+        @port + '/'+@indexName+'/_suggest',
+      "{\"#{@suggestionName}\":"+JSON.stringify(params)+"}"
     )
 
 
