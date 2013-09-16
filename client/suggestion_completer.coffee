@@ -47,23 +47,22 @@ class SuggestionCompleter extends EventEmitter
               JSON.stringify(completion.payload) +
                 "'>"+completion.text+"</li>")
           li.on('click', (e) =>
-            $("##{@listEl.attr('id')} li").removeClass('selected')
-            li.addClass('selected')
-            @submit(e)
+              $(e.target).addClass('selected')
+              @submit(e)
           )
           @listEl.append(li)
         )
 
   select: ->
     @selectedEl = $("##{@listEl.attr('id')} li.selected").first()
+    @suggestionEls = $("##{@listEl.attr('id')} li")
     @suggestionEls.removeClass('selected')
     $(@suggestionEls[@index]).addClass('selected')
 
   onKeyDown: (e) ->
     keycode = event.which || event.keyCode
-    @suggestionEls = $("##{@listEl.attr('id')} li")
     @index = @suggestionEls.index($("##{@listEl.attr('id')} li.selected"))
-
+    @select()
     switch keycode
       when 40 # Arrow Down
         if @index == -1 or @index > @suggestionEls.length-2
@@ -88,10 +87,11 @@ class SuggestionCompleter extends EventEmitter
 
   submit: (e) ->
     @select()
+    @suggestionEls.removeClass("current")
     @selectedEl.addClass("current")
     @payload = @selectedEl.data("payload")
     @emit('submit', {el: @selectedEl, payload: @payload})
-    e.preventDefault()
+    e.preventDefault() if event.which || event.keyCode
 
   getResults: (q) ->
     @q = q
