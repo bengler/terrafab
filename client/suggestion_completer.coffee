@@ -2,8 +2,22 @@ EventEmitter = require("events").EventEmitter
 
 class SuggestionCompleter extends EventEmitter
 
-  # Emits 'submit' when suggestion is selected
-  # Emits 'arrowdown' and 'arrowup' when the user browse the list with the arrow keys
+  ###
+
+     Give it a qQuery @intputEl (the input(type='text') field)
+     and a @listEl (a UL) to move the suggestion elements into.
+
+     Also, options for
+      @options.suggestionField - name of the suggest-type field in ES.
+      @options.suggestionName, - what to call the response back from ES (key in hash returned as array).
+      @options.indexName - the ES index to query.
+      @options.host and @options.port - map to Elastic Search server.
+
+    Emits 'submit' when suggestion is selected
+    Emits 'arrowdown' and 'arrowup' when the user browse the list with the arrow keys
+    Emits 'enter' and 'tab' when user submits with those keys respectively.
+
+  ###
 
   constructor: (@inputEl, @listEl, @options={}) ->
     @host = @options.host || 'localhost'
@@ -56,18 +70,14 @@ class SuggestionCompleter extends EventEmitter
         else
           @index++
         @select()
-        @emit('arrowdown',
-          @selectedEl
-        )
+        @emit('arrowdown', @selectedEl)
       when 38 # Arrow Up
         if @index < 0
           @index = @suggestionEls.length-1
         else
           @index--
         @select()
-        @emit('arrowup',
-          @selectedEl
-        )
+        @emit('arrowup', @selectedEl)
       when 13, 9 # Enter, tab (submits)
         if keycode == 9
           @emit('tab', @selectedEl)
