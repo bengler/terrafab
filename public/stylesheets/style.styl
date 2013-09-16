@@ -11,6 +11,7 @@ body
   -moz-user-select: none
 a
   color: #00B7FF
+
 #map
   .leaflet-control-container
     .leaflet-left
@@ -30,13 +31,12 @@ a
     cursor: ne-resize
 
 #interface
-  position: absolute
-  top: 0px
-  bottom: 0
+  float: right
   right: 0
   left: auto
   z-index: 1000
   padding-right: 10px
+  width: 200px
   #q
     width: 100%
   #autocomplete
@@ -61,8 +61,6 @@ a
       background-color: #666
       color: #fff
       font-style: italic
-
-
   #position
     position: absolute
     bottom: 20px
@@ -74,10 +72,6 @@ a
       background: none
       border: 1px solid #ccc
       padding-right: 10px
-
-
-
-
 #map
   position: absolute
   top: 0px
