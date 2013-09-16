@@ -8,6 +8,7 @@ $ = require('jquery')
 
 $ ->
 
+  # Set up place search autocompleter
   suggestionCompleter = new SuggestionCompleter($("#q"), $("#autocomplete"),
       {host: config.elasticSearch.server.host}
   )
@@ -32,14 +33,26 @@ $ ->
 
   # Restore map from either location hash or localstorage
   if location.hash
-    rectangle_editor = new L.RectangleEditor(hashToProjection(location.hash).rectangle)
+    rectangle_editor = new L.RectangleEditor(
+      hashToProjection(location.hash).rectangle
+    )
     zoom = hashToProjection(location.hash).zoom
   else if localStorage and localStorage.getItem('rectangle')
     rectangle = JSON.parse(localStorage.getItem('rectangle'))
-    rectangle_editor = new L.RectangleEditor([[rectangle._southWest.lat, rectangle._southWest.lng],[rectangle._northEast.lat, rectangle._northEast.lng]])
+    rectangle_editor = new L.RectangleEditor(
+      [
+        [rectangle._southWest.lat, rectangle._southWest.lng],
+        [rectangle._northEast.lat, rectangle._northEast.lng]
+      ]
+    )
     zoom = localStorage.getItem('zoom')
   else
-    rectangle_editor = new L.RectangleEditor([[67.31285290844802, 14.441993143622962],[67.25053169095976, 14.2774269944074]])
+    rectangle_editor = new L.RectangleEditor(
+      [
+        [67.31285290844802, 14.441993143622962]
+        [67.25053169095976, 14.2774269944074]
+      ]
+    )
     zoom = 19
 
   map = new Map(config.tilesUrl, {

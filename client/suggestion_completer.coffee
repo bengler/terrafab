@@ -29,7 +29,7 @@ class SuggestionCompleter extends EventEmitter
     )
     @index = 0
     @payload = null
-    @inputEl.on('keyup', (e) =>
+    @inputEl.on('keydown', (e) =>
       suggestionEls = $("##{@listEl.attr('id')} li")
       keycode = event.which || event.keyCode
       @index = suggestionEls.index($("##{@listEl.attr('id')} li.selected"))
@@ -41,7 +41,9 @@ class SuggestionCompleter extends EventEmitter
             @index++
           suggestionEls.removeClass('selected')
           $(suggestionEls[@index]).addClass('selected')
-          @emit('arrowdown', $("##{@listEl.attr('id')} li.selected").first())
+          @emit('arrowdown',
+            $("##{@listEl.attr('id')} li.selected").first()
+          )
         when 38 # Up
           if @index < 0
             @index = suggestionEls.length-1
@@ -49,22 +51,19 @@ class SuggestionCompleter extends EventEmitter
             @index--
           suggestionEls.removeClass('selected')
           $(suggestionEls[@index]).addClass('selected')
-          @emit('arrowup', $("##{@listEl.attr('id')} li.selected").first())
-        when 13 # Enter
-          @submit(e)
-      false
-    )
-    @inputEl.on('keydown', (e) =>
-      keycode = event.which || event.keyCode
-      switch keycode
-        when 9 # Tab
+          @emit('arrowup',
+            $("##{@listEl.attr('id')} li.selected").first()
+          )
+        when 13, 9 # Enter
           @submit(e)
     )
 
   submit: (e) ->
     $("##{@listEl.attr('id')} li").removeClass("current")
     @payload = $("##{@listEl.attr('id')} li.selected").first().data("payload")
-    @emit('submit', {el: $("##{@listEl.attr('id')} li.selected").first(), payload: @payload})
+    @emit('submit',
+      {el: $("##{@listEl.attr('id')} li.selected").first(), payload: @payload}
+    )
     $("##{@listEl.attr('id')} li.selected").first().addClass("current")
     e.preventDefault()
 
