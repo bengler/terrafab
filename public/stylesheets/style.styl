@@ -1,5 +1,6 @@
 @import 'leaflet.css'
 @import 'nav'
+@import 'interface'
 body
   height: 100%
   width: 100%
@@ -29,49 +30,6 @@ a
     cursor: se-resize
   .corner-ne
     cursor: ne-resize
-
-#interface
-  float: right
-  right: 0
-  left: auto
-  z-index: 1000
-  padding-right: 10px
-  width: 200px
-  #q
-    width: 100%
-  #autocomplete
-    height: 200px
-    width: 200px
-    margin: 0
-    padding 0
-    overflow: scroll
-    li
-      list-style-type: none
-      font-size: 11px
-      border: 1px solid #999
-      padding: 3px
-      background-color: white
-      opacity: 0.8
-      cursor: pointer
-    li.selected, li.current.selected, li:hover
-      background-color: #333
-      opacity: 1
-      color: #fff
-    li.current
-      background-color: #666
-      color: #fff
-      font-style: italic
-  #position
-    position: absolute
-    bottom: 20px
-    right: 10px
-    width: 150px
-    .location
-      width: 100%
-      font-size: 10px
-      background: none
-      border: 1px solid #ccc
-      padding-right: 10px
 #map
   position: absolute
   top: 0px
