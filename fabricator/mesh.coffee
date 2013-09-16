@@ -2,6 +2,7 @@ require('./three_hacks.coffee')
 TerrainData = require('./data.coffee')
 TerrainBuilder = require '../client/terrain/builder.coffee'
 toSTL = require './to_stl'
+toX3D = require './to_x3d'
 
 SAMPLES_PER_SIDE = 400
 IN_RANGE = 32767.0
@@ -28,5 +29,8 @@ class TerrainMesh
 
   asSTL: ->
     toSTL(@getGeometry())
+
+  asX3D: ->
+    toX3D(@getGeometry(), "terrain")
 
 module.exports = TerrainMesh
