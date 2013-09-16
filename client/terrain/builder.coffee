@@ -70,7 +70,7 @@ class TerrainBuilder
       @terrainCoordinateToVector(xMax, yMax)   # NE
     ]
     # Place all the base vertices a little bit below the water line
-    vertex.y = -15 for vertex in vertices
+    vertex.y = -5*@scale for vertex in vertices
     # Remember the index of the first bottom vertex
     index = @geom.vertices.length
     # Append the vertices to the geometry

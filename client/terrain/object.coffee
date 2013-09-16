@@ -35,7 +35,8 @@ class TerrainObject extends THREE.Object3D
     @material = new THREE.MeshFaceMaterial([
       @textureMaterial
       new THREE.MeshLambertMaterial
-        color: 0xeeeeee
+        color: 0xffffff
+        ambient: 0xffffff
         shading: THREE.FlatShading
     ])
     #@material = new THREE.MeshBasicMaterial(wireframe: true, color: 0xff0000)
@@ -50,9 +51,9 @@ class TerrainObject extends THREE.Object3D
       transparent: true
       opacity: 0.3
     # A mesh to put the drop shadow on, below the landscape
-    shadow = new THREE.Mesh(new THREE.PlaneGeometry(220, 220, 1, 1), shadowMaterial)
+    shadow = new THREE.Mesh(new THREE.PlaneGeometry(240, 240, 1, 1), shadowMaterial)
     # Place it below
-    shadow.position.y = -25
+    shadow.position.y = -20
     # Turn it on its side
     shadow.rotation.x = -Math.PI/2
     # Add to scene

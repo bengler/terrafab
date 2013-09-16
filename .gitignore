@@ -11,3 +11,4 @@ config/app.json
 npm-debug.log
 node_modules
 public/stylesheets/*.css
+mesh.stl
