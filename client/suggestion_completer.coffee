@@ -2,6 +2,9 @@ EventEmitter = require("events").EventEmitter
 
 class SuggestionCompleter extends EventEmitter
 
+  # Emits 'submit' when suggestion is selected
+  # Emits 'arrowdown' and 'arrowup' when the user browse the list with the arrow keys
+
   constructor: (@inputEl, @listEl, @options={}) ->
     @host = @options.host || 'localhost'
     @port = @options.port || '9200'
@@ -35,41 +38,48 @@ class SuggestionCompleter extends EventEmitter
           )
           @listEl.append(li)
         )
+
+  select: ->
+    @selectedEl = $("##{@listEl.attr('id')} li.selected").first()
+    @suggestionEls.removeClass('selected')
+    $(@suggestionEls[@index]).addClass('selected')
+
   onKeyDown: (e) ->
     keycode = event.which || event.keyCode
     @suggestionEls = $("##{@listEl.attr('id')} li")
     @index = @suggestionEls.index($("##{@listEl.attr('id')} li.selected"))
+
     switch keycode
-      when 40 # Down
+      when 40 # Arrow Down
         if @index == -1 or @index > @suggestionEls.length-2
           @index = 0
         else
           @index++
-        @suggestionEls.removeClass('selected')
-        $(@suggestionEls[@index]).addClass('selected')
+        @select()
         @emit('arrowdown',
-          $("##{@listEl.attr('id')} li.selected").first()
+          @selectedEl
         )
-      when 38 # Up
+      when 38 # Arrow Up
         if @index < 0
           @index = @suggestionEls.length-1
         else
           @index--
-        @suggestionEls.removeClass('selected')
-        $(@suggestionEls[@index]).addClass('selected')
+        @select()
         @emit('arrowup',
-          $("##{@listEl.attr('id')} li.selected").first()
+          @selectedEl
         )
-      when 13, 9 # Enter, tab
+      when 13, 9 # Enter, tab (submits)
+        if keycode == 9
+          @emit('tab', @selectedEl)
+        else
+          @emit('enter', @selectedEl)
         @submit(e)
 
   submit: (e) ->
-    $("##{@listEl.attr('id')} li").removeClass("current")
-    @payload = $("##{@listEl.attr('id')} li.selected").first().data("payload")
-    @emit('submit',
-      {el: $("##{@listEl.attr('id')} li.selected").first(), payload: @payload}
-    )
-    $("##{@listEl.attr('id')} li.selected").first().addClass("current")
+    @select()
+    @selectedEl.addClass("current")
+    @payload = @selectedEl.data("payload")
+    @emit('submit', {el: @selectedEl, payload: @payload})
     e.preventDefault()
 
   getResults: (q) ->
