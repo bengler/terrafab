@@ -3,7 +3,7 @@ Fabricator = require('./fabricator');
 fs = require('fs');
 
 out_format = process.argv[2];
-if(!process.argv[0]) {
+if(!out_format) {
   out_format = "stl"
 }
 
