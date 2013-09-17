@@ -1,15 +1,9 @@
-var THREE = require("three");
-
-function coordFromVector(vec){
-  return ""+vec.x+" "+vec.z+" "+vec.y;
-}
-
 function toX3D(builder, name){
+
   var geometry = builder.geom
   var vertices = geometry.vertices;
   var faces    = geometry.faces;
   var uvs = builder.uvs;
-  geometry = THREE.GeometryUtils.triangulateQuads( geometry );
 
   x3d = {xml: "<?xml version='1.0' encoding='UTF-8'?>\n", dom: []};
 
@@ -48,7 +42,7 @@ function toX3D(builder, name){
         x3d.scene += "              <Coordinate point='";
         points = [];
         for(var i = 0; i<vertices.length; i++){
-          points.push(coordFromVector(vertices[i]));
+          points.push(""+vertices[i].x+" "+vertices[i].z+" "+vertices[i].y);
         }
         x3d.scene += points.join(', ')
         x3d.scene += "'/>\n";
