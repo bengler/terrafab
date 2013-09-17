@@ -56,7 +56,7 @@ $ ->
     zoom = 19
 
   map = new Map(config.tilesUrl, {
-      attribution: "N50 UTM33 (Bengler)",
+      attribution: "N50 Statens Kartverk, UTM33 (Bengler)",
       zoom: zoom,
       rectangleEditor: rectangle_editor
     }
