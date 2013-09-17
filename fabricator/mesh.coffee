@@ -23,6 +23,8 @@ class TerrainMesh
 
   getGeometry: ->
     return @geometry if @geometry?
+    builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, 1.0)
+    builder.carveUnderside = true
     console.log "Scale: ", @terrainZScale()
     @builder.applyElevation(@terrainData, zScale: (@terrainZScale()))
     @geometry = @builder.geom

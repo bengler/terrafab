@@ -27,17 +27,18 @@ class TerrainObject extends THREE.Object3D
         map: new THREE.Texture(@streamer.map)
         color: 0xcccccc
         ambient: 0xcccccc
-        shading: THREE.SmoothShading,
-        magFilter: THREE.LinearFilter,
-        minFilter: THREE.LinearMipMapLinearFilter
+        shading: THREE.SmoothShading
+        #wireframe: true
+        # magFilter: THREE.LinearFilter
+        # minFilter: THREE.LinearMipMapLinearFilter
     # The meta-material containing both the texture-material, and a
     # material for the sides.
     @material = new THREE.MeshFaceMaterial([
       @textureMaterial
       new THREE.MeshLambertMaterial
-        color: 0xffffff
-        ambient: 0xffffff
+        color: 0x999999
         shading: THREE.FlatShading
+        side: THREE.DoubleSide
     ])
     #@material = new THREE.MeshBasicMaterial(wireframe: true, color: 0xff0000)
     # The mesh for the terrain
@@ -53,7 +54,7 @@ class TerrainObject extends THREE.Object3D
     # A mesh to put the drop shadow on, below the landscape
     shadow = new THREE.Mesh(new THREE.PlaneGeometry(240, 240, 1, 1), shadowMaterial)
     # Place it below
-    shadow.position.y = -20
+    shadow.position.y = -5
     # Turn it on its side
     shadow.rotation.x = -Math.PI/2
     # Add to scene

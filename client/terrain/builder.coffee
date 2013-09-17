@@ -8,6 +8,7 @@ class TerrainBuilder
       @canvas.height = @height
       @ctx = @canvas.getContext('2d')
     @uvs = []
+    @carveUnderside = false
 
   terrainCoordinateToVector: (x,y) ->
     new THREE.Vector3((x-@width/2)*@scale, 0, (y-@height/2)*@scale)
@@ -69,7 +70,7 @@ class TerrainBuilder
       @terrainCoordinateToVector(xMax, yMax)   # NE
     ]
     # Place all the base vertices a little bit below the water line
-    vertex.y = -5*@scale for vertex in vertices
+    vertex.y = -3*@scale for vertex in vertices
     # Remember the index of the first bottom vertex
     index = @geom.vertices.length
     # Append the vertices to the geometry
@@ -120,11 +121,77 @@ class TerrainBuilder
     for n in [faceIndex...@geom.faces.length]
       @geom.faces[n].materialIndex = 1
 
+  buildUnderside: ->
+    @firstUndersideVertex = @geom.vertices.length
+    @buildTerrainMesh(true);
+
+  indexOfUndersideVertexAt: (x,y) ->
+    @firstUndersideVertex+x+y*@width
+
+  indexOfTerrainVertexAt: (x,y) ->
+    x+y*@width
+
+  stitchTerrainToBottom: ->
+    # North
+    y = 0
+    for x in [0...(@width-1)]
+      @geom.faces.push(new THREE.Face3(@indexOfTerrainVertexAt(x, y), @indexOfTerrainVertexAt(x+1, y),   @indexOfUndersideVertexAt(x+1, y)))
+      @geom.faces.push(new THREE.Face3(@indexOfTerrainVertexAt(x, y), @indexOfUndersideVertexAt(x+1, y), @indexOfUndersideVertexAt(x, y) ))
+    # South
+    y = @height-1
+    for x in [0...(@width-1)]
+      @geom.faces.push(new THREE.Face3(@indexOfTerrainVertexAt(x, y), @indexOfUndersideVertexAt(x+1, y), @indexOfTerrainVertexAt(x+1, y)  ))
+      @geom.faces.push(new THREE.Face3(@indexOfTerrainVertexAt(x, y), @indexOfUndersideVertexAt(x, y),   @indexOfUndersideVertexAt(x+1, y)))
+    # West
+    x = 0
+    for y in [0...(@height-1)]
+      @geom.faces.push(new THREE.Face3(@indexOfTerrainVertexAt(x, y), @indexOfUndersideVertexAt(x, y+1), @indexOfTerrainVertexAt(x, y+1)  ))
+      @geom.faces.push(new THREE.Face3(@indexOfTerrainVertexAt(x, y), @indexOfUndersideVertexAt(x, y),   @indexOfUndersideVertexAt(x, y+1)))
+    # East
+    x = @width-1
+    for y in [0...(@height-1)]
+      @geom.faces.push(new THREE.Face3(@indexOfTerrainVertexAt(x, y), @indexOfTerrainVertexAt(x, y+1),   @indexOfUndersideVertexAt(x, y+1)))
+      @geom.faces.push(new THREE.Face3(@indexOfTerrainVertexAt(x, y), @indexOfUndersideVertexAt(x, y+1), @indexOfUndersideVertexAt(x, y)  ))
+
+
+
   # (re)builds the geometry(!)
   buildGeometry: ->
     @geom = new THREE.Geometry()
-    @buildTerrainMesh();
-    @buildBase()
+    @buildTerrainMesh()
+    faceIndex = @geom.faces.length
+    @buildUnderside()
+    @stitchTerrainToBottom()
+    for n in [faceIndex...@geom.faces.length]
+      @geom.faces[n].materialIndex = 1
+    #@buildBase()
+
+  weightedAverageElevetion: (x,y,range) ->
+    sum = 0
+    count = 0
+    for xOffset in [-range..range]
+      for yOffset in [-range..range]
+        xVertex = x+xOffset
+        yVertex = y+yOffset
+        continue if xVertex < 0 || xVertex >= @width || yVertex < 0 || yVertex >= @height
+        sample = @geom.vertices[xVertex+yVertex*@width].y
+        weight = (1 / (1+Math.abs(xOffset)/5) + 1 / (1+Math.abs(yOffset)/5))/2
+        sum += sample*weight
+        count += weight
+    sum/count
+
+  updateBottomShape: ->
+    if @firstUndersideVertex?
+      for x in [0...@width]
+        for y in [0...@height]
+          if @carveUnderside
+            factor = 1-Math.pow(Math.abs(x-@width/2)/(@width/2),6)
+            factor *= 1-Math.pow(Math.abs(y-@height/2)/(@height/2),6)
+            factor -= 0.2
+            factor = 0 if factor < 0
+            @geom.vertices[@firstUndersideVertex+x+y*@width].y = @weightedAverageElevetion(x, y, 6)*factor-4*@scale
+          else
+            @geom.vertices[@firstUndersideVertex+x+y*@width].y = -4*@scale
 
   # Moves all terrain points down so that the lowest point is at y == 0.0
   eliminateBias: ->
@@ -160,6 +227,7 @@ class TerrainBuilder
         value = pixels[n*4]
         @geom.vertices[n].y = value*(options.zScale||1.0)*@scale
     @eliminateBias()
+    @updateBottomShape()
     # These are required steps to make sure the mesh renders correctly
     @geom.computeFaceNormals()
     @geom.computeVertexNormals()
