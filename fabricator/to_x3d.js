@@ -4,10 +4,11 @@ function coordFromVector(vec){
   return ""+vec.x+" "+vec.z+" "+vec.y;
 }
 
-function toX3D(geometry, name){
+function toX3D(builder, name){
+  var geometry = builder.geom
   var vertices = geometry.vertices;
   var faces    = geometry.faces;
-
+  var uvs = builder.uvs;
   geometry = THREE.GeometryUtils.triangulateQuads( geometry );
 
   x3d = {xml: "<?xml version='1.0' encoding='UTF-8'?>\n", dom: []};
@@ -33,10 +34,10 @@ function toX3D(geometry, name){
     <Scene>\n"
         x3d.scene += "         <Shape>\n";
         x3d.scene += "          <Appearance>\n";
-        x3d.scene += "            <ImageTexture url=' \"uvmap.png\" \"http://terrafab.bengler.no/models/uv/"+name+".png\"'/>";
+        x3d.scene += "            <ImageTexture url=' \"texture.png\" \"http://terrafab.bengler.no/models/"+name+"/texture.zip\"'/>";
         x3d.scene += "          </Appearance>";
-        x3d.scene += "            <IndexedTriangleSet solid='false' index='";
         // Add index for triangles
+        x3d.scene += "            <IndexedTriangleSet solid='false' index='";
         indicies = [];
         for(var i = 0; i<faces.length; i++){
           indicies.push([faces[i].a, faces[i].c, faces[i].b].join(' '));
@@ -51,6 +52,12 @@ function toX3D(geometry, name){
         }
         x3d.scene += points.join(', ')
         x3d.scene += "'/>\n";
+        // Add UV-map
+        uvmap = [];
+        for(var i= 0; i < uvs.length; i++) {
+          uvmap.push(""+uvs[i].x+" "+uvs[i].y);
+        }
+        x3d.scene += "              <TextureCoordinate point='"+uvmap.join(' ')+"'/>\n";
         x3d.scene += "            </IndexedTriangleSet>\n";
         x3d.scene += "         </Shape>\n\
     </Scene>\n\n";
