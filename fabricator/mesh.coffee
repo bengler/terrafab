@@ -10,7 +10,8 @@ OUT_RANGE = 2469.0
 
 class TerrainMesh
   constructor: (@terrainData) ->
-
+    @builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, 1.0)
+    @getGeometry()
   terrainZScale: ->
     # Multiplying one sample by this factor gives the value in meters
     metersPerIncrement = OUT_RANGE/IN_RANGE
@@ -22,15 +23,14 @@ class TerrainMesh
 
   getGeometry: ->
     return @geometry if @geometry?
-    builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, 1.0)
     console.log "Scale: ", @terrainZScale()
-    builder.applyElevation(@terrainData, zScale: (@terrainZScale()))
-    @geometry = builder.geom
+    @builder.applyElevation(@terrainData, zScale: (@terrainZScale()))
+    @geometry = @builder.geom
 
   asSTL: ->
-    toSTL(@getGeometry())
+    toSTL(@geometry)
 
   asX3D: ->
-    toX3D(@getGeometry(), "terrain")
+    toX3D(@builder, "terrain")
 
 module.exports = TerrainMesh
