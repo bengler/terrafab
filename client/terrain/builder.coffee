@@ -7,6 +7,7 @@ class TerrainBuilder
       @canvas.width = @width
       @canvas.height = @height
       @ctx = @canvas.getContext('2d')
+    @uvs = []
 
   terrainCoordinateToVector: (x,y) ->
     new THREE.Vector3((x-@width/2)*@scale, 0, (y-@height/2)*@scale)
@@ -21,14 +22,12 @@ class TerrainBuilder
   buildTerrainMesh: (isBottom = false) ->
   # builds the default mesh without applying any elevation
     firstVertex = @geom.vertices.length
-    # An array of texture coordinates in vertex order
-    uvs = []
     # Add vertices for the terrain grid
     for y in [0...@height]
       for x in [0...@width]
         @geom.vertices.push(@terrainCoordinateToVector(x,y))
         # For each terrain vertex, also remember a corresponding UV coordinate for later
-        uvs.push(@terrainCoordinateToUV(x,y))
+        @uvs.push(@terrainCoordinateToUV(x,y))
     # Add all the faces for the terrain grid
     for row in [0...(@width-1)]
       for column in [0...(@height-1)]
@@ -41,18 +40,18 @@ class TerrainBuilder
           # This is top terrain - faces will be facing up
           # Triangle one
           @geom.faces.push(new THREE.Face3(firstVertex+bottom_right, firstVertex+top_right, firstVertex+top_left))
-          @geom.faceVertexUvs[0].push([uvs[bottom_right], uvs[top_right], uvs[top_left]])
+          @geom.faceVertexUvs[0].push([@uvs[bottom_right], @uvs[top_right], @uvs[top_left]])
           # Triangle two
           @geom.faces.push(new THREE.Face3(firstVertex+bottom_left, firstVertex+bottom_right, firstVertex+top_left))
-          @geom.faceVertexUvs[0].push([uvs[bottom_left], uvs[bottom_right], uvs[top_left]])
+          @geom.faceVertexUvs[0].push([@uvs[bottom_left], @uvs[bottom_right], @uvs[top_left]])
         else
           # This is bottom terrain - faces will be facing down
           # Triangle one
           @geom.faces.push(new THREE.Face3(firstVertex+bottom_right, firstVertex+top_left, firstVertex+top_right))
-          @geom.faceVertexUvs[0].push([uvs[bottom_right], uvs[top_left], uvs[top_right]])
+          @geom.faceVertexUvs[0].push([@uvs[bottom_right], @uvs[top_left], @uvs[top_right]])
           # Triangle two
           @geom.faces.push(new THREE.Face3(firstVertex+bottom_right, firstVertex+bottom_left, firstVertex+top_left))
-          @geom.faceVertexUvs[0].push([uvs[bottom_right], uvs[bottom_left], uvs[top_left]])
+          @geom.faceVertexUvs[0].push([@uvs[bottom_right], @uvs[bottom_left], @uvs[top_left]])
 
   # The vertices below the terrain that will provide vertices for the sides of the terrain
   buildBaseVertices: ->
