@@ -17,8 +17,8 @@
     }
   },
   "shapewaysAPI": {
-    "consumerKey": "a0d188700417610272f2510525cb7ff54a7e393b",
-    "consumerSectret": "3c93c70df03393eeb15e6e9e4d8e2ba369105f21"
+    "consumerKey": "XXX",
+    "consumerSectret": "YYY"
   },
   "leaflet": {
     "attribution": "Map data: CCBY 3.0; Kartverket, Imagery: Bengler CCBY 3.0 <3"
