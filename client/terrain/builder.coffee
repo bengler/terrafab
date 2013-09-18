@@ -1,7 +1,8 @@
 THREE = require "three"
 
 class TerrainBuilder
-  constructor: (@width, @height, @scale = 1.0) ->
+  constructor: (@width, @height, unitsWide) ->
+    @scale = unitsWide/@width
     if document?
       @canvas ||= document.createElement("canvas")
       @canvas.width = @width

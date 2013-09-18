@@ -20,7 +20,7 @@ class TerrainMesh
     return metersPerIncrement/metersPerTerrainSample
 
   build: ->
-    @builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, 1.0)
+    @builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, 100.0)
     @builder.carveUnderside = true
     @builder.applyElevation(@terrainData, zScale: (@terrainZScale()))
     @geometry = @builder.geom

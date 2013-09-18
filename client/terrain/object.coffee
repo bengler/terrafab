@@ -12,13 +12,14 @@ OUT_RANGE = 2469
 
 # The number of samples per dimension of the terrain model
 SAMPLES_PER_SIDE = 200
+GEOMETRY_UNITS_WIDE = 100.0
 
 THREE.Object3D.prototype.constructor = THREE.Object3D
 class TerrainObject extends THREE.Object3D
   constructor: (lat, lon, radius) ->
     super
     # Builds the mesh
-    @builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, 1)
+    @builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, GEOMETRY_UNITS_WIDE)
     @builder.applyElevation()
     # Streams terrain data
     @streamer = new TerrainStreamer SAMPLES_PER_SIDE, (=> @terrainUpdateHandler())
@@ -50,11 +51,11 @@ class TerrainObject extends THREE.Object3D
       map: new THREE.ImageUtils.loadTexture("/images/dropshadow.png")
       shading: THREE.FlatShading
       transparent: true
-      opacity: 0.3
+      opacity: 0.4
     # A mesh to put the drop shadow on, below the landscape
-    shadow = new THREE.Mesh(new THREE.PlaneGeometry(240, 240, 1, 1), shadowMaterial)
+    shadow = new THREE.Mesh(new THREE.PlaneGeometry(GEOMETRY_UNITS_WIDE*1.15, GEOMETRY_UNITS_WIDE*1.15, 1, 1), shadowMaterial)
     # Place it below
-    shadow.position.y = -5
+    shadow.position.y = -6*@builder.scale
     # Turn it on its side
     shadow.rotation.x = -Math.PI/2
     # Add to scene

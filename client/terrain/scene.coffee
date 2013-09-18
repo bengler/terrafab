@@ -9,8 +9,8 @@ class TerrainScene extends THREE.Scene
   constructor: ->
     super
     @camera = new THREE.PerspectiveCamera(35)
-    @camera.position.y = 190
-    @camera.position.z = -400
+    @camera.position.y = 80
+    @camera.position.z = -200
     @camera.lookAt(new THREE.Vector3(0,-90,0))
 
     @terrain = new TerrainObject()
@@ -33,7 +33,7 @@ class TerrainScene extends THREE.Scene
     @terrain.rotation.x = Math.sin(@t/240)*Math.PI/30
 
     # Looks at the size of the geometry and zooms out if it gets too big
-    @targetFov = 35+(@terrain.mesh.geometry.boundingSphere.radius-142.0)*0.4
+    @targetFov = 35+(@terrain.mesh.geometry.boundingSphere.radius-70.5)*0.4
     @camera.fov = (@camera.fov*10+@targetFov)/11
 
     @camera.updateProjectionMatrix()
