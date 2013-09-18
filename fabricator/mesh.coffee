@@ -4,14 +4,12 @@ TerrainBuilder = require '../client/terrain/builder.coffee'
 toSTL = require './to_stl'
 toX3D = require './to_x3d'
 
-SAMPLES_PER_SIDE = 400
+SAMPLES_PER_SIDE = 300
 IN_RANGE = 32767.0
 OUT_RANGE = 2469.0
 
 class TerrainMesh
   constructor: (@terrainData) ->
-    @builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, 1.0)
-    @getGeometry()
   terrainZScale: ->
     # Multiplying one sample by this factor gives the value in meters
     metersPerIncrement = OUT_RANGE/IN_RANGE
@@ -21,18 +19,30 @@ class TerrainMesh
     # one width of a quad.
     return metersPerIncrement/metersPerTerrainSample
 
-  getGeometry: ->
-    return @geometry if @geometry?
-    builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, 1.0)
-    builder.carveUnderside = true
-    console.log "Scale: ", @terrainZScale()
+  build: ->
+    @builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, 1.0)
+    @builder.carveUnderside = true
     @builder.applyElevation(@terrainData, zScale: (@terrainZScale()))
     @geometry = @builder.geom
+    @uvs = @builder.uvs
+    @builder
+
+  getBuilder: ->
+    @builder = @build() unless @builder?
+    @builder
+
+  getGeometry: ->
+    @build() unless @geometry?
+    @geometry
+
+  getUvs: ->
+    @build() unless @uvs?
+    @uvs
 
   asSTL: ->
-    toSTL(@geometry)
+    toSTL(@getGeometry())
 
   asX3D: ->
-    toX3D(@builder, "terrain")
+    toX3D(@getBuilder(), "terrain")
 
 module.exports = TerrainMesh
