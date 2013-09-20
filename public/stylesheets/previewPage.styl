@@ -1,12 +1,13 @@
 body
   overflow: scroll !important
 #modelPreviewPage
-  text-align: center
+  p
+    line-height: 24px
   .progress
     position: absolute
     text-align: center
     width: 100%
-    margin-top: -50px
+    margin-top: -60px
     .spinner
       background-image: url('/images/ajax-loader.gif')
       height: 16px
@@ -18,24 +19,62 @@ body
     p
       display: inline-block
       color: #666
-
   img.model
     max-width: 600px
-    margin-top: 100px
+  a.button
+    buttonColor = #ffb400
+    display: inline-block
+    background-color: buttonColor
+    line-height: 40px
+    height: 40px
+    text-align: center
+    font-weight: 600
+    color: #000
+    padding: 0 20px
+    text-transform: uppercase
+    cursor: pointer
+    span
+      font-weight: 100
+      text-transform: normal
+    &.disabled, &.disabled:hover, &.disabled:active
+      background-color: #eee
+      color: #ddd
+      cursor: default
+    &:hover
+      background-color: darken( buttonColor, 10%)
+    &:active
+      background-color: darken( buttonColor, 20%)
   h1
     text-transform: uppercase
     font-size: 48px
+    font-weight: 900
   .shapewaysLogo
     background-image: url('http://static1.sw-cdn.net/rrstatic/img/sw-logo-dark-blue.svg')
     background-repeat: no-repeat
-    width: 100%
-    height: 40px
+    height: 24px
+    background-size: auto 100%
   .container
-    max-width: 950px
-    margin: 0 auto
-    margin-bottom: 200px
+    margin-top: 90px
     clear: both
     .col1, .col2
+      position: relative
       float: left
-      width: 50%
       margin-bottom: 200px
+    .col1
+      width: 600px
+    .col2
+      max-width: 400px
+      padding-right: 50px
+  // type
+  p
+    font-weight: 300
+    font-size: 16px
+    line-height: 20px
+  .shapewaysInfo
+    margin-top: 48px
+    .shapewaysLogo
+      height: 24px
+  .downloadText
+    p
+      padding: 0 90px
+      line-height: 24px

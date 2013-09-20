@@ -1,41 +1,51 @@
 extends layout
 block content
   #modelPreviewPage
-    img.model(src="/images/test_model.png")
-    .progress
-      .spinner
-      p Filling up the lakes…
-      p Making roads…
-      p Adding snow…
-      p Removing trolls…
-      p Carving mountains…
-      p Growing grass…
-      p Painting roads…
-      p Removing houses…
-      script
-        $('.progress p').hide();
-        var item = 0
-        var length = $('.progress p').length
-        var interval = setInterval( function() { 
-          $('.progress p').hide();
-          if(item<length) { 
-            $( $('.progress p')[item] ).show(); 
-            item++; 
-            console.log(item);
-            if( item == length+1) {
-              $('.progress').hide();
-              clearInterval(interval);
-            }
-          } 
-        }, 1500);
-
-    h1 Your model is soon ready
-
     .container
       .col1
+        img.model(src="/images/test_model.png")
+        .progress
+          .spinner
+          p Filling up the lakes…
+          p Making roads…
+          p Adding snow…
+          p Removing trolls…
+          p Carving mountains…
+          p Growing grass…
+          p Painting roads…
+          p Removing houses…
+          script
+            $('.progress p').hide();
+            var item = 0
+            var length = $('.progress p').length
+            $( $('.progress p')[item] ).show(); 
+            var interval = setInterval( function() { 
+              $('.progress p').hide();
+              if(item<length) { 
+                $( $('.progress p')[item] ).show(); 
+                item++; 
+                console.log(item, length);
+                if( item == length) {
+                  $('.progress').remove();
+                  $('.downloadButton').removeClass('disabled');
+                  clearInterval(interval);
+                }
+              } 
+            }, 1500);
+        .downloadText
+          p Somethingy funny facty abouty the modelly. And maybe some links to stuff of how to edit/convert it. Lorem ipsum Sit eu et in incididunt tempor pariatur exercitation magna non dolor sit minim aliquip ad eu eu sit adipisicing mollit enim adipisicing aute dolor ad occaecat ad.
+          p
+            a.button.disabled.downloadButton
+              | Download 3D-model 
+              span (.x3d)
+      .col2
+        h1 Your model is soon ready
         h2 Buy the model on ShapeWays
         p Lorem ipsum Ut adipisicing veniam deserunt elit nulla culpa est cupidatat magna anim occaecat anim ad aliqua et magna reprehenderit minim.
-        .shapewaysLogo
-      .col2
-        h2 Download the model
-        p Lorem ipsum Sit eu et in incididunt tempor pariatur exercitation magna non dolor sit minim aliquip ad eu eu sit adipisicing mollit enim adipisicing aute dolor ad occaecat ad.
+        p
+          a.button 
+            | Buy the model at ShapeWays
+            span (~$19)
+        .shapewaysInfo
+          .shapewaysLogo
+          p Somehting about shapeways and how the technology is. Lorem ipsum Voluptate velit Ut eiusmod proident laboris dolor commodo aliquip ut velit sit sed tempor labore aliquip dolor aute.
