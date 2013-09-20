@@ -37,6 +37,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
+app.get('/preview', routes.preview);
 app.get('/dtm', routes.dtm);
 app.get('/map', routes.map);
 

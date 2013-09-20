@@ -10,7 +10,19 @@ request = require('request');
 
 exports.index = function(req, res){
   res.render('index', {
-      title: 'Hello Terra!',
+      title: 'Terrafab',
+      version: require("../package.json").version
+    }
+  );
+};
+
+/*
+ * GET preview page.
+ */
+
+exports.preview = function(req, res){
+  res.render('preview', {
+      title: 'Preview model',
       version: require("../package.json").version
     }
   );
