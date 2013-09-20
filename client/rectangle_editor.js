@@ -3,10 +3,10 @@ var L = require("leaflet")
 L.RectangleEditor = L.Rectangle.extend ({
   options: {
     draggable: true,
-    color: '#fff',
+    color: '#333',
     weight: 1,
-    fillColor: '#333',
-    fillOpacity: 0.4,
+    fillColor: '#ffb400',
+    fillOpacity: 0.2,
     constraints: {
       aspectRatio: 1
     }
