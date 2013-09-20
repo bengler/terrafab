@@ -9,7 +9,7 @@ IN_RANGE = 32767.0
 OUT_RANGE = 2469.0
 
 class TerrainMesh
-  constructor: (@terrainData) ->
+  constructor: (@terrainData, @carveUnderside = true) ->
   terrainZScale: ->
     # Multiplying one sample by this factor gives the value in meters
     metersPerIncrement = OUT_RANGE/IN_RANGE
@@ -21,7 +21,7 @@ class TerrainMesh
 
   build: ->
     @builder = new TerrainBuilder(@terrainData.xsamples, @terrainData.ysamples, 100.0)
-    @builder.carveUnderside = true
+    @builder.carveUnderside = @carveUnderside
     @builder.applyElevation(@terrainData, zScale: (@terrainZScale()))
     @geometry = @builder.geom
     @uvs = @builder.uvs

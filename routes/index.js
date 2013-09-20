@@ -114,6 +114,7 @@ exports.dtm = function(req, res){
               return;
           }
           console.error(err);
+          console.log("Trying to get data from remote server at "+config.imageUrl+req.url);
           request.get(config.imageUrl+req.url).pipe(res);
           return;
         }

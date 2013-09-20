@@ -15,7 +15,7 @@ class TerrainBuilder
   terrainCoordinateToVector: (x,y) ->
     new THREE.Vector3((x-@width/2)*@scale, 0, (y-@height/2)*@scale)
   terrainCoordinateToUV: (x,y) ->
-    new THREE.Vector2(1.0*x / @width, 1.0-(1.0*y / @height))
+    new THREE.Vector2(1.0*(x+0.5) / @width, 1.0-(1.0*(y+0.5) / @height))
   terrainCoordinateToVertexIndex: (x,y) ->
     x+y*@width
 
