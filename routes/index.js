@@ -78,16 +78,24 @@ exports.dtm = function(req, res){
     helpers.fileHash(
         "dtm_"+box.join("_")+outsize.join('_'), out_extension);
 
+  var tif_file = out_file.replace('.'+out_extension, '.tif');
+
   var command = "bash -c '" +
+      "gdalwarp -s_srs EPSG:32633 -t_srs EPSG:32633" +
+      " -r cubic -ts "+ outsize[0] + " " + outsize[1] +
+      " -of GTiff " +
+      "-te " + [box[0], box[3], box[2], box[1]].join(' ') + " " +
+      dtm_file + " " + tif_file +
+      " && " +
       "gdal_translate -q" +
         " -scale " + out_scale +
         " -ot " + out_type +
         (out_options ? " -co " + out_options + " " : "") +
         " -of " + out_format +
-        " -outsize " + outsize[0] + " " + outsize[1] +
+//      " -outsize " + outsize[0] + " " + outsize[1] +
         " -projwin " + box.join(', ') +
-        " " + dtm_file + " " + out_file +
-    "'";
+        " " + tif_file + " " + out_file +
+      " && rm " + tif_file +"'";
   console.log("Running command:" + command);
 
   // Output cached file if exists
