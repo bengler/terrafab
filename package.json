@@ -30,6 +30,7 @@
     "request": "*",
     "localStorage": "*",
     "events": "*",
-    "coffee-script": "*"
+    "http-get": "~0.5.10",
+    "coffee-script": "~1.6.3"
   }
 }

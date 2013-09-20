@@ -7,8 +7,12 @@ if(!out_format) {
   out_format = "stl"
 }
 
+SAMPLES_PER_SIDE = 324
+
 console.log("Loading")
-data = new Fabricator.TerrainData(704813.6707534629,7732087.294896157,726970.8883717663,7709930.077277854, 400, 400);
+//124050.91512455678,6951913.421439983,128938.89691349023,6947025.43965105
+
+data = new Fabricator.TerrainData(124675.69497915338,6951013.442363326,129414.02050493869,6946275.116837542, SAMPLES_PER_SIDE, SAMPLES_PER_SIDE);
 data.load(function(){
   console.log("Building "+out_format+" mesh")
   mesh = new Fabricator.TerrainMesh(data);
@@ -17,3 +21,4 @@ data.load(function(){
 });
 
 
+//curl "http://localhost:3000/map?box=124675.69497915338,6951013.442363326,129414.02050493869,6946275.116837542&outsize=2000,2000"

@@ -2,6 +2,7 @@ THREE = require "three"
 
 class TerrainBuilder
   constructor: (@width, @height, unitsWide) ->
+    @baseThickness = 5
     @scale = unitsWide/@width
     if document?
       @canvas ||= document.createElement("canvas")
@@ -61,12 +62,12 @@ class TerrainBuilder
     xMax = @width-1
     yMax = @height-1
     vertices = [
-      @terrainCoordinateToVector(0,0)               # SW
-      @terrainCoordinateToVector(xMax/2,0)        # S
-      @terrainCoordinateToVector(xMax,0)          # SE
-      @terrainCoordinateToVector(0,yMax/2)       # W
+      @terrainCoordinateToVector(0,0)          # SW
+      @terrainCoordinateToVector(xMax/2,0)     # S
+      @terrainCoordinateToVector(xMax,0)       # SE
+      @terrainCoordinateToVector(0,yMax/2)     # W
       @terrainCoordinateToVector(xMax,yMax/2)  # E
-      @terrainCoordinateToVector(0, yMax)        # NW
+      @terrainCoordinateToVector(0, yMax)      # NW
       @terrainCoordinateToVector(xMax/2, yMax) # N
       @terrainCoordinateToVector(xMax, yMax)   # NE
     ]
@@ -190,9 +191,9 @@ class TerrainBuilder
             factor *= 1-Math.pow(Math.abs(y-@height/2)/(@height/2),6)
             factor -= 0.2
             factor = 0 if factor < 0
-            @geom.vertices[@firstUndersideVertex+x+y*@width].y = @weightedAverageElevetion(x, y, 6)*factor-4*@scale
+            @geom.vertices[@firstUndersideVertex+x+y*@width].y = @weightedAverageElevetion(x, y, 6)*factor-@baseThickness
           else
-            @geom.vertices[@firstUndersideVertex+x+y*@width].y = -4*@scale
+            @geom.vertices[@firstUndersideVertex+x+y*@width].y = -@baseThickness
 
   # Moves all terrain points down so that the lowest point is at y == 0.0
   eliminateBias: ->

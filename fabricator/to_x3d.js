@@ -34,7 +34,7 @@ function toX3D(builder, name){
         x3d.scene += "            <IndexedTriangleSet solid='false' index='";
         indicies = [];
         for(var i = 0; i<faces.length; i++){
-          indicies.push([faces[i].a, faces[i].c, faces[i].b].join(' '));
+          indicies.push([faces[i].a, faces[i].b, faces[i].c].join(' '));
         }
         x3d.scene += indicies.join(' ');
         x3d.scene += "'>\n";
@@ -42,7 +42,7 @@ function toX3D(builder, name){
         x3d.scene += "              <Coordinate point='";
         points = [];
         for(var i = 0; i<vertices.length; i++){
-          points.push(""+vertices[i].x+" "+vertices[i].z+" "+vertices[i].y);
+          points.push(""+vertices[i].x/1000+" "+(-vertices[i].z/1000)+" "+vertices[i].y/1000);
         }
         x3d.scene += points.join(', ')
         x3d.scene += "'/>\n";
