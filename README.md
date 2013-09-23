@@ -7,11 +7,10 @@ TerraFab
 
 ## Getting up and running
 
-You need the graphics library Cairo installed. On a mac using homebrew you achieve this by:
+You need the graphics library Cairo installed. Cairo needs to be linked with freetype to work with node_canvas for some reason. A simple way to achieve this if you are using homebrew on OS X is to install Cairo without X11-bindings, like so:
 
     $ brew install cairo --without-x
 
-The Cairo that comes with x won't link to node canvas, so get the one specifically --without-x.
 
 Then:
 
