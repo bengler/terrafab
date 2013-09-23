@@ -203,7 +203,7 @@ exports.download = function(req, res) {
     if (err) {
       res.status(500).send(err);
     } else {
-      res.status(200).set(headers).sendfile(filename, function(err){zip.delete()});
+      res.status(200).set(headers).sendfile(filename);
     }
   });
 }

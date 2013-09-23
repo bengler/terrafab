@@ -7,13 +7,17 @@ mkdirp = require('mkdirp')
 rimraf = require('rimraf')
 fs = require('fs')
 Canvas = require('canvas')
+path = require('path')
 
 class Archive
   # Options: {folder: <where to store, default a random place in /tmp>, terrainSamples: <number of samples along each dimension in the mesh>,
   # box: {nw: [northing, easting] (northwest corner), se: [northing, easting]} (southeast corner)}
   constructor: (@options) ->
     @options.terrainSamples ||= 324
-    @options.folder ||= "/tmp/terrafab/"+Math.random().toString(36).substring(2)
+    @options.filename ||= "/tmp/terrafab/"+Math.random().toString(36).substring(2)+'.zip'
+    unless path.extname(@options.filename) == '.zip'
+      @options.filename += '.zip'
+    @options.folder = @options.filename.split('.').slice(0,-1).join('.')
     mkdirp.sync(@options.folder)
   _saveMesh: (callback) ->
     data = new TerrainData(@options.box.nw[0], @options.box.nw[1], @options.box.se[0], @options.box.se[1],
@@ -51,10 +55,9 @@ class Archive
         console.log "Saving texture"
         fs.writeFileSync(filename, withDecals.toBuffer())
         callback(null, filename)
-  # Deletes all files associated with this archive
-  delete: ->
+  # Deletes detritus generated while creating the archive
+  cleanup: ->
     rimraf.sync(@options.folder)
-    fs.unlinkSync(@filename) if @filename?
   # Builds the archive
   build: (callback) ->
     return if @built?
@@ -81,8 +84,7 @@ class Archive
       if err?
         callback(err, null)
       else
-        @filename = "#{@options.folder}.zip"
-        cmd = "zip -rj #{@filename} #{@options.folder}/*"
+        cmd = "zip -rj #{@options.filename} #{@options.folder}/*"
         console.log "Executing: #{cmd}"
         zip = exec cmd, {}, (error, stdout, stderr) ->
           if error?
@@ -92,9 +94,10 @@ class Archive
             console.log(stderr.toString())
         zip.on 'exit', (code, signal) =>
           console.log "zip finished", code, signal
+          @cleanup()
           if code != 0
             callback("Zip failed with exit code #{code}", null)
           else
-            callback(null, @filename)
+            callback(null, @options.filename)
 
 module.exports = Archive

@@ -176,8 +176,8 @@ class TerrainStreamer
   # Call this to change what area the streamer is showing
   setBounds: (bounds) ->
     @bounds = bounds
-    @update()
     @resetRawRez()
+    @update()
 
   # Called when new data arrive or bounds are updated to redraw map and terrain
   update: ->
