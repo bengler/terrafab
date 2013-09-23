@@ -21,7 +21,6 @@ class Archive
     console.log "Loading terrain data"
     data.load =>
       mesh = new TerrainMesh(data, true) # Mesh with carved underside for color printers
-      console.log "Building and storing mesh"
       fs.writeFileSync("#{@options.folder}/terrain.x3d", mesh.asX3D())
       callback()
   _saveTexture: (callback) ->
