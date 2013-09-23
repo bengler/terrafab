@@ -16,7 +16,7 @@ helpers = {
   },
 
   outsizeFromParam: function(param, res) {
-    outsize = null;
+    var outsize = null;
     if(param == null) {
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end('{"error": "No outsize param given. ' +

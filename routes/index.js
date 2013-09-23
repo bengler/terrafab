@@ -1,9 +1,9 @@
-config = require("../config/app");
-helpers = require("./helpers")
-exec = require('child_process').exec;
-fs = require('fs');
-request = require('request');
-Archive = require('../fabricator/archive.coffee')
+var config = require("../config/app");
+var helpers = require("./helpers")
+var exec = require('child_process').exec;
+var fs = require('fs');
+var request = require('request');
+var Archive = require('../fabricator/archive.coffee')
 
 /*
  * GET home page.
@@ -54,7 +54,6 @@ exports.dtm = function(req, res){
   var out_format;
   var out_extension;
   var out_type;
-  var out_header;
   var out_scale;
   switch(req.query.format) {
     case "bin":
@@ -190,13 +189,13 @@ exports.map = function(req, res){
 };
 
 exports.download = function(req, res) {
-  headers = {
+  var headers = {
     "Content-Type": "application/force-download",
     "Content-Disposition": "attachment; filename=\"terrain-model.zip\""
   };
   var box = helpers.boxFromParam(req.query.box, res);
   if(!box) { return; }
-  zip = new Archive({
+  var zip = new Archive({
     box: {nw: [box[0], box[1]], se: [box[2], box[3]]}
   });
   zip.generate(function(err, filename) {

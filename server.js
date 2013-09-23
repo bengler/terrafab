@@ -26,7 +26,7 @@ app.use(require('stylus').middleware(__dirname + '/public'));
 //provide browserified versions of all the files in a directory
 app.use('/js', browserify('./client', {
   grep: /\.(?:js|coffee)$/,
-  transform: ['coffeeify', 'brfs'],
+  transform: ['caching-coffeeify', 'brfs'],
   noParse: ['three', 'jquery']
 }));
 
