@@ -1189,6 +1189,10 @@
     "coffee-script": {
       "version": "1.6.3",
       "from": "coffee-script@"
+    },
+    "canvas": {
+      "version": "1.1.0",
+      "from": "canvas@"
     }
   }
 }

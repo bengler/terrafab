@@ -7,6 +7,12 @@ TerraFab
 
 ## Getting up and running
 
+You need the graphics library Cairo installed. On a mac using homebrew you achieve this by:
+
+    $ brew install cairo --without-x
+
+Then:
+
 ```bash
     $ npm install
     $ node server.js
