@@ -1,3 +1,5 @@
+window.$ = require("jquery")
+
 config = require('../config/app.json')
 Map = require('./map.coffee')
 localStorage = require('localStorage')
