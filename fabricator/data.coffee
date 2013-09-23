@@ -23,24 +23,6 @@ class TerrainData
         console.log "Terrain data loaded"
         @data = result.buffer
         onload()
-  fileName: ->
-    config.files.tmpPath +
-      "/"+helpers.fileHash(
-          "dtm_"+@box.join("_")+[@xsamples,@ysamples].join('_'), 'bin')
-  gdalCommand: ->
-    dtm_file = config.lib.dtmFile;
-    out_type = "UInt16"
-    out_scale = "0 2469 0 32767"
-    out_format = "ENVI"
-    out_options = null
-    return "bash -c '" +
-      "gdal_translate -q" +
-        " -scale " + out_scale +
-        " -ot " + out_type +
-        " -of " + out_format +
-        " -outsize " + @xsamples + " " + @ysamples +
-        " -projwin " + @box.join(', ') +
-        " " + dtm_file + " " + @fileName() + "'"
   isLoaded: ->
     true
   getSample: (x, y) ->
