@@ -7,7 +7,7 @@ SuggestionCompleter = require('./suggestion_completer.coffee')
 $ = require('jquery')
 
 $ ->
-
+  $('.waitForLoad').show();
   # Set up place search autocompleter
   suggestionCompleter = new SuggestionCompleter($("#q"), $("#autocomplete"),
       {host: config.elasticSearch.server.host}

@@ -1,3 +1,4 @@
+buttonColor = #ffb400
 @import url(http://fonts.googleapis.com/css?family=Lato:300,400,700,900)
 @import 'leaflet.css'
 @import 'nav'
@@ -14,42 +15,89 @@ body
   user-select: none
   -webkit-user-select: none
   -moz-user-select: none
-a
-  color: #00B7FF
+  a
+    color: #00B7FF
+  .waitForLoad
+    display: none
+  #loader
+    margin-top: 200px
+    text-align: center
 
-#map
-  .leaflet-control-container
-    .leaflet-left
-      top: 60px !important
-      margin-left: 50px !important
-.leaflet-marker-pane
-  .leaflet-div-icon
-    background-color: rgba(#666, 0.9)
-    border: 1px solid #fff
-    border-radius: none
-  .corner-nw
-    cursor: nw-resize
-  .corner-sw
-    cursor: sw-resize
-  .corner-se
-    cursor: se-resize
-  .corner-ne
-    cursor: ne-resize
+#bubble
+  position: fixed
+  top: 150px
+  left: 40px
+  height: auto
+  width: 500px
+  z-index: 5000
+  background-color: rgba(#fff, 0.9)
+  padding: 20px
+  .close
+    position: absolute
+    top: 10px
+    right: 10px
+    cursor: pointer
+    opacity: 0.5
+    &:hover
+      opacity: 1
+    svg
+      zoom: 0.5
+  h1
+    margin-top: 12px
+    margin-bottom: 6px
+    font-weight: 900
+    text-transform: uppercase
+    font-size: 36px
+  p
+    font-size: 14px
+    line-height: 24px
+    padding-right: 40px
+    color: #444
+  ul
+    display: block
+    margin: 0
+    padding: 0
+    li
+      display: inline-block
+      padding: 0
+      margin-right: 20px
+      a
+        display: inline
+        color: #008bd3
+        text-transform: uppercase
+        font-size: 12px
+        font-weight: 300
+
 #map
   position: absolute
   top: 0px
   bottom: 0
   left: 0
   right: 0
-
+  .leaflet-control-container
+    .leaflet-left
+      top: 60px !important
+      margin-left: 50px !important
+  .leaflet-marker-pane
+    .leaflet-div-icon
+      background-color: rgba(#666, 0.9)
+      border: 1px solid #fff
+      border-radius: none
+    .corner-nw
+      cursor: nw-resize
+    .corner-sw
+      cursor: sw-resize
+    .corner-se
+      cursor: se-resize
+    .corner-ne
+      cursor: ne-resize
   .moveable
     cursor: move
     opacity: 0
 
 canvas
   z-index: 1
-  position: absolute
-  top: 0px
+  position: fixed
   right: 0
   bottom: 0
   pointer-events: none

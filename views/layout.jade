@@ -8,10 +8,11 @@ html
     script(src='http://code.jquery.com/ui/1.10.3/jquery-ui.js')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    .navbar.navbar-fixed-top
+    .navbar.navbar-fixed-top.waitForLoad
       .navbar-inner
         div.brand
           a(href='http://bengler.no') BENGLER
+        a.aboutTheProjectLink(href="http://bengler.no/terrafab") About the project
     block interface
 
   block content
