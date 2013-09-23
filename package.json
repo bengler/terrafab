@@ -7,6 +7,7 @@
   "scripts": {
     "test": "npm test",
     "start": "node server.js",
+    "bundle": "./node_modules/.bin/browserify --noparse jquery --noparse three -t coffeeify -e ./client/terrafab.js | ./node_modules/.bin/uglifyjs > public/js/terrafab.js",
     "postinstall": "cp node_modules/leaflet/dist/leaflet.css public/stylesheets"
   },
   "repository": {
@@ -35,6 +36,8 @@
     "canvas": "~1.1.0",
     "mkdirp": "~0.3.5",
     "rimraf": "~2.2.2",
-    "caching-coffeeify": "~0.2.0"
+    "caching-coffeeify": "~0.2.0",
+    "browserify": "~2.32.4",
+    "uglify-js": "~2.4.0"
   }
 }
