@@ -193,16 +193,34 @@ exports.download = function(req, res) {
     "Content-Type": "application/force-download",
     "Content-Disposition": "attachment; filename=\"terrain-model.zip\""
   };
-  var box = helpers.boxFromParam(req.query.box, res);
-  if(!box) { return; }
-  var zip = new Archive({
-    box: {nw: [box[0], box[1]], se: [box[2], box[3]]}
-  });
-  zip.generate(function(err, filename) {
+  var box = []
+  var _ref = helpers.boxFromParam(req.query.box, res);
+  // Protect against injection attacks
+  var _i, _len
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    var value = _ref[_i];
+    box.push(parseFloat(value))
+  }
+  var filename = "/tmp/terrafab/"+Math.random().toString(36).substring(2)+'.zip'
+  var output = ""
+  var generator = exec("node "+__dirname+"/../generate.js "+filename+" \""+box.join(',')+"\"", function(err, stdout, stderr) {
     if (err) {
-      res.status(500).send(err);
-    } else {
-      res.status(200).set(headers).sendfile(filename);
+      output += err;
+    };
+    if (stdout) {
+      console.log("generator: ", stdout.toString())
+      output += stdout.toString();
+    };
+    if (stderr) {
+      console.log("generator: ", stderr.toString())
+      output += stderr.toString();
     }
   });
+  generator.on('exit', function(code, signal) {
+    if (code != 0) {
+      res.status(500).send("Generator failed with code "+code+"\n <!-- "+output+" -->");
+    } else {
+      res.status(200).set(headers).sendfile(filename)
+    }
+  })
 }

@@ -44,16 +44,13 @@ class TerrainMesh
   asSTL: ->
     console.log "Converting mesh to STL"
     toSTL(@getGeometry())
-    console.log "Done converting"
 
   asX3D: ->
     console.log "Converting mesh to X3D"
     toX3D(@getBuilder(), "terrain")
-    console.log "Done converting."
 
   asSC: ->
     console.log "Converting mesh to Sunflow-scene"
     toSunflow(@getBuilder())
-    console.log "Done exporting"
 
 module.exports = TerrainMesh
