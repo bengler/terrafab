@@ -7,26 +7,21 @@ function toX3D(builder, name){
 
   result = []
   result.push("<?xml version='1.0' encoding='UTF-8'?>");
-  result.push("<X3D profile='Immersive' version='3.2' \
-    xmlns:xsd='http://www.w3.org/2001/XMLSchema-instance' \
-    xsd:noNamespaceSchemaLocation='http://www.web3d.org/specifications/x3d-3.2.xsd'>");
+  result.push("<!DOCTYPE X3D PUBLIC \"ISO//Web3D//DTD X3D 3.1//EN\" \"http://www.web3d.org/specifications/x3d-3.1.dtd\">");
+  result.push("<X3D profile=\"Immersive\" version=\"3.1\" xsd:noNamespaceSchemaLocation=\"http://www.web3d.org/specifications/x3d-3.1.xsd\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema-instance\">");
   result.push("\
     <head>\n\
       <meta content='"+name+".x3d' name='title'/>\n\
       <meta content='X3D export from terrafab.bengler.no' name='description'/>\n\
       <meta content='"+(new Date()).toString()+"' name='created'/>\n\
-      <meta content='"+(new Date()).toString()+"' name='modified'/>\n\
       <meta content='Bengler TerraFab' name='creator'/>\n\
       <meta content='http://terrafab.bengler.no' name='reference'/>\n\
-      <meta content='http://terrafab.bengler.no/models/"+name+".x3d' name='identifier'/>\n\
-      <meta content='http://terrafab.bengler.no/models/img/"+name+".png' name='image'/>\n\
-      <meta content='http://terrafab.bengler.no/models/license' name='license'/>\n\
       <meta content='Bengler TerraFab, http://terrafab.bengler.no' name='generator'/>\n\
     </head>\n");
   result.push("<Scene>");
   result.push("<Shape>");
   result.push("<Appearance>");
-  result.push("<ImageTexture url=' \"texture.png\" \"http://terrafab.bengler.no/models/"+name+"/texture.zip\"'/>");
+  result.push("<ImageTexture url='texture.png'/>");
   result.push("</Appearance>");
   // Add indicies for triangles
   indicies = [];
