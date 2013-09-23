@@ -11,6 +11,8 @@ You need the graphics library Cairo installed. On a mac using homebrew you achie
 
     $ brew install cairo --without-x
 
+<small>The Cairo that comes with x won't link to node canvas, so get the one without --without-x</small>
+
 Then:
 
 ```bash
