@@ -16,20 +16,17 @@ class TerrainData
     exec @gdalCommand(), (err, stdout, stderr) =>
       if err?
         # Is it just that gdal is not installed on this machine, or is it a real, actual problem?
-        if err.message.match("dtm.vrt' does not")
-          console.error "No local terrain data. Loading data from remote server."
-          httpGetOpts =
-            bufferType: "buffer"
-            url: config.imageUrl+"/dtm?box=#{@box.join(',')}&outsize=#{@xsamples},#{@ysamples}&format=bin"
-          httpGet.get httpGetOpts, (err, result) =>
-            if err?
-              console.log err
-            else
-              console.log "Terrain data is in the can!"
-              @data = result.buffer
-              onload()
-        else
-          console.log err
+        console.error "No local terrain data. Loading data from remote server."
+        httpGetOpts =
+          bufferType: "buffer"
+          url: config.imageUrl+"/dtm?box=#{@box.join(',')}&outsize=#{@xsamples},#{@ysamples}&format=bin"
+        httpGet.get httpGetOpts, (err, result) =>
+          if err?
+            console.log err
+          else
+            console.log "Terrain data is in the can!"
+            @data = result.buffer
+            onload()
       else
         @data = fs.readFileSync(@fileName())
         onload()

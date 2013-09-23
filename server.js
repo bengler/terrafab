@@ -3,6 +3,7 @@
  * Module dependencies.
  */
 
+require('coffee-script')
 var express = require('express');
 var routes = require('./routes');
 var http = require('http');
@@ -40,6 +41,7 @@ app.get('/', routes.index);
 app.get('/preview', routes.preview);
 app.get('/dtm', routes.dtm);
 app.get('/map', routes.map);
+app.get('/download', routes.download)
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

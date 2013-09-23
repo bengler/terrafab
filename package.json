@@ -31,6 +31,7 @@
     "localStorage": "*",
     "events": "*",
     "http-get": "~0.5.10",
-    "coffee-script": "~1.6.3"
+    "coffee-script": "~1.6.3",
+    "canvas": "~1.1.0"
   }
 }

@@ -3,6 +3,7 @@ helpers = require("./helpers")
 exec = require('child_process').exec;
 fs = require('fs');
 request = require('request');
+Archive = require('../fabricator/archive.coffee')
 
 /*
  * GET home page.
@@ -187,3 +188,22 @@ exports.map = function(req, res){
     );
   }
 };
+
+exports.download = function(req, res) {
+  headers = {
+    "Content-Type": "application/force-download",
+    "Content-Disposition": "attachment; filename=\"terrain-model.zip\""
+  };
+  var box = helpers.boxFromParam(req.query.box, res);
+  if(!box) { return; }
+  zip = new Archive({
+    box: {nw: [box[0], box[1]], se: [box[2], box[3]]}
+  });
+  zip.generate(function(err, filename) {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).set(headers).sendfile(filename, function(err){zip.delete()});
+    }
+  });
+}

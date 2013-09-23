@@ -3,7 +3,7 @@ THREE = require "three"
 class TerrainBuilder
   constructor: (@width, @height, unitsWide) ->
     @baseThickness = 5
-    @scale = unitsWide/@width
+    @scale = unitsWide/(@width-1)
     if document?
       @canvas ||= document.createElement("canvas")
       @canvas.width = @width
@@ -13,7 +13,7 @@ class TerrainBuilder
     @carveUnderside = false
 
   terrainCoordinateToVector: (x,y) ->
-    new THREE.Vector3((x-@width/2)*@scale, 0, (y-@height/2)*@scale)
+    new THREE.Vector3((x+0.5-@width/2)*@scale, 0, (y+0.5-@height/2)*@scale)
   terrainCoordinateToUV: (x,y) ->
     new THREE.Vector2(1.0*(x+0.5) / @width, 1.0-(1.0*(y+0.5) / @height))
   terrainCoordinateToVertexIndex: (x,y) ->
