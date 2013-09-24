@@ -33,5 +33,7 @@ class TerrainComponent
     animate()
   show: (nwPoint, sePoint) ->
     @scene.terrain.show(arguments...)
+  getBounds: ->
+    @scene.terrain.streamer.bounds
 
 module.exports = TerrainComponent

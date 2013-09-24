@@ -92,13 +92,13 @@ $ ->
         localStorage.setItem('zoom', map.getZoom())
 
     canvas = $('canvas#terrain')[0]
-    if false && canvas?
-      ctx = canvas.getContext('2d')
-      ctx.moveTo(0,0)
-      ctx.lineTo(800,800)
-      ctx.stroke()
-
     terrain = new Terrain(canvas)
     terrain.run()
     syncTerrainWithSelector()
     $("#q").focus()
+    $("#goToPreviewButton").click ->
+      bounds = terrain.getBounds()
+      unless bounds?
+        console.log "Too soon."
+        return
+      window.location = "/preview?box=#{[bounds.min.x, bounds.min.y, bounds.max.x, bounds.max.y].join(',')}"

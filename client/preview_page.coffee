@@ -32,4 +32,4 @@ if window.location.href.match("/preview")
 	      $('.readyHeader').html("Your model is ready")
 	      clearInterval(interval)
 
-	interval = setInterval(progress, 700)
+	interval = setInterval(progress, 1200)
