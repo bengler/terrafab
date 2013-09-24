@@ -44,7 +44,7 @@ app.get('/dtm', routes.dtm);
 app.get('/map', routes.map);
 app.get('/download', routes.download);
 
-app.get('/session', routes.session);
+app.get('/accesstoken', routes.accessToken);
 app.get('/login', routes.login);
 app.get('/callback', routes.callback);
 app.get('/shapeways', routes.toShapeways);

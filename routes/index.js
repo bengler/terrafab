@@ -234,6 +234,9 @@ exports.download = function(req, res) {
 
 /*
  * GET Let us login to Shapeways to get an access token for the Terrafab Shapeways application.
+ * Note: the end user will not be logging into this!
+ * It's a tool for us to obtain our access-token in order to put models onto our shapeways
+ * account through the Shapeways api.
  */
 exports.login = function(req, res) {
   swClient.login(function(err, callback) {
@@ -244,29 +247,31 @@ exports.login = function(req, res) {
 };
 
 /*
- * GET Callback called from Shapeways after the user (us) has accepted the Shapeways Terrafab application.
+ * GET Callback redirected to from Shapeways after authorization of our Shapeways application.
  */
 exports.callback = function(req, res) {
   return swClient.handleCallback(req.query.oauth_token, req.session.oauth_token_secret, req.query.oauth_verifier, function(callback) {
     req.session.oauth_access_token = callback.oauth_access_token;
     req.session.oauth_access_token_secret = callback.oauth_access_token_secret;
-    return res.redirect('/session');
+    return res.redirect('/accesstoken');
   });
 };
 
 /*
- * GET Just shows the access token and access secret to be put manually in app.json
+ * GET Just a text with the access token and secret to be put manually into our ./config/app.json.
  */
-exports.session = function(req, res) {
+exports.accessToken = function(req, res) {
   if(!helpers.isLoggedIn(req.session)) {
     res.redirect('/login');
   } else {
-    res.end("Your session: "+JSON.stringify(req.session));
+    res.end("Your ouath access token:          " + req.session.oauth_access_token +
+      "\nYour oauth access token secret:   " + req.session.oauth_access_token_secret +
+      "\n\nThis ought to be put as 'accessToken' and 'accessTokenSecret' in your ./config/app.json under the 'shapewaysAPI' key");
   }
 };
 
 /*
- * POST Send a model to shapeways.
+ * POST Send a model to our our Shapeways account with the configured access token and secret.
  */
 exports.toShapeways = function(req, res) {
   var box = helpers.boxFromParam(req.query.box, res);

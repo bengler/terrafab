@@ -26,13 +26,17 @@ class ShapewaysClient
 
   handleCallback:  (oauth_token, oauth_token_secret, oauth_verifier, callback) ->
     # Grab Access Token
-    @oa.getOAuthAccessToken oauth_token, oauth_token_secret, oauth_verifier, (error, oauth_access_token, oauth_access_token_secret, response) ->
-      if error
-        console.log 'error :' + JSON.stringify error
-      if response is undefined
-        console.log 'error: ' + response
-
-      callback { oauth_access_token, oauth_access_token_secret }
+    @oa.getOAuthAccessToken(
+      oauth_token,
+      oauth_token_secret,
+      oauth_verifier,
+      (error, oauth_access_token, oauth_access_token_secret, response) ->
+        if error
+          console.log 'error :' + JSON.stringify error
+        if response is undefined
+          console.log 'error: ' + response
+        callback { oauth_access_token, oauth_access_token_secret }
+    )
 
   postModel: (file, oauth_access_token, oauth_access_token_secret, callback) ->
       model_upload = fs.readFile file, (err, fileData) =>
@@ -48,10 +52,16 @@ class ShapewaysClient
           isDownloadable: true
         }
 
-        @oa.post API_HOST+"/models/v1", oauth_access_token, oauth_access_token_secret, upload, (error, data, response) ->
-          if error
-            callback err, null
-          else
-            callback null, data
+        @oa.post(
+          API_HOST+"/models/v1",
+          oauth_access_token,
+          oauth_access_token_secret,
+          upload,
+          (error, data, response) ->
+            if error
+              callback err, null
+            else
+              callback null, data
+        )
 
 module.exports = ShapewaysClient
