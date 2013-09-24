@@ -33,8 +33,17 @@ consumerKeySecret for your Shapeways application.
 
 ### /preview
 
+Packages the model into an archive ready for export.
+
 ### /download
 
+Download the built model archive.
+
+### /cart
+
+Lets the user buy the model at Shapeways through our configured Shapeways application.
+
+It assumes the user already have visited the ``/preview`` route.
 
 ## API endpoints
 
