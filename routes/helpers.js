@@ -48,6 +48,12 @@ helpers = {
   },
   fileHash: function(filename, extension) {
     return crypto.createHash('sha1').update(filename).digest('hex')+"."+extension;
+  },
+  isLoggedIn: function(session) {
+    if (!session.oauth_access_token) {
+      return false;
+    }
+    return true;
   }
 }
 module.exports = helpers;

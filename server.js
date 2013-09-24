@@ -20,6 +20,8 @@ app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
+app.use(express.cookieParser());
+app.use(express.session({secret: "terrafab10"}));
 app.use(app.router);
 app.use(require('stylus').middleware(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -40,7 +42,12 @@ app.get('/', routes.index);
 app.get('/preview', routes.preview);
 app.get('/dtm', routes.dtm);
 app.get('/map', routes.map);
-app.get('/download', routes.download)
+app.get('/download', routes.download);
+
+app.get('/session', routes.session);
+app.get('/login', routes.login);
+app.get('/callback', routes.callback);
+app.get('/shapeways', routes.toShapeways);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

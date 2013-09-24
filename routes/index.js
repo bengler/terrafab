@@ -5,6 +5,12 @@ var fs = require('fs');
 var request = require('request');
 var Archive = require('../fabricator/archive.coffee')
 
+ShapeWaysClient = require('../fabricator/shapeways.coffee');
+swClient = new ShapeWaysClient(
+  config.shapewaysAPI.consumerKey,
+  config.shapewaysAPI.consumerSecret
+);
+
 /*
  * GET home page.
  */
@@ -224,3 +230,58 @@ exports.download = function(req, res) {
     }
   })
 }
+
+/*
+ * GET Let user login to Shapeways to get an access token.
+ */
+exports.login = function(req, res) {
+  swClient.login(function(err, callback) {
+    req.session.oauth_token = callback.oauth_token;
+    req.session.oauth_token_secret = callback.oauth_token_secret;
+    res.redirect(callback.url);
+  });
+};
+
+/*
+ * GET Callback called from Shapeways after the user has accepted the Shapeways Terrafab application.
+ */
+exports.callback = function(req, res) {
+  return swClient.handleCallback(req.query.oauth_token, req.session.oauth_token_secret, req.query.oauth_verifier, function(callback) {
+    req.session.oauth_access_token = callback.oauth_access_token;
+    req.session.oauth_access_token_secret = callback.oauth_access_token_secret;
+    return res.redirect('/session');
+  });
+};
+
+/*
+ * GET Just shows the access token and access secret to be put in app.json
+ */
+exports.session = function(req, res) {
+  if(!helpers.isLoggedIn(req.session)) {
+    res.redirect('/login');
+  } else {
+    res.end("Your session: "+JSON.stringify(req.session));
+  }
+};
+
+/*
+ * POST Send a model to shapeways.
+ */
+exports.toShapeways = function(req, res) {
+  var box = helpers.boxFromParam(req.query.box, res);
+  if(!box) { return; }
+  // JUST DUMMY FOR NOW:
+  target = swClient.postModel(
+    "/tmp/terrafab/uoo284ss6ymsra4i.zip",
+    config.shapewaysAPI.accessToken,
+    config.shapewaysAPI.accessTokenSecret,
+    function(err, result) {
+      console.log(err, result);
+      if(err) {
+        res.status(500).end(err);
+      } else {
+        res.status(200).end(result);
+      }
+    }
+  );
+};
