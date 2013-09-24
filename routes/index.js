@@ -8,7 +8,8 @@ var Archive = require('../fabricator/archive.coffee')
 ShapeWaysClient = require('../fabricator/shapeways.coffee');
 swClient = new ShapeWaysClient(
   config.shapewaysAPI.consumerKey,
-  config.shapewaysAPI.consumerSecret
+  config.shapewaysAPI.consumerSecret,
+  config.shapewaysAPI.callbackURL
 );
 
 /*

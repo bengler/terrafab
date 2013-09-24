@@ -20,7 +20,8 @@
     "consumerKey": "XXX",
     "consumerSectret": "YYY",
     "accessToken": "ZZZ",
-    "accessTokenSecret": "NNN"
+    "accessTokenSecret": "NNN",
+    "callbackURL": "http://localhost:5000/callback"
   },
   "leaflet": {
     "attribution": "Map data: CCBY 3.0; Kartverket, Imagery: Bengler CCBY 3.0 <3"

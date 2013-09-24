@@ -3,7 +3,7 @@ OAuth = require('OAuth')
 API_HOST = "http://api.shapeways.com"
 
 class ShapewaysClient
-  constructor: (@consumerKey, @consumerSecret) ->
+  constructor: (@consumerKey, @consumerSecret, @callbackURL) ->
     getRequestTokenUrl = API_HOST+"/oauth1/request_token/v1"
     getAccessTokenUrl = API_HOST+"/oauth1/access_token/v1"
     @oa = new OAuth.OAuth(
@@ -12,7 +12,7 @@ class ShapewaysClient
       @consumerKey,
       @consumerSecret,
       "1.0",
-      "http://localhost:5000/callback",
+      @callbackURL,
       "HMAC-SHA1",
     )
 
