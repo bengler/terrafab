@@ -81,7 +81,7 @@ exports.dtm = function(req, res){
   var tif_file = out_file.replace('.'+out_extension, '.tif');
 
   var command = "bash -c '" +
-      "gdalwarp -s_srs EPSG:32633 -t_srs EPSG:32633" +
+      "GDAL_CACHEMAX=1000 gdalwarp -wm 1000 -s_srs EPSG:32633 -t_srs EPSG:32633" +
       " -r cubic -ts "+ outsize[0] + " " + outsize[1] +
       " -of GTiff " +
       "-te " + [box[0], box[3], box[2], box[1]].join(' ') + " " +
