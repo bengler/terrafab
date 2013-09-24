@@ -1,9 +1,10 @@
 extends layout
 block content
   #modelPreviewPage
+    canvas(width=700 height=700)#terrain.overlay
     .container
       .col1
-        img.model(src="/images/test_model.png")
+        div.modelPlaceholder
         .progress(style="display:none")
           .spinner
           p Filling up the lakes…
@@ -25,7 +26,7 @@ block content
         h2 Buy the model on ShapeWays
         p Lorem ipsum Ut adipisicing veniam deserunt elit nulla culpa est cupidatat magna anim occaecat anim ad aliqua et magna reprehenderit minim.
         p
-          a.button
+          a.button.disabled.buyButton
             | Buy the model at ShapeWays
             span (~$19)
         .shapewaysInfo

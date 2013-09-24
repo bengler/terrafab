@@ -1,6 +1,11 @@
 body
   overflow: scroll !important
 #modelPreviewPage
+  canvas#terrain
+    z-index: 10
+    position: absolute
+    top: -130px
+    left: -30px
   p
     line-height: 24px
   .progress
@@ -19,8 +24,9 @@ body
     p
       display: inline-block
       color: #666
-  img.model
-    max-width: 600px
+  div.modelPlaceholder
+    width: 600px
+    height: 450px
   a.button
     display: inline-block
     background-color: buttonColor
@@ -77,3 +83,4 @@ body
     p
       padding: 0 90px
       line-height: 24px
+

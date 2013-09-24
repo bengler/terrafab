@@ -51,11 +51,11 @@ class TerrainObject extends THREE.Object3D
       map: new THREE.ImageUtils.loadTexture("/images/dropshadow.png")
       shading: THREE.FlatShading
       transparent: true
-      opacity: 0.4
+      opacity: 0.7
     # A mesh to put the drop shadow on, below the landscape
     shadow = new THREE.Mesh(new THREE.PlaneGeometry(GEOMETRY_UNITS_WIDE*1.15, GEOMETRY_UNITS_WIDE*1.15, 1, 1), shadowMaterial)
     # Place it below
-    shadow.position.y = -6*@builder.scale
+    shadow.position.y = -@builder.baseThickness
     # Turn it on its side
     shadow.rotation.x = -Math.PI/2
     # Add to scene
