@@ -29,6 +29,7 @@ if window.location.href.match("/preview")
 	      $('.progress').remove()
 	      $('.downloadButton').removeClass('disabled')
 	      $('.buyButton').removeClass('disabled')
+	      $('.readyHeader').html("Your model is ready")
 	      clearInterval(interval)
 
 	interval = setInterval(progress, 700)
