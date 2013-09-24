@@ -28,12 +28,12 @@ if window.location.href.match("/preview")
 	    item++;
 	    if( item == length)
 	      $('.progress').remove()
-	      $('.buyButton').removeClass('disabled')
+      	$('.downloadButton').removeClass('disabled').attr("href", "/download"+window.location.search)
 	      f = ->
-	      	$('.downloadButton').removeClass('disabled').attr("href", "/download"+window.location.search)
-	      setTimeout(f, 500)
+		      $('.buyButton').removeClass('disabled')
+	      setTimeout(f, 600)
 	      f = -> $('.readyHeader').html("Your model is ready")
-	      setTimeout(f, 800)
+	      setTimeout(f, 300)
 	      clearInterval(interval)
 
 	interval = setInterval(progress, 1200)
