@@ -38,6 +38,7 @@
     "rimraf": "~2.2.2",
     "caching-coffeeify": "~0.2.0",
     "browserify": "~2.32.4",
-    "uglify-js": "~2.4.0"
+    "uglify-js": "~2.4.0",
+    "oauth": "latest"
   }
 }
