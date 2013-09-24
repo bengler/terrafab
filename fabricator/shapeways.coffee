@@ -1,4 +1,4 @@
-OAuth = require('OAuth')
+OAuth = require('oauth')
 
 API_HOST = "http://api.shapeways.com"
 
