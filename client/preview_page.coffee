@@ -27,7 +27,7 @@ if window.location.href.match("/preview")
 	    item++;
 	    if( item == length)
 	      $('.progress').remove()
-	      $('.downloadButton').removeClass('disabled')
+	      $('.downloadButton').removeClass('disabled').attr("href", "/download"+window.location.search)
 	      $('.buyButton').removeClass('disabled')
 	      $('.readyHeader').html("Your model is ready")
 	      clearInterval(interval)
