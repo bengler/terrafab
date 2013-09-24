@@ -36,9 +36,6 @@ consumerKeySecret for your Shapeways application.
 ### /download
 
 
-app.get('/download', routes.download);
-
-
 ## API endpoints
 
 ### /dtm (GET)
