@@ -1,12 +1,4 @@
 
-var OPPOSITES = {
-  se: 'nw',
-  nw: 'se',
-  sw: 'ne',
-  ne: 'sw'
-};
-
-
 var L = require("leaflet")
 L.RectangleEditor = L.Rectangle.extend ({
   options: {
@@ -79,56 +71,6 @@ L.RectangleEditor = L.Rectangle.extend ({
   },
   getMarkerBounds: function() {
     return [new L.LatLngBounds(this.markers.sw.getLatLng(), this.markers.ne.getLatLng())];
-  },
-  getOppositeOf: function(marker) {
-    for (var key in this.markers) if (this.markers.hasOwnProperty(key)) {
-      if (marker == this.markers[key]) {
-        return this.markers[OPPOSITES[key]];
-      }
-    }
-  },
-  extendTo: function(draggedMarker) {
-    var markerLatLng = draggedMarker.getLatLng();
-    var swLatLng = this.markers.sw.getLatLng();
-    var seLatLng = this.markers.se.getLatLng();
-    var neLatLng = this.markers.ne.getLatLng();
-    var nwLatLng = this.markers.nw.getLatLng();
-
-    var aspectRatio = this.options.constraints.aspectRatio;
-    if (aspectRatio !== undefined) {
-      var opposite = this.getOppositeOf(draggedMarker)
-
-      var oppositePoint = this._map.project(opposite.getLatLng())
-      var dragPoint = this._map.project(draggedMarker.getLatLng())
-
-      var diffX = Math.abs(oppositePoint.x - dragPoint.x) * aspectRatio;
-
-      if (oppositePoint.y < dragPoint.y) {
-        dragPoint.y = oppositePoint.y + diffX;
-      } else {
-        dragPoint.y = oppositePoint.y - diffX;
-      }
-      markerLatLng = this._map.unproject(dragPoint);
-      draggedMarker.setLatLng(markerLatLng)
-    }
-    if (draggedMarker == this.markers.sw) {
-      this.markers.nw.setLatLng([nwLatLng.lat, markerLatLng.lng])
-      this.markers.se.setLatLng([markerLatLng.lat, seLatLng.lng])
-    }
-    else if (draggedMarker == this.markers.nw) {
-      this.markers.ne.setLatLng([markerLatLng.lat, neLatLng.lng])
-      this.markers.sw.setLatLng([swLatLng.lat, markerLatLng.lng])
-    }
-    else if (draggedMarker == this.markers.ne) {
-      this.markers.se.setLatLng([seLatLng.lat, markerLatLng.lng])
-      this.markers.nw.setLatLng([markerLatLng.lat, nwLatLng.lng])
-    }
-    else if (draggedMarker == this.markers.se) {
-      this.markers.ne.setLatLng([neLatLng.lat, markerLatLng.lng])
-      this.markers.sw.setLatLng([markerLatLng.lat, swLatLng.lng])
-    }
-    this._dragMarker.setLatLng(this.getMarkerBounds()[0].getCenter())
-    this.fire('change', {bounds: this.getMarkerBounds()[0]})
   },
   _onMarkerDrag: function (e) {
     var marker = e.target;
@@ -238,6 +180,7 @@ L.RectangleEditor = L.Rectangle.extend ({
 
     this.fire('change', {bounds: this.getMarkerBounds()[0]})
   },
+
   _onDragMarkerDrag: function (e) {
     this.setCenterLatLng(e.target.getLatLng())
     this.redraw();
