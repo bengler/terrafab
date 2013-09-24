@@ -22,7 +22,7 @@ function toX3D(builder, name){
   // Add vertices
   points = [];
   for(var i = 0; i<vertices.length; i++){
-    points.push(""+vertices[i].x/1000+" "+(-vertices[i].z/1000)+" "+vertices[i].y/1000);
+    points.push(""+vertices[i].x+" "+(-vertices[i].z)+" "+vertices[i].y);
   }
   result.push("<Coordinate point='"+points.join(', ')+"'/>");
   // Add UV-map

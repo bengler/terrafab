@@ -101,4 +101,4 @@ $ ->
       unless bounds?
         console.log "Too soon."
         return
-      window.location = "/preview?box=#{[bounds.min.x, bounds.min.y, bounds.max.x, bounds.max.y].join(',')}"
+      window.location = "/preview?box=#{[bounds.min.x, bounds.max.y, bounds.max.x, bounds.min.y].join(',')}"

@@ -29,8 +29,12 @@ class TerrainScene extends THREE.Scene
   advance: (time) ->
     @t += time || 1.0
     # Spinning the terrain
-    @terrain.rotation.y = Math.sin(@t/200)*Math.PI/20+Math.PI
-    @terrain.rotation.x = Math.sin(@t/240)*Math.PI/30
+    if @continousRotation
+      @terrain.rotation.y += 0.002
+      @terrain.rotation.x = Math.sin(@t/240)*Math.PI/30+0.2
+    else
+      @terrain.rotation.y = Math.sin(@t/200)*Math.PI/20+Math.PI
+      @terrain.rotation.x = Math.sin(@t/240)*Math.PI/30
 
     # Looks at the size of the geometry and zooms out if it gets too big
     @targetFov = 35+(@terrain.mesh.geometry.boundingSphere.radius-70.5)*0.4
