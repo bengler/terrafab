@@ -232,7 +232,7 @@ exports.download = function(req, res) {
 }
 
 /*
- * GET Let user login to Shapeways to get an access token.
+ * GET Let us login to Shapeways to get an access token for the Terrafab Shapeways application.
  */
 exports.login = function(req, res) {
   swClient.login(function(err, callback) {
@@ -243,7 +243,7 @@ exports.login = function(req, res) {
 };
 
 /*
- * GET Callback called from Shapeways after the user has accepted the Shapeways Terrafab application.
+ * GET Callback called from Shapeways after the user (us) has accepted the Shapeways Terrafab application.
  */
 exports.callback = function(req, res) {
   return swClient.handleCallback(req.query.oauth_token, req.session.oauth_token_secret, req.query.oauth_verifier, function(callback) {
@@ -254,7 +254,7 @@ exports.callback = function(req, res) {
 };
 
 /*
- * GET Just shows the access token and access secret to be put in app.json
+ * GET Just shows the access token and access secret to be put manually in app.json
  */
 exports.session = function(req, res) {
   if(!helpers.isLoggedIn(req.session)) {

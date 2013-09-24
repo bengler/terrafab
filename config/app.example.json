@@ -18,7 +18,9 @@
   },
   "shapewaysAPI": {
     "consumerKey": "XXX",
-    "consumerSectret": "YYY"
+    "consumerSectret": "YYY",
+    "accessToken": "ZZZ",
+    "accessTokenSecret": "NNN"
   },
   "leaflet": {
     "attribution": "Map data: CCBY 3.0; Kartverket, Imagery: Bengler CCBY 3.0 <3"
