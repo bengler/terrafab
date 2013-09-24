@@ -29,6 +29,16 @@ In order to configure the accessToken and accessTokenSecret for Shapeways, you m
 calling the route ``/accesstoken`` in the app after you have configrued the consumerKey and
 consumerKeySecret for your Shapeways application.
 
+## Model endpoints
+
+### /preview
+
+### /download
+
+
+app.get('/download', routes.download);
+
+
 ## API endpoints
 
 ### /dtm (GET)
@@ -63,12 +73,15 @@ Renders a UTM 33 map tile for a given bound (box).
 /map?box=253723.176600653,6660500.4670516,267723.176600653,6646500.4670516&outsize=1000,1000
 ```
 
+## Shapeways endpoints
 
 ### /accesstoken (GET)
 
-Let us login to Shapeways to get an access token for the Terrafab Shapeways application.
+Let you login to Shapeways to get an access token for the your Shapeways application.
 Note: the end user will not be logging into this. It's a tool for obtaining an access token
 for the application (in order to post models to the Shapeways API).
+
+There is also: ``/login`` and  ``/callback`` which is taken care of by the oAuth bonanza.
 
 #### Params
 None
