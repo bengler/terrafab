@@ -132,9 +132,18 @@ L.RectangleEditor = L.Rectangle.extend ({
   },
   _onMarkerDrag: function (e) {
     var marker = e.target;
-    this.extendTo(marker);
-    this.setBounds(this.getMarkerBounds());
-    this.redraw();
+    if (marker == this.markers.nw) {
+      this.setNorthWest(marker.getLatLng())
+    }
+    else if (marker == this.markers.se) {
+      this.setSouthEast(marker.getLatLng())
+    }
+    else if (marker == this.markers.sw) {
+      this.setSouthWest(marker.getLatLng())
+    }
+    else if (marker == this.markers.ne) {
+      this.setNorthEast(marker.getLatLng())
+    }
   },
   _onMarkerMouseUp: function(e) {
     this.fire('mouseup', {bounds: this.getMarkerBounds()[0]});
@@ -171,6 +180,35 @@ L.RectangleEditor = L.Rectangle.extend ({
 
     var swLatLng = this._map.unproject(swPoint);
     var neLatLng = this._map.unproject(nePoint);
+
+    this.markers.sw.setLatLng(swLatLng);
+    this.markers.ne.setLatLng(neLatLng);
+    this.markers.se.setLatLng(seLatLng);
+    this.markers.nw.setLatLng(nwLatLng);
+
+    this.setLatLngs([nwLatLng, neLatLng, seLatLng, swLatLng])
+  },
+  setNorthWest: function(latLng) {
+    this.setNorthWestAndSouthEast(latLng, this.markers.se.getLatLng())
+  },
+  setSouthEast: function(latLng) {
+    this.setNorthWestAndSouthEast(this.markers.nw.getLatLng(), latLng)
+  },
+  setNorthEast: function(latLng) {
+    this.setNorthEastAndSouthWest(latLng, this.markers.sw.getLatLng())
+  },
+  setSouthWest: function(latLng) {
+    this.setNorthEastAndSouthWest(this.markers.ne.getLatLng(), latLng)
+  },
+  setNorthEastAndSouthWest: function(neLatLng, swLatLng) {
+    var nePoint = this._map.project(neLatLng);
+    var swPoint = this._map.project(swLatLng);
+
+    var nwPoint = new L.Point(swPoint.x, nePoint.y);
+    var sePoint = new L.Point(nePoint.x, swPoint.y);
+
+    var nwLatLng = this._map.unproject(nwPoint);
+    var seLatLng = this._map.unproject(sePoint);
 
     this.markers.sw.setLatLng(swLatLng);
     this.markers.ne.setLatLng(neLatLng);
