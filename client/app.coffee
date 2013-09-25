@@ -11,6 +11,11 @@ require('./preview_page.coffee')
 
 $ ->
   $('.waitForLoad').show();
+  if document.cookie.match("HIDE_ABOUT=true")
+    $('#bubble').hide()
+  $('.closeBubbleAction').click ->
+    $('#bubble').hide()
+    document.cookie = "HIDE_ABOUT=true; expires=session"
   if window.location.pathname == "/"
     # Set up place search autocompleter
     suggestionCompleter = new SuggestionCompleter($("#q"), $("#autocomplete"),
@@ -102,4 +107,4 @@ $ ->
       unless bounds?
         console.log "Too soon."
         return
-      window.location = "/preview?box=#{[bounds.min.x, bounds.min.y, bounds.max.x, bounds.max.y].join(',')}"
+      window.location = "/preview?box=#{[bounds.min.x, bounds.max.y, bounds.max.x, bounds.min.y].join(',')}"

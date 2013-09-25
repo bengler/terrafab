@@ -21,9 +21,33 @@ Then:
 
 The web app should now be accessible at [http://localhost:3000](http://localhost:3000)
 
+## Configuration
+
+All configuration can be done under ``./config/app.json``. Have a look at the ``./config/app.example.json``.
+
+In order to configure the accessToken and accessTokenSecret for Shapeways, you may obtain them by
+calling the route ``/accesstoken`` in the app after you have configrued the consumerKey and
+consumerKeySecret for your Shapeways application.
+
+## Model endpoints
+
+### /preview
+
+Packages the model into an archive ready for export.
+
+### /download
+
+Download the built model archive.
+
+### /cart
+
+Lets the user buy the model at Shapeways through our configured Shapeways application.
+
+It assumes the user already have visited the ``/preview`` route.
+
 ## API endpoints
 
-### /dtm
+### /dtm (GET)
 
 Renders a UTM 33 terrain model for a given bound (box).
 
@@ -41,7 +65,7 @@ Renders a UTM 33 terrain model for a given bound (box).
 /dtm?box=253723.176600653,6660500.4670516,267723.176600653,6646500.4670516&outsize=1000,1000
 ```
 
-### /map
+### /map (GET)
 
 Renders a UTM 33 map tile for a given bound (box).
 
@@ -54,3 +78,20 @@ Renders a UTM 33 map tile for a given bound (box).
 ```
 /map?box=253723.176600653,6660500.4670516,267723.176600653,6646500.4670516&outsize=1000,1000
 ```
+
+## Shapeways endpoints
+
+### /accesstoken (GET)
+
+Let you login to Shapeways to get an access token for the your Shapeways application.
+Note: the end user will not be logging into this. It's a tool for obtaining an access token
+for the application (in order to post models to the Shapeways API).
+
+There is also: ``/login`` and  ``/callback`` which is taken care of by the oAuth bonanza.
+
+#### Params
+None
+
+#### Example
+```
+/accesstoken

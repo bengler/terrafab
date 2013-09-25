@@ -3,24 +3,24 @@ block content
   #indexPage
     #loader
       img(src="/images/ajax-loader.gif")
+
     #bubble.waitForLoad
-      .close
-        | <?xml version="1.0" encoding="utf-8"?>
-        | <!-- Generator: Adobe Illustrator 17.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-        | <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-        | <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
-        |   <line fill="none" stroke="#000000" stroke-miterlimit="10" x1="0" y1="0" x2="24" y2="24"/>
-        |   <line fill="none" stroke="#000000" stroke-miterlimit="10" x1="0" y1="24" x2="24" y2="0"/>
-        | </svg>
-      h1 Welcome to terrafab
-      p Lorem ipsum Anim pariatur incididunt reprehenderit ut velit dolore laboris et fugiat est deserunt dolor sint sit aliqua non aliquip occaecat ut deserunt velit incididunt magna sunt consectetur magna dolore deserunt proident ut.
-      ul
-        li
-          a(href="http://github.com/bengler/terrafab") Project at Github
-        li
-          a(href="http://bengler.no/terrafab") Read about the project
-        li
-          a(href="http://bengler.no") Bengler
+      #bubbleContent
+        .close
+          | <?xml version="1.0" encoding="utf-8"?>
+          | <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+          | <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+          |   <line fill="none" stroke="#000000" stroke-miterlimit="10" x1="0" y1="0" x2="24" y2="24"/>
+          |   <line fill="none" stroke="#000000" stroke-miterlimit="10" x1="0" y1="24" x2="24" y2="0"/>
+          | </svg>
+        h1 Own a slice of Norway!
+        img(src="/images/model_example.jpg")
+        .block
+          p Arguably, Norway has one of the top five most incredible terrains in the known universe. Now you can create your own 3D-printed genuine gypsum heirloom mantelpiece display replica of your favorite part of this formidable landscape in two easy steps:
+          ol
+            li Drag the selector around until you love what you see in the floating 3D preview.
+            li Hit the big, orange button that says "Get this model 3D-printed"
+          a.closeBubbleAction.bigOrangeButton Ok, I get it!
     #map
     canvas(width=800 height=800)#terrain.overlay
 
@@ -30,7 +30,7 @@ block interface
     input#q(type='search', autocomplete='off', placeholder='Find place')
     ul#autocomplete
     #goToPreviewButton
-      a Get the model
+      a.bigOrangeButton Get this model 3D-printed
     #position
       input.location(type='text', id='utm', placeholder="UTM")
       br

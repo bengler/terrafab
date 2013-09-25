@@ -5,6 +5,13 @@ var fs = require('fs');
 var request = require('request');
 var Archive = require('../fabricator/archive.coffee')
 
+ShapeWaysClient = require('../fabricator/shapeways.coffee');
+swClient = new ShapeWaysClient(
+  config.shapewaysAPI.consumerKey,
+  config.shapewaysAPI.consumerSecret,
+  config.shapewaysAPI.callbackURL
+);
+
 /*
  * GET home page.
  */
@@ -81,7 +88,7 @@ exports.dtm = function(req, res){
   var tif_file = out_file.replace('.'+out_extension, '.tif');
 
   var command = "bash -c '" +
-      "gdalwarp -s_srs EPSG:32633 -t_srs EPSG:32633" +
+      "GDAL_CACHEMAX=1000 gdalwarp -wm 1000 -s_srs EPSG:32633 -t_srs EPSG:32633" +
       " -r cubic -ts "+ outsize[0] + " " + outsize[1] +
       " -of GTiff " +
       "-te " + [box[0], box[3], box[2], box[1]].join(' ') + " " +
@@ -113,10 +120,15 @@ exports.dtm = function(req, res){
               res.end(stderr);
               return;
           }
-          console.error(err);
-          console.log("Trying to get data from remote server at "+config.imageUrl+req.url);
-          request.get(config.imageUrl+req.url).pipe(res);
-          return;
+          if ((stderr.match('command not found') || stderr.match('No command') || stderr.match('does not exist in the file system'))) {
+            console.log("Trying to get data from remote server at "+config.imageUrl+req.url);
+            request.get(config.imageUrl+req.url).pipe(res);
+            return;
+          } else {
+            console.error(err);
+            res.status(500).send(stderr);
+            return;
+          }
         }
         res.writeHead(200, out_content_type);
         var img = fs.readFileSync(out_file);
@@ -224,3 +236,63 @@ exports.download = function(req, res) {
     }
   })
 }
+
+/*
+ * GET Let us login to Shapeways to get an access token for the Terrafab Shapeways application.
+ * Note: the end user will not be logging into this!
+ * It's a tool for us to obtain our access-token in order to put models onto our shapeways
+ * account through the Shapeways api.
+ */
+exports.login = function(req, res) {
+  swClient.login(function(err, callback) {
+    req.session.oauth_token = callback.oauth_token;
+    req.session.oauth_token_secret = callback.oauth_token_secret;
+    res.redirect(callback.url);
+  });
+};
+
+/*
+ * GET Callback redirected to from Shapeways after authorization of our Shapeways application.
+ */
+exports.callback = function(req, res) {
+  return swClient.handleCallback(req.query.oauth_token, req.session.oauth_token_secret, req.query.oauth_verifier, function(callback) {
+    req.session.oauth_access_token = callback.oauth_access_token;
+    req.session.oauth_access_token_secret = callback.oauth_access_token_secret;
+    return res.redirect('/accesstoken');
+  });
+};
+
+/*
+ * GET Just a text with the access token and secret to be put manually into our ./config/app.json.
+ */
+exports.accessToken = function(req, res) {
+  if(!helpers.isLoggedIn(req.session)) {
+    res.redirect('/login');
+  } else {
+    res.end("Your ouath access token:          " + req.session.oauth_access_token +
+      "\nYour oauth access token secret:   " + req.session.oauth_access_token_secret +
+      "\n\nThis ought to be put as 'accessToken' and 'accessTokenSecret' in your ./config/app.json under the 'shapewaysAPI' key");
+  }
+};
+
+/*
+ * POST Send a model to our our Shapeways account with the configured access token and secret.
+ */
+exports.toShapeways = function(req, res) {
+  var box = helpers.boxFromParam(req.query.box, res);
+  if(!box) { return; }
+  // JUST DUMMY FOR NOW:
+  target = swClient.postModel(
+    "/tmp/terrafab/uoo284ss6ymsra4i.zip",
+    config.shapewaysAPI.accessToken,
+    config.shapewaysAPI.accessTokenSecret,
+    function(err, result) {
+      console.log(err, result);
+      if(err) {
+        res.status(500).end(err);
+      } else {
+        res.status(200).end(result);
+      }
+    }
+  );
+};

@@ -10,6 +10,7 @@ if window.location.href.match("/preview")
 	$ ->
     canvas = $('canvas#terrain')[0]
     terrain = new Terrain(canvas)
+    terrain.scene.continousRotation = true
     terrain.run()
     box = parseBoxParams()
     terrain.show(new L.Point(box[0], box[1]), new L.Point(box[2], box[3]))
@@ -27,9 +28,12 @@ if window.location.href.match("/preview")
 	    item++;
 	    if( item == length)
 	      $('.progress').remove()
-	      $('.downloadButton').removeClass('disabled').attr("href", "/download"+window.location.search)
-	      $('.buyButton').removeClass('disabled')
-	      $('.readyHeader').html("Your model is ready")
+      	$('.downloadButton').removeClass('disabled').attr("href", "/download"+window.location.search)
+	      f = ->
+		      $('.buyButton').removeClass('disabled')
+	      setTimeout(f, 600)
+	      f = -> $('.readyHeader').html("Your model is ready")
+	      setTimeout(f, 300)
 	      clearInterval(interval)
 
 	interval = setInterval(progress, 1200)
