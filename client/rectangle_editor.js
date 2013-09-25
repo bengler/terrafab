@@ -1,6 +1,7 @@
 var NW = 0, NE = 1, SE = 2, SW = 3
 
-var L = require("leaflet")
+var L = require("leaflet");
+
 L.RectangleEditor = L.Polygon.extend ({
   options: {
     draggable: true,
@@ -8,28 +9,30 @@ L.RectangleEditor = L.Polygon.extend ({
     weight: 1,
     fillColor: '#ffb400',
     fillOpacity: 0.2,
-    aspectRatio: 1,
-    minSize: 10
+    constraints: {
+      aspectRatio: 1
+    },
+    projection: L.CRS.EPSG3857.projection
   },
 
   initialize: function(bounds, options) {
+    L.setOptions(this, options || {});
     this._latLngs = this.translateLatLngs(bounds);
     L.Polygon.prototype.initialize.call(this, this._latLngs, options);
   },
 
   onAdd: function (map) {
-    this._latLngs = this.translateLatLngs(this._latLngs);
 
     L.Polygon.prototype.onAdd.call(this, map);
 
     this._resizeMarkers = this.createResizeMarkers();
     this._moveMarker = this.createMoveMarker(this.getCenter());
+
     this._moveMarker.on('drag', this._onMoveMarkerDrag, this);
+
     var allLayers = Object.keys(this._resizeMarkers).map(function(k) { return this._resizeMarkers[k]}, this).concat([this._moveMarker]);
     var markerGroup = new L.LayerGroup(allLayers);
 
-    var bounds = this.getBounds()
-    this.setNorthWestAndSouthEast(bounds.getNorthWest(), bounds.getSouthEast())
     map.addLayer(markerGroup);
   },
 
@@ -57,13 +60,13 @@ L.RectangleEditor = L.Polygon.extend ({
     this.tearDown();
     L.Path.prototype.onRemove.call(this, map);
   },
-  createMoveMarker: function(latlng) {
+  createMoveMarker: function(latLng) {
     var icon = new L.DivIcon({
       iconSize: [100,100],
       className: 'leaflet-div-icon leaflet-editing-icon moveable',
       cursor: 'move'
     });
-    return new L.Marker(latlng, {
+    return new L.Marker(latLng, {
       draggable: true,
       icon: icon
     });
@@ -71,39 +74,31 @@ L.RectangleEditor = L.Polygon.extend ({
   _onResizeMarkerDrag: function (e) {
     var marker = e.target;
     if (marker == this._resizeMarkers.nw) {
-      this.setNorthWest(this.constrainTo(marker.getLatLng(), this._latLngs[SE], this.options.aspectRatio))
+      this.setNorthWest(this.constrainTo(marker.getLatLng(), this._latLngs[SE], this.options.constraints.aspectRatio))
     }
     else if (marker == this._resizeMarkers.se) {
-      this.setSouthEast(this.constrainTo(marker.getLatLng(), this._latLngs[NW], this.options.aspectRatio))
+      this.setSouthEast(this.constrainTo(marker.getLatLng(), this._latLngs[NW], this.options.constraints.aspectRatio))
     }
     else if (marker == this._resizeMarkers.sw) {
-      this.setSouthWest(this.constrainTo(marker.getLatLng(), this._latLngs[NE], this.options.aspectRatio))
+      this.setSouthWest(this.constrainTo(marker.getLatLng(), this._latLngs[NE], this.options.constraints.aspectRatio))
     }
     else if (marker == this._resizeMarkers.ne) {
-      this.setNorthEast(this.constrainTo(marker.getLatLng(), this._latLngs[SW], this.options.aspectRatio))
+      this.setNorthEast(this.constrainTo(marker.getLatLng(), this._latLngs[SW], this.options.constraints.aspectRatio))
     }
   },
   translateLatLngs: function(bounds) {
     bounds = L.latLngBounds(bounds);
-    var nwLatLng = bounds.getNorthWest();
-    var seLatLng = bounds.getSouthEast();
+    var neLatLng = bounds.getNorthEast();
+    var swLatLng = bounds.getSouthWest();
 
-    var swLatLng;
-    var neLatLng;
-    if (this._map) {
-      var nwPoint = this._map.project(nwLatLng);
-      var sePoint = this._map.project(seLatLng);
+    var nePoint = this.project(neLatLng);
+    var swPoint = this.project(swLatLng);
 
-      var nePoint = new L.Point(sePoint.x, nwPoint.y);
-      var swPoint = new L.Point(nwPoint.x, sePoint.y);
+    var nwPoint = new L.Point(swPoint.x, nePoint.y);
+    var sePoint = new L.Point(nePoint.x, swPoint.y);
 
-      swLatLng = this._map.unproject(swPoint);
-      neLatLng = this._map.unproject(nePoint);
-    }
-    else {
-      swLatLng = bounds.getSouthWest()
-      neLatLng = bounds.getNorthEast()
-    }
+    var nwLatLng = this.unproject(nwPoint);
+    var seLatLng = this.unproject(sePoint);
     return [nwLatLng, neLatLng, seLatLng, swLatLng]
   },
   setLatLngs: function(latLngs) {
@@ -121,13 +116,13 @@ L.RectangleEditor = L.Polygon.extend ({
     this.redraw()
   },
   _layoutMoveMarker: function() {
-    var nwPoint = this._map.project(this._latLngs[NW]);
-    var sePoint = this._map.project(this._latLngs[SE]);
+    var nwPoint = this.project(this._latLngs[NW]);
+    var sePoint = this.project(this._latLngs[SE]);
 
     var center = this.getCenter()
     var h = Math.abs(nwPoint.y - sePoint.y);
     var w = Math.abs(nwPoint.x - sePoint.x);
-    var centerPoint = this._map.project(center);
+    var centerPoint = this.project(center);
 
     nwPoint.y = centerPoint.y+(h/2);
     nwPoint.x = centerPoint.x+(w/2);
@@ -144,20 +139,26 @@ L.RectangleEditor = L.Polygon.extend ({
     } 
   },
   setNorthWestAndSouthEast: function(nwLatLng, seLatLng) {
-    var nwPoint = this._map.project(nwLatLng);
-    var sePoint = this._map.project(seLatLng);
+    var nwPoint = this.project(nwLatLng);
+    var sePoint = this.project(seLatLng);
 
     var nePoint = new L.Point(sePoint.x, nwPoint.y);
     var swPoint = new L.Point(nwPoint.x, sePoint.y);
 
-    var swLatLng = this._map.unproject(swPoint);
-    var neLatLng = this._map.unproject(nePoint);
+    var swLatLng = this.unproject(swPoint);
+    var neLatLng = this.unproject(nePoint);
 
     this.setLatLngs([nwLatLng, neLatLng, seLatLng, swLatLng])
   },
+  project: function(latLng) {
+    return this.options.projection.project(latLng)
+  },
+  unproject: function(point) {
+    return this.options.projection.unproject(point)
+  },
   constrainTo: function(latLng, oppositeLatLng, aspectRatio) {
-    var point = this._map.project(latLng);
-    var oppositePoint = this._map.project(oppositeLatLng);
+    var point = this.project(latLng);
+    var oppositePoint = this.project(oppositeLatLng);
     
     var w = Math.abs(oppositePoint.x - point.x);
     var diffX = w * aspectRatio;
@@ -167,7 +168,7 @@ L.RectangleEditor = L.Polygon.extend ({
     } else {
       constrainedPoint =new L.Point(point.x, oppositePoint.y - diffX);
     }
-    return this._map.unproject(constrainedPoint);
+    return this.unproject(constrainedPoint);
   },
   getSouthWest: function() {
     return this._latLngs[SW];
@@ -194,14 +195,14 @@ L.RectangleEditor = L.Polygon.extend ({
     this.setNorthEastAndSouthWest(this._latLngs[NE], latLng)
   },
   setNorthEastAndSouthWest: function(neLatLng, swLatLng) {
-    var nePoint = this._map.project(neLatLng);
-    var swPoint = this._map.project(swLatLng);
+    var nePoint = this.project(neLatLng);
+    var swPoint = this.project(swLatLng);
 
     var nwPoint = new L.Point(swPoint.x, nePoint.y);
     var sePoint = new L.Point(nePoint.x, swPoint.y);
 
-    var nwLatLng = this._map.unproject(nwPoint);
-    var seLatLng = this._map.unproject(sePoint);
+    var nwLatLng = this.unproject(nwPoint);
+    var seLatLng = this.unproject(sePoint);
 
     this.setLatLngs([nwLatLng, neLatLng, seLatLng, swLatLng])
   },
@@ -209,10 +210,10 @@ L.RectangleEditor = L.Polygon.extend ({
     return new L.LatLngBounds(this._latLngs).getCenter();
   },
   setCenter: function(latLng) {
-    var nePoint = this._map.project(this._latLngs[NE]);
-    var swPoint = this._map.project(this._latLngs[SW]);
+    var nePoint = this.project(this._latLngs[NE]);
+    var swPoint = this.project(this._latLngs[SW]);
 
-    var centerPoint = this._map.project(latLng);
+    var centerPoint = this.project(latLng);
 
     var h = Math.abs(nePoint.y - swPoint.y);
     var w = Math.abs(swPoint.x - nePoint.x);
@@ -223,8 +224,8 @@ L.RectangleEditor = L.Polygon.extend ({
     swPoint.y = centerPoint.y-(h/2);
     swPoint.x = centerPoint.x-(w/2);
 
-    var swLatLng = this._map.unproject(swPoint);
-    var neLatLng = this._map.unproject(nePoint);
+    var swLatLng = this.unproject(swPoint);
+    var neLatLng = this.unproject(nePoint);
     this.setNorthEastAndSouthWest(neLatLng, swLatLng)
   },
   _onMoveMarkerDrag: function (e) {

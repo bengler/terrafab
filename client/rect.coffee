@@ -6,7 +6,14 @@ require("./ext_js/proj4js-compressed.js")
 require("./ext_js/proj4leaflet.js")
 require("./rectangle_editor")
 
+RoutePattern = require("route-pattern")
+
 config = require('../config/app.json')
+
+$ ->
+  $('.waitForLoad').show();
+
+boxPattern = RoutePattern.fromString("?box=:box")
 
 $ ->
   resolutions = [
@@ -17,8 +24,23 @@ $ ->
     169.25, 84.625, 42.3125, 21.15625,
     10.578125, 5.2890625, 1
   ]
-
   crs = new L.Proj.CRS('EPSG:32633', '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs', {resolutions})
+
+  #$('.closeBubbleAction').click ->
+  $('#bubble').hide()
+
+  if (match = boxPattern.match(document.location))
+    box = match.queryParams.box.split(",")
+    swPoint = L.point.apply(null, box.slice(0,2))
+    nePoint = L.point.apply(null, box.slice(2))
+    sw = crs.projection.unproject(swPoint)
+    ne = crs.projection.unproject(nePoint)
+    
+    latLngs = [sw, ne]
+
+  #latLngs ||= [[60.84751214857874,7.855133604041304],[60.651121757063,7.765658244480659]]
+
+  rectangleEditor = new L.RectangleEditor(latLngs, {projection: crs.projection})
 
   map = new L.Map('map', {
     crs: crs,
@@ -32,15 +54,15 @@ $ ->
         noWrap: true
       })
     ],
-    center: [60.84751214857874,7.855133604041304],
+    center: rectangleEditor.getCenter(),
     zoom: 15
     scale: (zoom) ->
       return 1 / resolutions[zoom]
-
   })
 
-  rectangleEditor = new L.RectangleEditor([[60.84751214857874,7.855133604041304],[60.651121757063,7.765658244480659]])
   rectangleEditor.addTo(map)
+  #rectangleEditor.setNorthEast(ne)
+  #rectangleEditor.setSouthWest(sw)
 
   map.on 'click', (e)->
     rectangleEditor.setCenter(e.latlng)
@@ -55,13 +77,12 @@ $ ->
   terrain = new Terrain(canvas)
   terrain.run()
   syncTerrainWithSelector()
-  $("#q").focus()
+
   $("#goToPreviewButton").click ->
-    bounds = terrain.getBounds()
-    unless bounds?
-      console.log "Too soon."
-      return
-    window.location = "/preview?box=#{[bounds.min.x, bounds.min.y, bounds.max.x, bounds.max.y].join(',')}"
+    sw = crs.project(rectangleEditor.getSouthWest())
+    ne = crs.project(rectangleEditor.getNorthEast())
+    console.log(sw, ne)
+    window.location = "/preview?box=#{[sw.x, sw.y, ne.x, ne.y].join(',')}"
 
   syncSelection = ->
     syncTerrainWithSelector()
