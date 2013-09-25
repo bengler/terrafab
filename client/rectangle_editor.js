@@ -111,6 +111,7 @@ L.RectangleEditor = L.Polygon.extend ({
     L.Polygon.prototype.setLatLngs.call(this, latLngs);
     this._layoutResizeMarkers();
     this._layoutMoveMarker();
+    this.fire('change')
   },
   _layoutResizeMarkers: function() {
     this._resizeMarkers.sw.setLatLng(this._latLngs[SW]);
@@ -167,6 +168,18 @@ L.RectangleEditor = L.Polygon.extend ({
       constrainedPoint =new L.Point(point.x, oppositePoint.y - diffX);
     }
     return this._map.unproject(constrainedPoint);
+  },
+  getSouthWest: function() {
+    return this._latLngs[SW];
+  },
+  getNorthWest: function() {
+    return this._latLngs[NW];
+  },
+  getSouthEast: function() {
+    return this._latLngs[SE];
+  },
+  getNorthEast: function() {
+    return this._latLngs[NE];
   },
   setNorthWest: function(latLng) {
     this.setNorthWestAndSouthEast(latLng, this._latLngs[SE])
