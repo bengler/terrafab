@@ -39,6 +39,7 @@
     "caching-coffeeify": "~0.2.0",
     "browserify": "~2.32.4",
     "uglify-js": "~2.4.0",
-    "oauth": "latest"
+    "oauth": "latest",
+    "lodash.debounce": "~2.1.0"
   }
 }

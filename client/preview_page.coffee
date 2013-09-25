@@ -1,39 +1,39 @@
+# Scripts for the model preview page
+
+$ = require("jquery")
 Terrain = require('./terrain')
 TerrainStreamer = require('./terrain/streamer.coffee')
 L = require("leaflet")
 
-parseBoxParams = ->
-	return /(?:box\=)([0-9\.\,]+)/.exec(window.location.search)[1].split(',')
+BoxParams = require("./utils/boxparam.coffee")
 
-# Scripts for the model preview page
-if window.location.href.match("/preview")
-	$ ->
-    canvas = $('canvas#terrain')[0]
-    terrain = new Terrain(canvas)
-    terrain.scene.continousRotation = true
-    terrain.run()
-    box = parseBoxParams()
-    terrain.show(new L.Point(box[0], box[1]), new L.Point(box[2], box[3]))
+$ ->
+  canvas = $('canvas#terrain')[0]
+  terrain = new Terrain(canvas)
+  terrain.scene.continousRotation = true
+  terrain.run()
+  {ne, sw} = BoxParams.fromUrl(document.location)
+  terrain.show(ne, sw)
 
-	# Yeah, the progress report is just smoke and mirrors.
-	$('.progress p').hide()
-	$('.progress').show()
-	item = 0
-	length = $('.progress p').length
-	$( $('.progress p')[item] ).show()
-	progress = ->
-	  $('.progress p').hide()
-	  if(item<length)
-	    $( $('.progress p')[item] ).show()
-	    item++;
-	    if( item == length)
-	      $('.progress').remove()
-      	$('.downloadButton').removeClass('disabled').attr("href", "/download"+window.location.search)
-	      f = ->
-		      $('.buyButton').removeClass('disabled')
-	      setTimeout(f, 600)
-	      f = -> $('.readyHeader').html("Your model is ready")
-	      setTimeout(f, 300)
-	      clearInterval(interval)
+# Yeah, the progress report is just smoke and mirrors.
+$('.progress p').hide()
+$('.progress').show()
+item = 0
+length = $('.progress p').length
+$( $('.progress p')[item] ).show()
+progress = ->
+  $('.progress p').hide()
+  if(item<length)
+    $( $('.progress p')[item] ).show()
+    item++;
+    if( item == length)
+      $('.progress').remove()
+      $('.downloadButton').removeClass('disabled').attr("href", "/download"+window.location.search)
+      f = ->
+        $('.buyButton').removeClass('disabled')
+      setTimeout(f, 600)
+      f = -> $('.readyHeader').html("Your model is ready")
+      setTimeout(f, 300)
+      clearInterval(interval)
 
-	interval = setInterval(progress, 1200)
+interval = setInterval(progress, 1200)

@@ -1,1 +1,1 @@
-require("./rect.coffee");
+require("./routes.coffee");

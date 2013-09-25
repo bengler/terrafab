@@ -46,7 +46,7 @@ L.RectangleEditor = L.Polygon.extend ({
   },
   createResizeMarker: function (cornerClass, latLng) {
     var markerIcon = new L.DivIcon({
-      iconSize: new L.Point(12, 12),
+      iconSize: new L.Point(16, 16),
       className: 'leaflet-div-icon leaflet-editing-icon corner-'+cornerClass
     });
     var marker = new L.Marker(latLng, {
