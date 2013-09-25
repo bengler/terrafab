@@ -120,10 +120,15 @@ exports.dtm = function(req, res){
               res.end(stderr);
               return;
           }
-          console.error(err);
-          console.log("Trying to get data from remote server at "+config.imageUrl+req.url);
-          request.get(config.imageUrl+req.url).pipe(res);
-          return;
+          if ((stderr.match('No command') || stderr.match('does not exist in the file system'))) {
+            console.log("Trying to get data from remote server at "+config.imageUrl+req.url);
+            request.get(config.imageUrl+req.url).pipe(res);
+            return;
+          } else {
+            console.error(err);
+            res.status(500).send(stderr);
+            return;
+          }
         }
         res.writeHead(200, out_content_type);
         var img = fs.readFileSync(out_file);
