@@ -38,7 +38,7 @@ $ ->
     
     latLngs = [sw, ne]
 
-  #latLngs ||= [[60.84751214857874,7.855133604041304],[60.651121757063,7.765658244480659]]
+  latLngs ||= [[60.84751214857874,7.855133604041304],[60.651121757063,7.765658244480659]]
 
   rectangleEditor = new L.RectangleEditor(latLngs, {projection: crs.projection})
 
@@ -61,8 +61,6 @@ $ ->
   })
 
   rectangleEditor.addTo(map)
-  #rectangleEditor.setNorthEast(ne)
-  #rectangleEditor.setSouthWest(sw)
 
   map.on 'click', (e)->
     rectangleEditor.setCenter(e.latlng)

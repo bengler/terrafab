@@ -116,19 +116,12 @@ L.RectangleEditor = L.Polygon.extend ({
     this.redraw()
   },
   _layoutMoveMarker: function() {
-    var nwPoint = this.project(this._latLngs[NW]);
-    var sePoint = this.project(this._latLngs[SE]);
+    var nwPoint = this._map.project(this._latLngs[NW]);
+    var sePoint = this._map.project(this._latLngs[SE]);
 
     var center = this.getCenter()
     var h = Math.abs(nwPoint.y - sePoint.y);
     var w = Math.abs(nwPoint.x - sePoint.x);
-    var centerPoint = this.project(center);
-
-    nwPoint.y = centerPoint.y+(h/2);
-    nwPoint.x = centerPoint.x+(w/2);
-
-    sePoint.y = centerPoint.y-(h/2);
-    sePoint.x = centerPoint.x-(w/2);
 
     this._moveMarker.setLatLng(center);
     if (this._moveMarker._icon) {
