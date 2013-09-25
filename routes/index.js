@@ -120,7 +120,7 @@ exports.dtm = function(req, res){
               res.end(stderr);
               return;
           }
-          if ((stderr.match('No command') || stderr.match('does not exist in the file system'))) {
+          if ((stderr.match('command not found') || stderr.match('No command') || stderr.match('does not exist in the file system'))) {
             console.log("Trying to get data from remote server at "+config.imageUrl+req.url);
             request.get(config.imageUrl+req.url).pipe(res);
             return;
