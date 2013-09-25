@@ -9,9 +9,7 @@ require("./ext_js/proj4leaflet.js")
 require("./utils/rectangle_editor")
 
 config = require('../config/app.json')
-
-$ ->
-  $('.waitForLoad').show();
+debounce = require("lodash.debounce")
 
 BoxParam = require("./utils/boxparam.coffee")
 resolutions = [
@@ -64,17 +62,21 @@ $ ->
     rectangleEditor.setCenter(e.latlng)
 
   do ->
+    delay = (args...)-> setTimeout.apply(window, args.reverse())
+    
     # Canvas stuff
     canvas = $('canvas#terrain')[0]
-    terrain = new Terrain(canvas)
-    terrain.run()
-  
-    syncTerrainWithSelector = ->
-      terrain.show(crs.project(rectangleEditor.getSouthWest()), crs.project(rectangleEditor.getNorthEast()))
-  
-    rectangleEditor.on 'change', syncTerrainWithSelector
-  
-    syncTerrainWithSelector()
+
+    # Delay setup of terrain a little to make page a little more responsive initially
+    delay 300, ->
+      terrain = new Terrain(canvas)
+      terrain.run()
+
+      syncTerrainWithSelector = ->
+        terrain.show(crs.project(rectangleEditor.getSouthWest()), crs.project(rectangleEditor.getNorthEast()))
+    
+      rectangleEditor.on 'change', syncTerrainWithSelector
+      syncTerrainWithSelector()
 
   serializedSelection = ->
     sw = crs.project(rectangleEditor.getSouthWest())
@@ -82,7 +84,6 @@ $ ->
     BoxParam.encode({sw, ne, zoom: map.getZoom()})
 
   do ->
-    debounce = require("lodash.debounce")
 
     writeBoxToUrl = debounce(->
       history.replaceState({}, null, "/?box=#{serializedSelection()}")
@@ -103,3 +104,7 @@ $ ->
     # Navigate to preview
     $("#goToPreviewButton").on 'click', ->
       window.location = "/preview?box=#{serializedSelection()}"
+
+$ ->
+  $('#bubble').hide()
+  $('.waitForLoad').show();
