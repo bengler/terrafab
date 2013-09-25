@@ -8,7 +8,8 @@ L.RectangleEditor = L.Polygon.extend ({
     weight: 1,
     fillColor: '#ffb400',
     fillOpacity: 0.2,
-    aspectRatio: 1
+    aspectRatio: 1,
+    minSize: 10
   },
 
   initialize: function(bounds, options) {
@@ -106,16 +107,16 @@ L.RectangleEditor = L.Polygon.extend ({
     return [nwLatLng, neLatLng, seLatLng, swLatLng]
   },
   setLatLngs: function(latLngs) {
-    this._layoutResizeMarkers(latLngs);
-    this._layoutMoveMarker(latLngs);
     this._latLngs = latLngs;
     L.Polygon.prototype.setLatLngs.call(this, latLngs);
+    this._layoutResizeMarkers();
+    this._layoutMoveMarker();
   },
-  _layoutResizeMarkers: function(latLngs) {
-    this._resizeMarkers.sw.setLatLng(latLngs[SW]);
-    this._resizeMarkers.ne.setLatLng(latLngs[NE]);
-    this._resizeMarkers.se.setLatLng(latLngs[SE]);
-    this._resizeMarkers.nw.setLatLng(latLngs[NW]);
+  _layoutResizeMarkers: function() {
+    this._resizeMarkers.sw.setLatLng(this._latLngs[SW]);
+    this._resizeMarkers.ne.setLatLng(this._latLngs[NE]);
+    this._resizeMarkers.se.setLatLng(this._latLngs[SE]);
+    this._resizeMarkers.nw.setLatLng(this._latLngs[NW]);
     this.redraw()
   },
   _layoutMoveMarker: function() {
@@ -156,7 +157,9 @@ L.RectangleEditor = L.Polygon.extend ({
   constrainTo: function(latLng, oppositeLatLng, aspectRatio) {
     var point = this._map.project(latLng);
     var oppositePoint = this._map.project(oppositeLatLng);
-    var diffX = Math.abs(oppositePoint.x - point.x) * aspectRatio;
+    
+    var w = Math.abs(oppositePoint.x - point.x);
+    var diffX = w * aspectRatio;
     var constrainedPoint;
     if (oppositePoint.y < point.y) {
       constrainedPoint = new L.Point(point.x, oppositePoint.y + diffX);
@@ -215,7 +218,6 @@ L.RectangleEditor = L.Polygon.extend ({
     this.setCenter(e.target.getLatLng());
     this.redraw();
   },
-
   tearDown: function() {
     this._map.removeLayer(this._resizeMarkers.sw);
     this._map.removeLayer(this._resizeMarkers.se);
