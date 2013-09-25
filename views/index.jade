@@ -12,15 +12,13 @@ block content
         |   <line fill="none" stroke="#000000" stroke-miterlimit="10" x1="0" y1="0" x2="24" y2="24"/>
         |   <line fill="none" stroke="#000000" stroke-miterlimit="10" x1="0" y1="24" x2="24" y2="0"/>
         | </svg>
-      h1 Welcome to terrafab
-      p Lorem ipsum Anim pariatur incididunt reprehenderit ut velit dolore laboris et fugiat est deserunt dolor sint sit aliqua non aliquip occaecat ut deserunt velit incididunt magna sunt consectetur magna dolore deserunt proident ut.
-      ul
-        li
-          a(href="http://github.com/bengler/terrafab") Project at Github
-        li
-          a(href="http://bengler.no/terrafab") Read about the project
-        li
-          a(href="http://bengler.no") Bengler
+      h1 Own a slice of Norway!
+      img(src="/images/model_closeup_crop.jpg").modelCloseup
+      p Arguably, Norway has one of the top five most incredible terrains in the known universe. Now you can create your own 3D-printed genuine gypsum heirloom mantelpiece display replica of your favorite part of this formidable landscape in two easy steps:
+      ol
+        li Drag the selector around until you love what you see in the floating 3D preview.
+        li Hit the big, orange button that says "Get this model 3D-printed"
+      a.closeBubbleAction.bigOrangeButton Ok, I get it!
     #map
     canvas(width=800 height=800)#terrain.overlay
 
@@ -30,7 +28,7 @@ block interface
     input#q(type='search', autocomplete='off', placeholder='Find place')
     ul#autocomplete
     #goToPreviewButton
-      a Get the model
+      a.bigOrangeButton Get this model 3D-printed
     #position
       input.location(type='text', id='utm', placeholder="UTM")
       br

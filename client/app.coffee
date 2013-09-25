@@ -11,6 +11,11 @@ require('./preview_page.coffee')
 
 $ ->
   $('.waitForLoad').show();
+  if document.cookie.match("HIDE_ABOUT=true")
+    $('#bubble').hide()
+  $('.closeBubbleAction').click ->
+    $('#bubble').hide()
+    document.cookie = "HIDE_ABOUT=true; expires=session"
   if window.location.pathname == "/"
     # Set up place search autocompleter
     suggestionCompleter = new SuggestionCompleter($("#q"), $("#autocomplete"),
