@@ -73,8 +73,9 @@ $ ->
       )
     syncSelection = ->
       syncTerrainWithSelector()
-      $("#utm").val(""+map.rectangleEditor.getCenterLatLng()[1])
-      $("#wgs84").val(""+map.rectangleEditor.getCenterLatLng()[0])
+      center = map.rectangleEditor.getCenterLatLng()
+      $("#utm").val(""+map.crs.project(center))
+      $("#wgs84").val(""+center)
 
     $('#panic').on('click', (e) ->
       location.reload()
