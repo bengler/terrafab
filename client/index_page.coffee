@@ -37,6 +37,13 @@ latLngs = [crs.projection.unproject(selection.sw), crs.projection.unproject(sele
 rectangleEditor = new L.RectangleEditor(latLngs, {projection: crs.projection})
 
 $ ->
+  $('.waitForLoad').show();
+  $('#bubble').hide() if sessionStorage.getItem('seenBubble')
+  $('body').on 'click', '.closeBubbleAction', ->
+    $('#bubble').hide()
+    sessionStorage.setItem('seenBubble', true)
+
+$ ->
   # Setup map, events, etc
   map = new L.Map('map', {
     crs: crs,
@@ -100,11 +107,25 @@ $ ->
     # Also when map zoom level change
     map.on 'zoomend', writeBoxToUrl
     map.on 'zoomend', storeBox
-    
+
     # Navigate to preview
     $("#goToPreviewButton").on 'click', ->
       window.location = "/preview?box=#{serializedSelection()}"
 
-$ ->
-  $('#bubble').hide()
-  $('.waitForLoad').show();
+  do ->
+    # Setup predefined locations select box
+    $select = $('#locations')
+    $select.on 'change', ->
+      {sw, ne, zoom} = BoxParam.decode($select.val())
+      rectangleEditor.setNorthEast(crs.projection.unproject(ne))
+      rectangleEditor.setSouthWest(crs.projection.unproject(sw))
+      map.fitBounds(rectangleEditor.getBounds())
+
+  do ->
+    SuggestionCompleter = require("./utils/suggestion_completer.coffee")
+    # Set up place search autocompleter
+    suggestionCompleter = new SuggestionCompleter($("#q"), $("#autocomplete"), {host: config.elasticSearch.server.host})
+    suggestionCompleter.on 'submit', (completion) ->
+      latLng = new L.LatLng(completion.payload.lat, completion.payload.lng)
+      rectangleEditor.setCenter(latLng)
+      map.panTo(latLng)
