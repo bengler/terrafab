@@ -28,7 +28,7 @@ body
   top: 70px
   left: 100px
   height: auto
-  width: 500px
+  width: 700px
   z-index: 5000
   background-color: rgba(#fff, 0.9)
   padding: 20px
@@ -49,31 +49,38 @@ body
     font-weight: 900
     text-transform: uppercase
     font-size: 36px
+    margin-bottom: 20px
   p
+    margin-top: 0
     font-size: 14px
     line-height: 24px
     padding-right: 40px
     color: #444
-  img.modelCloseup
-    width: 100%
-    height: auto
-  .bigOrangeButton
-    float: left
-    margin-left: 160px
-  ul
+  img
     display: block
-    margin: 0
-    padding: 0
-    li
+    width: 50%
+    height: auto
+    margin-right: 15px
+    margin-bottom: 12px
+    float: left
+
+  div.block
+    width: 47%
+    float: left
+    text-align: center
+    > a.bigOrangeButton
       display: inline-block
-      padding: 0
-      margin-right: 20px
-      a
-        display: inline
-        color: #008bd3
-        text-transform: uppercase
-        font-size: 12px
-        font-weight: 300
+      width: 200px
+      margin-top: 10px
+    p, ol
+      text-align: left
+    ol
+      line-height: 20px
+      margin-left: 0
+      padding-left: 30px
+      li
+        margin-left: 0
+      color: #444
 
 #map
   position: absolute
