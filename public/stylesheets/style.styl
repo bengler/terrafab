@@ -25,13 +25,22 @@ body
 
 #bubble
   position: fixed
-  top: 70px
-  left: 100px
-  height: auto
-  width: 700px
-  z-index: 5000
-  background-color: rgba(#fff, 0.9)
-  padding: 20px
+  height: 100%
+  width: 100%
+  top: 0
+  left: 0
+  background-color: rgba(#fff, .8)
+  z-index: 10000
+  #bubbleContent
+    position: absolute
+    top: 70px
+    left: 40px
+    height: auto
+    width: 700px
+    z-index: 5000
+    background-color: rgba(#fff, 0.9)
+    padding: 20px
+    box-shadow: 0 0 10px #ccc
   .close
     display: none
     position: absolute
