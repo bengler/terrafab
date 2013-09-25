@@ -4,7 +4,6 @@ var L = require("leaflet");
 
 L.RectangleEditor = L.Polygon.extend ({
   options: {
-    draggable: true,
     color: '#333',
     weight: 1,
     fillColor: '#ffb400',
@@ -34,6 +33,7 @@ L.RectangleEditor = L.Polygon.extend ({
     var markerGroup = new L.LayerGroup(allLayers);
 
     map.addLayer(markerGroup);
+    this._layoutMoveMarker()
   },
 
   createResizeMarkers: function () {
