@@ -49,7 +49,7 @@ $ ->
     crs: crs,
     layers: [
       new L.TileLayer(config.tilesUrl, {
-        attribution: config.attribution,
+        attribution: config.leaflet.attribution,
         minZoom: 1,
         maxZoom: resolutions.length - 1,
         continuousWorld: true,
@@ -122,8 +122,8 @@ $ ->
       map.fitBounds(rectangleEditor.getBounds())
 
   do ->
-    SuggestionCompleter = require("./utils/suggestion_completer.coffee")
     # Set up place search autocompleter
+    SuggestionCompleter = require("./utils/suggestion_completer.coffee")
     suggestionCompleter = new SuggestionCompleter($("#q"), $("#autocomplete"), {host: config.elasticSearch.server.host})
     suggestionCompleter.on 'submit', (completion) ->
       latLng = new L.LatLng(completion.payload.lat, completion.payload.lng)
