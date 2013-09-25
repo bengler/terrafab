@@ -1567,6 +1567,21 @@
           "from": "lodash._renative@~2.1.0"
         }
       }
+    },
+    "pather": {
+      "version": "0.1.0-beta-4",
+      "from": "git://github.com/bjoerge/pather#v0.1-beta",
+      "resolved": "git://github.com/bjoerge/pather#90c66b25bdf3c2a66b5bd25d43ea15bfcbd9b76f",
+      "dependencies": {
+        "route-pattern": {
+          "version": "0.0.6",
+          "from": "route-pattern@>=0.0.4"
+        },
+        "sigmund": {
+          "version": "1.0.0",
+          "from": "sigmund@~1.0.0"
+        }
+      }
     }
   }
 }
