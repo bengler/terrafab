@@ -15,7 +15,7 @@ helpers = {
       param = param.split("|")[0];
       box = param.split(',');
     }
-    if (Math.abs(box[0]) > Math.abs(box[2])) {
+    if (box[0] > box[2] && !(box[0]<0 && box[1]<0)) {
       p = box[2]
       box[2] = box[0]
       box[0] = p
