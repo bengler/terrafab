@@ -1,3 +1,5 @@
+$ = require("jquery")
+
 waitInterval = null
 uploadInterval = null
 cart = null
