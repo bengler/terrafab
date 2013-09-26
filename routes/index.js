@@ -310,7 +310,7 @@ exports.cart = function(req, res) {
  * GET Sends the model to our our Shapeways account for analyzis and availablility.
  */
 exports.shipToShapeways = function(req, res) {
-  req.connection.setTimeout(300000);
+  req.connection.setTimeout(50000);
   var box = helpers.boxFromParam(req.query.box, res);
   if(!box) {
     return;
