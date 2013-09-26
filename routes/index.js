@@ -346,9 +346,13 @@ exports.shipToShapeways = function(req, res) {
   var filename = config.files.tmpPath +
     "/"+
     helpers.fileHash(
-        "shapeway_model_"+box.join("_"), '.zip');
+        "shapeway_model_"+box.join("_"), 'zip');
+
+  console.log("About to generate archive "+filename);
+
   helpers.generate(filename, box, function(err, file) {
     if(err) {
+      console.error(err);
       return res.status(500).end(err);
     }
     var modelOptions = config.shapewaysAPI.modelPostOptions;
@@ -373,7 +377,7 @@ exports.shipToShapeways = function(req, res) {
             return res.status(500).end(JSON.stringify(err));
           } else {
             console.log(result);
-            res.status(200).cookie('modelId', result.modelId, { maxAge: 60 * 1000 })
+            res.status(200).cookie('modelId', result.modelId, { maxAge: 60 * 1000 });
             res.end('/cart?modelId=' +
                 result.modelId
             );
