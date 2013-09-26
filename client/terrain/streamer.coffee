@@ -44,6 +44,7 @@ class TerrainTile
     @mapImage = new Image()
     @mapImage.onload = onload
     imgUrl = "/map?box=#{[@bounds.min.x, @bounds.max.y, @bounds.max.x, @bounds.min.y].join(',')}&outsize=#{Math.round(@pxWidth*MAP_SCALE)},#{Math.round(@pxHeight*MAP_SCALE)}"
+    @shaded = options.shading
     imgUrl += "&shading=true" if options.shading
     @mapImage.src = imgUrl
   meterHeight: ->
@@ -120,7 +121,11 @@ class TerrainStreamer
       result.push(tile) if tile.bounds.intersects(@bounds)
     # Sort tiles from lower to higher resolution
     result.sort (a, b) ->
-      a.resolution - b.resolution
+      if a.shaded != b.shaded
+        return 1 if a.shaded
+        return -1 if b.shaded
+      else
+        a.resolution - b.resolution
     result
 
   # Draws a given tile scaled and positioned correctly into the output canvases
@@ -168,9 +173,10 @@ class TerrainStreamer
   resetRawRez: ->
     @rawRez = null
     clearTimeout(@rawRezTimer)
-    @rawRezTimer = setTimeout((=> @loadRawRez()), 1700)
+    @rawRezTimer = setTimeout((=> @loadRawRez()), 2300)
   loadRawRez: ->
     @rawRez = new TerrainRawRez @bounds, @pxWidth, => @update()
+    @loadExtended(1.0, 1.0, {shading: true})
   hasRawRez: ->
     @rawRez? && @rawRez.isLoaded()
 
@@ -187,7 +193,7 @@ class TerrainStreamer
       # If the effective resolution is anything less than full, we will order some more data from the server allowing for
       # some scrolling and resizing
       unless @resolution >= 1.0
-        @loadExtended(1.5, 1.2, {shading: true})
+        @loadExtended(1.5, 1.2, {})
     @timer = setTimeout(doLoad, 400)
 
   # Called when new data arrive or bounds are updated to redraw map and terrain
@@ -197,18 +203,22 @@ class TerrainStreamer
     @mapCtx.fillStyle = "#aaa"
     @mapCtx.fillRect(0,0,@pxWidth*MAP_SCALE,@pxWidth*MAP_SCALE)
     @bounds = bounds if bounds?
+    @shaded = false
     if @bounds?
       # This variable keeps track of the best resolution we had covering the entire output region
       @resolution = 0
       loadedResolution = 0
       for tile in @relevantTiles()
         effectiveResolution = @drawTile(tile)
+        #console.log effectiveResolution, tile.shaded
         # We keep track of the effective resolution of the highest resolution tile that covers the whole area
         if tile.bounds.contains(@bounds)
+          if effectiveResolution >= 1.0 && tile.shaded
+            @shaded = true
+          #console.log "^^ Has coverage"
           @resolution = effectiveResolution
           if tile.isLoaded()
             loadedResolution = effectiveResolution
-          break if @resolution >= 1.0
-    @onupdate({loading: loadedResolution < 1}) if @onupdate
+    @onupdate({loading: (loadedResolution < 1 || !@shaded)}) if @onupdate
 
 module.exports = TerrainStreamer
