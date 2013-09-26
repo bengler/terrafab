@@ -105,7 +105,7 @@ exports.dtm = function(req, res){
         "rm -f "+tif_file+" && GDAL_CACHEMAX=1000 gdalwarp -wm 1000 -s_srs EPSG:32633 -t_srs EPSG:32633" +
         " -r cubic -ts "+ outsize[0] + " " + outsize[1] +
         " -of GTiff " +
-        "-te " + box.join(' ') + " " +
+        "-te " + [box[0], box[3], box[2], box[1]].join(' ') + " " +
         dtm_file + " " + tif_file +
         " && " +
         "gdal_translate -q" +
