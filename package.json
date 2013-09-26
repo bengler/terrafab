@@ -7,7 +7,7 @@
   "scripts": {
     "test": "npm test",
     "start": "node server.js",
-    "bundle": "./node_modules/.bin/browserify --noparse jquery --noparse three -t coffeeify -e ./client/terrafab.js | ./node_modules/.bin/uglifyjs > public/js/terrafab.js",
+    "browserify": "./node_modules/.bin/browserify --noparse jquery --noparse three -t coffeeify -e ./client/terrafab.js | ./node_modules/.bin/uglifyjs > public/js/terrafab.js",
     "postinstall": "cp node_modules/leaflet/dist/leaflet.css public/stylesheets"
   },
   "repository": {
