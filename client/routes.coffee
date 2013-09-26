@@ -7,3 +7,6 @@ path.on '/', ->
 
 path.on '/preview', ->
   require("./preview_page.coffee")
+
+path.on '/cart', ->
+  require("./cart_page.coffee")
