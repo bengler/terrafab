@@ -143,7 +143,7 @@ exports.dtm = function(req, res){
 
 
 /*
- * GET UTM box.
+ * GET UTM box texture tile.
  */
 
 exports.map = function(req, res){
@@ -200,6 +200,10 @@ exports.map = function(req, res){
   }
 };
 
+/*
+ * GET Download model as archive.
+ */
+
 exports.download = function(req, res) {
   var headers = {
     "Content-Type": "application/zip",
@@ -213,30 +217,208 @@ exports.download = function(req, res) {
     var value = _ref[_i];
     box.push(parseFloat(value))
   }
-  var filename = "/tmp/terrafab/"+Math.random().toString(36).substring(2)+'.zip'
-  var output = ""
-  var generator = exec("node "+__dirname+"/../generate.js "+filename+" \""+box.join(',')+"\"", function(err, stdout, stderr) {
-    if (err) {
-      output += err;
-    };
-    if (stdout) {
-      console.log("generator: ", stdout.toString())
-      output += stdout.toString();
-    };
-    if (stderr) {
-      console.log("generator: ", stderr.toString())
-      output += stderr.toString();
+  var filename = config.files.tmpPath+"/"+Math.random().toString(36).substring(2)+'.zip';
+  helpers.generate(filename, box, function(err, file) {
+    if(err) {
+      return res.status(500).end(err);
     }
+    res.status(200).set(headers).cookie('fileDownload', 'true').sendfile(file);
   });
-  generator.on('exit', function(code, signal) {
-    if (code != 0) {
-      res.status(500).send("Generator failed with code "+code+"\n <!-- "+output+" -->");
-    } else {
-      console.log(req.url);
-      res.status(200).set(headers).cookie('fileDownload', 'true').sendfile(filename)
+};
+
+/*
+ * GET Send the model to our our Shapeways account to let the user buy it there.
+ */
+exports.buy = function(req, res) {
+  var box = helpers.boxFromParam(req.query.box, res);
+  if(!box) {
+    return;
+  }
+  if(!helpers.numericParams(box.concat(box), res)) {
+    return;
+  }
+
+  console.log("Posting model to Shapeways")
+  var filename = config.files.tmpPath +
+    "/"+
+    helpers.fileHash(
+        "shapeway_model_"+box.join("_"), '.zip');
+  helpers.generate(filename, box, function(err, file) {
+    if(err) {
+      return res.status(500).end(err);
     }
-  })
-}
+    var modelOptions = config.shapewaysAPI.modelPostOptions;
+    modelOptions.materials = {
+      "26":{
+        "markup": 0,
+        "isActive": 1
+      }
+    };
+    swClient.postModel(
+      file,
+      modelOptions,
+      config.shapewaysAPI.accessToken,
+      config.shapewaysAPI.accessTokenSecret,
+      function(err, result) {
+        if(err) {
+          console.error(err);
+          res.status(500).end(err.toString());
+        } else {
+          console.log(result);
+          res.redirect('/cart?modelId=' +
+              result.modelId
+          );
+        }
+      }
+    );
+  });
+};
+
+/*
+ * GET cart page.
+ */
+
+exports.cart = function(req, res) {
+  if(req.query.modelId) {
+    loginURL = '/login?redirect_url=' +
+              encodeURIComponent('/cart?modelId=' +
+                req.query.modelId
+              );
+  } else {
+    loginURL = '/login?redirect_url=' +
+              encodeURIComponent('/cart?box=' +
+                req.query.box
+              );
+  }
+  if(!helpers.isLoggedIn(req.session)) {
+    res.redirect(loginURL);
+  } else {
+    if(req.query.modelId) {
+      swClient.getModel(
+        req.query.modelId,
+        config.shapewaysAPI.accessToken,
+        config.shapewaysAPI.accessTokenSecret,
+        function(err, model) {
+          if(err) {
+            console.error(err);
+            if(err.statusCode != 500) {
+              return res.redirect(loginURL);
+            } else {
+              console.log(err.statusCode);
+              return res.status(err.statusCode).end(JSON.stringify(err))
+            }
+          } else {
+            ready = false;
+            if(model.materials[config.shapewaysAPI.defaultMaterialId].basePrice) {
+              ready = true;
+            }
+            res.render('cart', {
+                title: 'Your cart',
+                model: model,
+                cart: {modelId: model.modelId, ready: ready},
+                version: require("../package.json").version
+              }
+            );
+          }
+        }
+      );
+    } else {
+      res.render('cart', {
+          title: 'Your cart',
+          model: null,
+          cart: {ready: false},
+          version: require("../package.json").version
+        }
+      );
+    }
+  }
+};
+
+/*
+ * Add the model to the user's shapeWays cart
+ */
+
+exports.addToCart = function(req, res) {
+  if(!req.session || !req.session.oauth_access_token) {
+    return res.send(403, "No shapeway session!");
+  }
+  console.log(req.body)
+  swClient.addToCart(
+    req.body.modelId,
+    req.body.materialId,
+    1,
+    req.session.oauth_access_token,
+    req.session.oauth_access_token_secret,
+    function(err, result) {
+      if(err) {
+        res.status(500).end(JSON.stringify(err));
+      } else {
+        res.end(JSON.stringify({cartURL: 'https://www.shapeways.com/cart/'}))
+      }
+    }
+  );
+};
+
+/*
+ * GET modeldata for model on Shapeways and return cart JSON for the cart page to poll.
+ */
+
+exports.cartData = function(req, res) {
+  if(!req.session || !req.session.oauth_access_token) {
+    return res.send(403, "No shapeway session!");
+  }
+  swClient.getModel(
+    req.query.modelId,
+    config.shapewaysAPI.accessToken,
+    config.shapewaysAPI.accessTokenSecret,
+    function(err, model) {
+      if(err) {
+        console.error(err);
+        res.status(500).end(JSON.stringify(err));
+      } else {
+        var basePrice = model.materials[config.shapewaysAPI.defaultMaterialId].basePrice;
+        if(basePrice) {
+          basePrice = parseFloat(basePrice);
+          var markupPrice = config.shapewaysAPI.defaultPrice - basePrice;
+          swClient.updateModel(
+            model.modelId,
+            {
+              "isPublic": 1,
+              "materials": {
+                "26": {
+                  "markup": markupPrice,
+                  "isActive": 1
+                }
+              }
+            },
+            config.shapewaysAPI.accessToken,
+            config.shapewaysAPI.accessTokenSecret,
+            function(err, result) {
+              if(err) {
+                console.error("Could not update markup price", err);
+                res.status(500).end(JSON.stringify(err));
+              } else {
+                var cart = {
+                  ready: (basePrice != 0),
+                  modelId: model.modelId,
+                  materialId: config.shapewaysAPI.defaultMaterialId,
+                  orderPrice: config.shapewaysAPI.defaultPrice,
+                  basePrice: parseFloat(basePrice),
+                  markupPrice: markupPrice
+                }
+                res.end(JSON.stringify(cart));
+              }
+            }
+          );
+        } else {
+          res.end(JSON.stringify({modelId: model.modelId}));
+        }
+      }
+    }
+  );
+};
+
+// Development routes (for configuring your shop)
 
 /*
  * GET Let us login to Shapeways to get an access token for the Terrafab Shapeways application.
@@ -245,6 +427,7 @@ exports.download = function(req, res) {
  * account through the Shapeways api.
  */
 exports.login = function(req, res) {
+  req.session.redirect_url = req.query.redirect_url
   swClient.login(function(err, callback) {
     req.session.oauth_token = callback.oauth_token;
     req.session.oauth_token_secret = callback.oauth_token_secret;
@@ -255,11 +438,17 @@ exports.login = function(req, res) {
 /*
  * GET Callback redirected to from Shapeways after authorization of our Shapeways application.
  */
-exports.callback = function(req, res) {
+exports.callbackFromShapeways = function(req, res) {
+  console.log(req.query);
   return swClient.handleCallback(req.query.oauth_token, req.session.oauth_token_secret, req.query.oauth_verifier, function(callback) {
     req.session.oauth_access_token = callback.oauth_access_token;
     req.session.oauth_access_token_secret = callback.oauth_access_token_secret;
-    return res.redirect('/accesstoken');
+    redirectUrl = req.session.redirect_url;
+    if(redirectUrl) {
+      return res.redirect(redirectUrl);
+    } else {
+      return res.redirect("/");
+    }
   });
 };
 
@@ -274,26 +463,4 @@ exports.accessToken = function(req, res) {
       "\nYour oauth access token secret:   " + req.session.oauth_access_token_secret +
       "\n\nThis ought to be put as 'accessToken' and 'accessTokenSecret' in your ./config/app.json under the 'shapewaysAPI' key");
   }
-};
-
-/*
- * POST Send a model to our our Shapeways account with the configured access token and secret.
- */
-exports.toShapeways = function(req, res) {
-  var box = helpers.boxFromParam(req.query.box, res);
-  if(!box) { return; }
-  // JUST DUMMY FOR NOW:
-  target = swClient.postModel(
-    "/tmp/terrafab/uoo284ss6ymsra4i.zip",
-    config.shapewaysAPI.accessToken,
-    config.shapewaysAPI.accessTokenSecret,
-    function(err, result) {
-      console.log(err, result);
-      if(err) {
-        res.status(500).end(err);
-      } else {
-        res.status(200).end(result);
-      }
-    }
-  );
 };

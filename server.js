@@ -21,7 +21,7 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
-app.use(express.session({secret: "terrafab10"}));
+app.use(express.session({secret: "terrafabshapeways"})); // For setting up the application AccessToken
 app.use(app.router);
 app.use(require('stylus').middleware(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -36,18 +36,25 @@ app.use('/js', browserify('./client', {
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
+  // Shapeways routes for obtaining application access token (to use the Shapways API)
+  app.get('/login', routes.login);
+  app.get('/accesstoken', routes.accessToken);
+  app.get('/callback', routes.callbackFromShapeways);
 }
 
 app.get('/', routes.index);
-app.get('/preview', routes.preview);
+
+// API routes
 app.get('/dtm', routes.dtm);
 app.get('/map', routes.map);
-app.get('/download', routes.download);
 
-app.get('/accesstoken', routes.accessToken);
-app.get('/login', routes.login);
-app.get('/callback', routes.callback);
-app.get('/shapeways', routes.toShapeways);
+// Model routes
+app.get('/preview', routes.preview);
+app.get('/download', routes.download);
+app.get('/buy', routes.buy);
+app.get('/cart', routes.cart);
+app.get('/cartdata', routes.cartData);
+app.post('/addtocart', routes.addToCart);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
