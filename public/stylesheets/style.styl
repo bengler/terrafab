@@ -69,6 +69,8 @@ body
     background-color: rgba(#fff, 0.9)
     padding: 20px
     padding-bottom: 30px
+    .video
+      display: none
   .close
     display: none
     position: absolute
@@ -218,10 +220,14 @@ a:hover.bigOrangeButton
         margin-bottom: 100px
         img, iframe, video
           width: 100%
-        .col1, .col2, .block
+        .col1, .col2, .block, img
           width: 100%
           clear: both
           float: none
+          display: none
+        .video
+          display: block
+
 
     #map
       display: none !important
@@ -229,3 +235,8 @@ a:hover.bigOrangeButton
       display: none !important
     #interface
       display: none !important
+    .warnings
+      > div
+        display: none !important
+      .cantWorkMobile
+        display: block !important
