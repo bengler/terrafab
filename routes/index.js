@@ -99,13 +99,13 @@ exports.dtm = function(req, res){
   var command = false
   if (fast_pipeline) {
     command = "bash -c 'gdal_translate -q -outsize "+outsize[0]+' '+outsize[1]+" -a_srs EPSG:32633 -scale " + out_scale +
-      " -ot "+out_type+" -of "+out_format+" -projwin "+box.join(', ')+' '+dtm_file+' '+out_file+"'"
+      " -ot "+out_type+" -of "+out_format+" -projwin "+box.join(' ')+' '+dtm_file+' '+out_file+"'"
   } else {
     command = "bash -c '" +
         "GDAL_CACHEMAX=1000 gdalwarp -wm 1000 -s_srs EPSG:32633 -t_srs EPSG:32633" +
         " -r cubic -ts "+ outsize[0] + " " + outsize[1] +
         " -of GTiff " +
-        "-te " + [box[0], box[3], box[2], box[1]].join(' ') + " " +
+        "-te " + box.join(' ') + " " +
         dtm_file + " " + tif_file +
         " && " +
         "gdal_translate -q" +
