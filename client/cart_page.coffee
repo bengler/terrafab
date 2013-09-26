@@ -72,10 +72,15 @@ getCartData = ->
 
 $ ->
   if window.location.href.match("/cart")
-    $("#progressTxt").html("Ready to roll!");
-    $("#tileSpinner").hide();
-    $("#modelSpinner").hide();
-    $(".progress-bar").hide()
-    waitInterval = setInterval(getCartData, 2000)
-    getCartData()
-    $("a.buyButton").show() if(!searchToObject().modelId)
+    unless searchToObject().dev
+      $("#tileSpinner").hide();
+      $("#modelSpinner").hide();
+      $(".progress-bar").hide()
+      waitInterval = setInterval(getCartData, 2000)
+      getCartData()
+      $("a.buyButton").show() if(!searchToObject().modelId)
+    else
+      $("#infoTxt").show().html("I am info text")
+      $("a.buyButton").show()
+      $(".progressTxt").html("I am progress")
+      $("a.buyButton").html("I am button")

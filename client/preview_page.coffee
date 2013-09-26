@@ -63,4 +63,9 @@ $ ->
 	      setTimeout(f, 300)
 	      clearInterval(interval)
 
+	BuyURL = ""+window.location+"".replace("/preview", "/cart")
+	$('.downloadButton').removeClass('disabled').click ->
+		window.location = BuyURL;
+	$('.buyButton').attr("href", BuyURL)
+
 interval = setInterval(progress, 1200)

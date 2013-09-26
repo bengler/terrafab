@@ -275,6 +275,15 @@ exports.cart = function(req, res) {
                 req.query.box
               );
   }
+  if(req.query.dev) {
+    return res.render('cart', {
+        title: 'Your cart',
+        model: null,
+        cart: {modelId: null, ready: false},
+        version: require("../package.json").version
+      }
+    );
+  }
   if(!helpers.isLoggedIn(req.session)) {
     res.redirect(loginURL);
   } else {
@@ -349,25 +358,29 @@ exports.shipToShapeways = function(req, res) {
       }
     };
     console.log("Posting model to Shapeways");
-    swClient.postModel(
-      file,
-      modelOptions,
-      config.shapewaysAPI.accessToken,
-      config.shapewaysAPI.accessTokenSecret,
-      function(err, result) {
-        if(err) {
-          console.error(err);
-          return res.status(500).end(JSON.stringify(err));
-        } else {
-          console.log(result);
-          res.status(200).cookie('shippedToShapeways', 'true')
-          res.end('/cart?modelId=' +
-              result.modelId
-          );
-          res.end(JSON.stringify({cartURL: '/cart?modelId=' + result.modelId}));
+    if(req.cookie && req.cookie.modelId) {
+      res.redirect('/cart?modelId=' + cookie.modelId);
+    } else {
+      swClient.postModel(
+        file,
+        modelOptions,
+        config.shapewaysAPI.accessToken,
+        config.shapewaysAPI.accessTokenSecret,
+        function(err, result) {
+          if(err) {
+            console.error(err);
+            return res.status(500).end(JSON.stringify(err));
+          } else {
+            console.log(result);
+            res.status(200).cookie('modelId', result.modelId, { maxAge: 60 * 1000 })
+            res.end('/cart?modelId=' +
+                result.modelId
+            );
+            res.end(JSON.stringify({cartURL: '/cart?modelId=' + result.modelId}));
+          }
         }
-      }
-    );
+      );
+    }
   });
 };
 
