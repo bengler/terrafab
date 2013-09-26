@@ -25,7 +25,7 @@ block content
               a(href="http://google.com/chrome") Chrome.
           .cantWorkMobile
             p We're sorry, this project is only available on the desktop. And preferably the latest Chrome at that. Watch the video below and come back with your laptop!
-        img(src="/images/model_example2.jpg")
+        img(src="/images/model_example2.jpg").illustration
         .video
           | <iframe src="//player.vimeo.com/video/36154005" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="http://vimeo.com/36154005">Deluge</a> from <a href="http://vimeo.com/bengler">Even Westvang</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
         .block
@@ -33,7 +33,11 @@ block content
           ol
             li Drag the selector around until you love what you see in the floating 3D preview.
             li Hit the big, orange button that says "Get this model 3D-printed"
-          a.closeBubbleAction.bigOrangeButton Ok, I get it!
+          a.closeBubbleAction.bigOrangeButton Ok, got it!
+        .credits
+          p Terrafab is made possible by the open data policies of the&nbsp;
+            a(href="http://kartverket.no") Norwegian Mapping Authority.
+
     #map
     canvas(width=800 height=800)#terrain.overlay
 
