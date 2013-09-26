@@ -24,19 +24,33 @@ body
   #loader
     margin-top: 200px
     text-align: center
-  #spinner
-    display: none
+  #modelSpinner
     opacity: .5
     position: fixed
-    top: 50%
-    right: 50%
+    right: 600px
+    bottom: 100px
     z-index: 5001
     height: 32px
     width: 32px
-    border-radius: 5px
-    box-shadow: 0 0 10px rgba(#333, .2)
+    border-radius: 16px
     background-color: #fff
+    img
+      margin-left: 8px
+      margin-top: 8px
+      width: 16px
+      height: 16px
+  #tileSpinner
+    opacity: .5
+    position: fixed
+    top: 14px
+    left: 300px
+    z-index: 5002
+    height: 32px
+    width: 32px
     padding: 10px
+    img
+      width: 16px
+      height: 16px
 
 #bubble
   position: fixed
