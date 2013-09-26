@@ -12,6 +12,7 @@ helpers = {
         '?box=253723.176600653,6660500.4670516,267723.176600653,6646500.4670516"}');
       return;
     } else {
+      param = param.split("|")[0];
       box = param.split(',');
     }
     return box;
