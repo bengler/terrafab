@@ -59,7 +59,7 @@ getCartData = ->
           progressCount = progressCount+2 if progressCount < 99
           $(".progress-bar span").css("width", progressCount+"%")
         , 1000)
-      url = "/buy?box="+searchToObject().box
+      url = "/ship?box="+searchToObject().box
       window.location = url
       #   false
       # )

@@ -49,10 +49,12 @@ app.get('/preview', routes.preview);
 app.get('/download', routes.download);
 
 // Shapeways integration
-app.get('/buy', routes.buy);
 app.get('/cart', routes.cart);
 app.get('/cartdata', routes.cartData);
+app.get('/ship', routes.shipToShapeways);
 app.post('/addtocart', routes.addToCart);
+
+// oAuth Bonanza
 app.get('/login', routes.login);
 app.get('/accesstoken', routes.accessToken);
 app.get('/callback', routes.callbackFromShapeways);
