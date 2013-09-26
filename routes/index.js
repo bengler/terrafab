@@ -356,7 +356,8 @@ exports.shipToShapeways = function(req, res) {
       config.shapewaysAPI.accessTokenSecret,
       function(err, result) {
         if(err) {
-          returnconsole.error(err);
+          console.error(err);
+          return res.status(500).end(JSON.stringify(err));
         } else {
           console.log(result);
           res.status(200).cookie('shippedToShapeways', 'true')
