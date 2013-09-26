@@ -2,11 +2,11 @@ $ = window.$ = require("jquery")
 
 config = require('../config/app.json')
 Map = require('./map.coffee')
-localStorage = require('localStorage')
 Terrain = require('./terrain')
 TerrainStreamer = require('./terrain/streamer.coffee')
 SuggestionCompleter = require('./suggestion_completer.coffee')
 require('./preview_page.coffee')
+require('./cart_page.coffee')
 
 
 $ ->
@@ -46,17 +46,9 @@ $ ->
         hashToProjection(location.hash).rectangle
       )
       zoom = hashToProjection(location.hash).zoom
-    else if localStorage and localStorage.getItem('rectangle')
-      rectangle = JSON.parse(localStorage.getItem('rectangle'))
-      rectangle_editor = new L.RectangleEditor(
-        [
-          [rectangle._southWest.lat, rectangle._southWest.lng],
-          [rectangle._northEast.lat, rectangle._northEast.lng]
-        ]
-      )
-      zoom = localStorage.getItem('zoom')
     else
       rectangle_editor = new L.RectangleEditor(
+        # TODO: fix default location
         [
           [67.31285290844802, 14.441993143622962]
           [67.25053169095976, 14.2774269944074]
