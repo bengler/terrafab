@@ -4,7 +4,7 @@
  */
 
 require('coffee-script')
-var express = require('express');
+var express = require('express'), cookieSessions = require('./cookie-sessions.js');
 var routes = require('./routes');
 var http = require('http');
 var path = require('path');
@@ -20,8 +20,8 @@ app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(express.cookieParser());
-app.use(express.session({secret: "terrafabshapeways"})); // For setting up the application AccessToken
+app.use(express.cookieParser('terrafabshapeways'));
+app.use(cookieSessions('shapewaysterrafab'));
 app.use(app.router);
 app.use(require('stylus').middleware(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, 'public')));

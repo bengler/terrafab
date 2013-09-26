@@ -377,10 +377,7 @@ exports.shipToShapeways = function(req, res) {
             return res.status(500).end(JSON.stringify(err));
           } else {
             console.log(result);
-            res.status(200).cookie('modelId', result.modelId, { maxAge: 60 * 1000 });
-            res.end('/cart?modelId=' +
-                result.modelId
-            );
+            req.session.modelId = result.modelId;
             res.end(JSON.stringify({cartURL: '/cart?modelId=' + result.modelId}));
           }
         }
