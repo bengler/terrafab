@@ -35,7 +35,7 @@ MAP_SCALE = 1.6
 TILE_CACHE_LIMIT = 40
 
 class TerrainTile
-  constructor: (@bounds, @pxWidth, onload = null) ->
+  constructor: (@bounds, @pxWidth, options, onload = null) ->
     @pxHeight = Math.round(@pxWidth/@meterWidth()*@meterHeight())
     @resolution = @pxWidth/@meterWidth()
     @terrainImage = new Image()
@@ -43,7 +43,9 @@ class TerrainTile
     @terrainImage.src = "/dtm?box=#{[@bounds.min.x, @bounds.max.y, @bounds.max.x, @bounds.min.y].join(',')}&outsize=#{@pxWidth},#{@pxHeight}"
     @mapImage = new Image()
     @mapImage.onload = onload
-    @mapImage.src = "/map?box=#{[@bounds.min.x, @bounds.max.y, @bounds.max.x, @bounds.min.y].join(',')}&outsize=#{Math.round(@pxWidth*MAP_SCALE)},#{Math.round(@pxHeight*MAP_SCALE)}"
+    imgUrl = "/map?box=#{[@bounds.min.x, @bounds.max.y, @bounds.max.x, @bounds.min.y].join(',')}&outsize=#{Math.round(@pxWidth*MAP_SCALE)},#{Math.round(@pxHeight*MAP_SCALE)}"
+    imgUrl += "&shade=true" if options.shade
+    @mapImage.src = imgUrl
   meterHeight: ->
     Math.abs(@bounds.max.y-@bounds.min.y)
   meterWidth: ->
@@ -98,8 +100,8 @@ class TerrainStreamer
     @bounds = null
 
   # Loads data for the provided bounds using a bitmap with 'width' pixels horizontally.
-  load: (bounds, width) ->
-    @tiles.push(new TerrainTile(bounds, width, (=> @update())))
+  load: (bounds, width, options = {}) ->
+    @tiles.push(new TerrainTile(bounds, width, options, (=> @update())))
     @purgeCache()
 
   # Purges the cache of old tiles
@@ -152,7 +154,7 @@ class TerrainStreamer
   # three times as much data around the area to allow for scrubbing. Similarly a scaleFactor of 1.0 loads the area in the exact
   # resolution required to display at current scale. A factor of 1.3 will allow the user to zoom 30% before needing to load more
   # data.
-  loadExtended: (areaFactor, scaleFactor) ->
+  loadExtended: (areaFactor, scaleFactor, options) ->
     f = (areaFactor-1.0)/2
     size = @bounds.getSize()
     newBounds =
@@ -160,7 +162,7 @@ class TerrainStreamer
           [@bounds.min.x-size.x*f, @bounds.min.y-size.y*f],
           [@bounds.max.x+size.x*f, @bounds.max.y+size.y*f]
         ])
-    @load(newBounds, Math.floor(@pxWidth*scaleFactor*areaFactor))
+    @load(newBounds, Math.floor(@pxWidth*scaleFactor*areaFactor), options)
 
   # "RawResolution" means the landscape in the current @bounds in full 16 bit resolution
   resetRawRez: ->
@@ -181,11 +183,11 @@ class TerrainStreamer
     doLoad = =>
       # If there is no coarse data to provide adequate preview, we need to load a new atlas area
       unless @resolution >= 0.05
-        @loadExtended(15.0, 0.1)
+        @loadExtended(15.0, 0.1, {})
       # If the effective resolution is anything less than full, we will order some more data from the server allowing for
       # some scrolling and resizing
       unless @resolution >= 1.0
-        @loadExtended(1.5, 1.2)
+        @loadExtended(1.5, 1.2, {shade: true})
     @timer = setTimeout(doLoad, 400)
 
   # Called when new data arrive or bounds are updated to redraw map and terrain
