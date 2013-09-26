@@ -36,7 +36,6 @@ app.use('/js', browserify('./client', {
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
-  // Shapeways routes for obtaining application access token (to use the Shapways API)
 }
 
 app.get('/', routes.index);
@@ -48,6 +47,8 @@ app.get('/map', routes.map);
 // Model routes
 app.get('/preview', routes.preview);
 app.get('/download', routes.download);
+
+// Shapeways integration
 app.get('/buy', routes.buy);
 app.get('/cart', routes.cart);
 app.get('/cartdata', routes.cartData);
