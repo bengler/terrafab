@@ -59,10 +59,6 @@ helpers = {
     return true;
   },
   generate: function(filename, box, callback) {
-    if(fs.existsSync(filename)) {
-      console.log("generator: Using cached archive");
-      return callback(null, filename);
-    }
     var output = "";
     var generator = exec("node "+__dirname+"/../generate.js "+filename+" \""+box.join(',')+"\"", function(err, stdout, stderr) {
       if (err) {
