@@ -28,11 +28,13 @@ class Archive
       fs.writeFileSync("#{@options.folder}/terrain.x3d", mesh.asX3D())
       callback()
   _saveTexture: (callback) ->
+    console.log "_saveTexture"
     boxParams = [@options.box.nw[0], @options.box.nw[1], @options.box.se[0], @options.box.se[1]]
     console.log "Getting texture"
     httpGetOpts =
       bufferType: "buffer"
-      url: "#{config.imageUrl}/map?box=#{boxParams}&outsize=2000,2000&shading=true"
+      url: "#{config.imageUrl}/map?box=#{boxParams}&outsize=800,800&shading=true"
+    console.log "Getting texture from: #{httpGetOpts.url}"
     http.get httpGetOpts, (err, result) =>
       if err?
         console.log "Failed getting texture @ #{httpGetOpts.url}"

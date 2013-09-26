@@ -68,4 +68,4 @@ $ ->
 		window.location = BuyURL;
 	$('.buyButton').attr("href", BuyURL)
 
-interval = setInterval(progress, 1200)
+interval = setInterval(progress, 600)
