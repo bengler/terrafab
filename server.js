@@ -37,9 +37,6 @@ app.use('/js', browserify('./client', {
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
   // Shapeways routes for obtaining application access token (to use the Shapways API)
-  app.get('/login', routes.login);
-  app.get('/accesstoken', routes.accessToken);
-  app.get('/callback', routes.callbackFromShapeways);
 }
 
 app.get('/', routes.index);
@@ -55,6 +52,9 @@ app.get('/buy', routes.buy);
 app.get('/cart', routes.cart);
 app.get('/cartdata', routes.cartData);
 app.post('/addtocart', routes.addToCart);
+app.get('/login', routes.login);
+app.get('/accesstoken', routes.accessToken);
+app.get('/callback', routes.callbackFromShapeways);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
