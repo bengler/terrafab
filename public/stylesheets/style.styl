@@ -24,6 +24,15 @@ body
   #loader
     margin-top: 200px
     text-align: center
+  #spinner
+    position: fixed
+    top: 20px
+    right: 20px
+    z-index: 5001
+    background-image: url(/images/ajax-loader.gif)
+    height: 40px
+    width: 40px
+    border: 1px solid red
 
 #bubble
   position: fixed
@@ -54,6 +63,17 @@ body
       opacity: 1
     svg
       zoom: 0.5
+  .warnings
+    > div
+      display: none
+      &.active
+        display: block
+    p
+      border: 1px solid #c00
+      background-color: #c03f00
+      color: #fff
+      padding: 10px 15px
+
   h1
     margin-top: 0px
     margin-bottom: 6px
