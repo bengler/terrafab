@@ -8,15 +8,22 @@ class LoadIndicator
     @_pending = []
 
   stop: ->
-    @$el.fadeOut()
+    @hide()
     @_timeout = clearTimeout(@_timeout)
+
+
+  toggle: (showOrHide)->
+    if (showOrHide) then @show() else @hide()
   
   showAfter: (ms)->
     @_timeout = setTimeout((=> @show()), ms)
   
   show: ->
     @$el.fadeIn()
-  
+
+  hide: ->
+    @$el.fadeOut()
+
   queue: (jqXHR)->
     @showAfter(@delay) if @_pending.length == 0
     @_pending.push(jqXHR) if @_pending.indexOf(jqXHR) == -1

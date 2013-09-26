@@ -49,7 +49,7 @@ class TerrainTile
   meterWidth: ->
     Math.abs(@bounds.max.x-@bounds.min.x)
   isLoaded: ->
-    (@terrain.width > 0) && (@map.width > 0)
+    (@terrainImage.width > 0) && (@mapImage.width > 0)
   # Converts the provided bounds in UTM33 meters to the same rectangle in tile-local pixel coordinates at the given scale
   meterSelectionToTerrainPixelBounds: (selection) ->
     meterSelectionToPixelBounds(selection, @bounds, @resolution, 1.0)
@@ -169,7 +169,7 @@ class TerrainStreamer
     @rawRezTimer = setTimeout((=> @loadRawRez()), 1700)
   loadRawRez: ->
     @rawRez = new TerrainRawRez @bounds, @pxWidth, =>
-      @onupdate() if @onupdate?
+      @onupdate({loading: true}) if @onupdate?
   hasRawRez: ->
     @rawRez? && @rawRez.isLoaded()
 
@@ -199,12 +199,15 @@ class TerrainStreamer
     if @bounds?
       # This variable keeps track of the best resolution we had covering the entire output region
       @resolution = 0
+      loadedResolution = 0
       for tile in @relevantTiles()
         effectiveResolution = @drawTile(tile)
         # We keep track of the effective resolution of the highest resolution tile that covers the whole area
         if tile.bounds.contains(@bounds)
           @resolution = effectiveResolution
-          break if @resolution >= 1.0
-    @onupdate() if @onupdate
+          if tile.isLoaded()
+            loadedResolution = effectiveResolution
+          break if loadedResolution>= 1.0
+    @onupdate({loading: loadedResolution < 1}) if @onupdate
 
 module.exports = TerrainStreamer

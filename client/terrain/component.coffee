@@ -5,8 +5,8 @@ TerrainScene = require('./scene.coffee')
 require("../ext_js/three_effects")
 
 class TerrainComponent
-  constructor: (@el) ->
-    @scene = new TerrainScene()
+  constructor: (@el, opts={}) ->
+    @scene = new TerrainScene(opts)
     @renderer = new THREE.WebGLRenderer(canvas: @el, antialias: true)
     @renderer.setClearColor(0x0, 0.0)
     @composer = new THREE.EffectComposer(@renderer)

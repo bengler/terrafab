@@ -16,13 +16,14 @@ GEOMETRY_UNITS_WIDE = 100.0
 
 THREE.Object3D.prototype.constructor = THREE.Object3D
 class TerrainObject extends THREE.Object3D
-  constructor: (lat, lon, radius) ->
+  constructor: (lat, lon, radius, opts={}) ->
     super
+    {@onUpdate} = opts
     # Builds the mesh
     @builder = new TerrainBuilder(SAMPLES_PER_SIDE, SAMPLES_PER_SIDE, GEOMETRY_UNITS_WIDE)
     @builder.applyElevation()
     # Streams terrain data
-    @streamer = new TerrainStreamer SAMPLES_PER_SIDE, (=> @terrainUpdateHandler())
+    @streamer = new TerrainStreamer SAMPLES_PER_SIDE, ((params)=> @terrainUpdateHandler(params))
     # The material for the terrain texture
     @textureMaterial =  new THREE.MeshLambertMaterial
         map: new THREE.Texture(@streamer.map)
@@ -74,7 +75,8 @@ class TerrainObject extends THREE.Object3D
         [center.x+halfside, center.y+halfside]
       ))
 
-  terrainUpdateHandler: ->
+  terrainUpdateHandler: (params) ->
+    @onUpdate(params) if @onUpdate
     @textureMaterial.map.needsUpdate = true
     if @streamer.hasRawRez()
       @builder.applyElevation(@streamer.rawRez, zScale: @terrainZScale(32767, OUT_RANGE))

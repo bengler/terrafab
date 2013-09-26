@@ -6,14 +6,14 @@ TerrainObject = require('./object.coffee')
 
 THREE.Scene.prototype.constructor = THREE.Scene
 class TerrainScene extends THREE.Scene
-  constructor: ->
+  constructor: (opts={@onUpdate})->
     super
     @camera = new THREE.PerspectiveCamera(35)
     @camera.position.y = 80
     @camera.position.z = -200
     @camera.lookAt(new THREE.Vector3(0,-90,0))
 
-    @terrain = new TerrainObject()
+    @terrain = new TerrainObject(null, null, null, opts)
     @terrain.position.y = -120
     @add(@terrain)
 

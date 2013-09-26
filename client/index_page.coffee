@@ -12,6 +12,9 @@ config = require('../config/app.json')
 debounce = require("lodash.debounce")
 
 BoxParam = require("./utils/boxparam.coffee")
+
+LoadIndicator = require("./utils/load_indicator.coffee")
+
 resolutions = [
   5545984, 2772992, 1386496, 693248,
   346624, 173312, 86656, 43328,
@@ -49,19 +52,14 @@ $ ->
   
   do ->
 
-    # Set up load indicator
-    LoadIndicator = require("./utils/load_indicator.coffee")
+    # Set up load indicator for tiles
 
-    loadIndicator = new LoadIndicator($('#spinner'))
+    tileLoadIndicator = new LoadIndicator($('#tileSpinner'))
 
     tileLayer.on 'loading', ->
       dfd = $.Deferred()
-      loadIndicator.queue(dfd)
+      tileLoadIndicator.queue(dfd)
       tileLayer.once 'load', dfd.resolve
-    
-      $(document).ajaxStart (e, jqXHR)->
-        loadIndicator.queue(jqXHR)
-
 
   # Setup map, events, etc
   map = new L.Map('map', {
@@ -84,9 +82,15 @@ $ ->
     # Canvas stuff
     canvas = $('canvas#terrain')[0]
 
+    # Loader indicator for 3d model tiles
+    modelSpinner = new LoadIndicator($('#modelSpinner'))
+
     # Delay setup of terrain a little to make page a little more responsive initially
     delay 300, ->
-      terrain = new Terrain(canvas)
+      terrain = new Terrain(canvas, {
+        onUpdate: (params)->
+          modelSpinner.toggle(params.loading)
+      })
       terrain.run()
 
       syncTerrainWithSelector = ->
