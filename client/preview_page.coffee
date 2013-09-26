@@ -1,13 +1,13 @@
 # Scripts for the model preview page
 
 $ = require("jquery")
+require('./ext_js/jquery.fileDownload')
+
 Terrain = require('./terrain')
 TerrainStreamer = require('./terrain/streamer.coffee')
 L = require("leaflet")
 
 BoxParams = require("./utils/boxparam.coffee")
-$ = require('jquery')
-require('./ext_js/jquery.fileDownload')
 
 $ ->
   canvas = $('canvas#terrain')[0]
