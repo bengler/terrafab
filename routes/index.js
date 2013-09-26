@@ -114,7 +114,7 @@ exports.dtm = function(req, res){
           (out_options ? " -co " + out_options + " " : "") +
           " -of " + out_format +
   //      " -outsize " + outsize[0] + " " + outsize[1] +
-          " -projwin " + [box[2], box[1], box[0], box[3]].join(', ') +
+          " -projwin " + box.join(' ') +
           " " + tif_file + " " + out_file +
         " && rm " + tif_file +"'";
   }
