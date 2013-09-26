@@ -1,4 +1,5 @@
 OAuth = require('oauth')
+fs = require('fs');
 
 API_HOST = "http://api.shapeways.com"
 
@@ -38,30 +39,91 @@ class ShapewaysClient
         callback { oauth_access_token, oauth_access_token_secret }
     )
 
-  postModel: (file, oauth_access_token, oauth_access_token_secret, callback) ->
+  getMaterials: (oauth_access_token, oauth_access_token_secret, callback) ->
+    @oa.get(
+      API_HOST+"/materials/v1",
+      oauth_access_token,
+      oauth_access_token_secret,
+      (error, data, response) ->
+        if error
+          callback error, null
+        if response is undefined
+          callback ('error: ' + response), null
+        callback null, JSON.parse(data)
+    )
+
+  getPrice: (options, oauth_access_token, oauth_access_token_secret, callback) ->
+    @oa.post(
+      API_HOST+"/price/v1",
+      oauth_access_token,
+      oauth_access_token_secret,
+      JSON.stringify(options),
+      (error, data, response) ->
+        if error
+          callback error, null
+        else
+          callback null, JSON.parse(data)
+    )
+
+  getModel: (modelId, oauth_access_token, oauth_access_token_secret, callback) ->
+    @oa.get(
+      API_HOST+"/models/"+modelId+"/v1",
+      oauth_access_token,
+      oauth_access_token_secret,
+      (error, data, response) ->
+        if error
+          callback error, null
+        else
+          callback null, JSON.parse(data)
+    )
+
+  postModel: (file, params, oauth_access_token, oauth_access_token_secret, callback) ->
+      # TODO: check if file already is posted to Shapeways through the API.
       model_upload = fs.readFile file, (err, fileData) =>
         fileData = encodeURIComponent fileData.toString('base64')
-
-        upload = JSON.stringify {
-          file: fileData,
-          fileName: file,
-          hasRightsToModel: 1,
-          acceptTermsAndConditions: 1,
-          isPublic: false,
-          isForSale: true,
-          isDownloadable: true
-        }
-
+        params.file = fileData;
+        params.fileName = file;
         @oa.post(
           API_HOST+"/models/v1",
           oauth_access_token,
           oauth_access_token_secret,
-          upload,
+          JSON.stringify(params),
           (error, data, response) ->
             if error
-              callback err, null
+              callback error, null
             else
-              callback null, data
+              callback null, JSON.parse(data)
         )
+
+  updateModel: (modelId, params, oauth_access_token, oauth_access_token_secret, callback) ->
+    @oa.put(
+      API_HOST+"/models/"+modelId+"/info/v1",
+      oauth_access_token,
+      oauth_access_token_secret,
+      JSON.stringify(params),
+      (error, data, response) ->
+        if error
+          callback error, null
+        else
+          callback null, JSON.parse(data)
+    )
+
+  addToCart: (modelId, materialId, quantity, oauth_access_token, oauth_access_token_secret, callback) ->
+    params = {
+      "modelId": modelId,
+      "materialId": materialId,
+      "quantity": quantity
+    }
+    @oa.post(
+      API_HOST+"/orders/cart/v1",
+      oauth_access_token,
+      oauth_access_token_secret,
+      JSON.stringify(params),
+      (error, data, response) ->
+        if error
+          callback error, null
+        else
+          callback null, JSON.parse(data)
+    )
 
 module.exports = ShapewaysClient

@@ -1,4 +1,6 @@
-crypto = require("crypto");
+var crypto = require("crypto");
+var exec = require('child_process').exec;
+var fs = require('fs');
 
 helpers = {
 
@@ -54,6 +56,33 @@ helpers = {
       return false;
     }
     return true;
+  },
+  generate: function(filename, box, callback) {
+    if(fs.existsSync(filename)) {
+      console.log("generator: Using cached archive");
+      return callback(null, filename);
+    }
+    var output = "";
+    var generator = exec("node "+__dirname+"/../generate.js "+filename+" \""+box.join(',')+"\"", function(err, stdout, stderr) {
+      if (err) {
+        output += err;
+      };
+      if (stdout) {
+        console.log("generator: ", stdout.toString())
+        output += stdout.toString();
+      };
+      if (stderr) {
+        console.log("generator: ", stderr.toString())
+        output += stderr.toString();
+      }
+    });
+    generator.on('exit', function(code, signal) {
+      if (code != 0) {
+        callback("Generator failed with code "+code+"\n <!-- "+output+" -->", null);
+      } else {
+        callback(null, filename);
+      }
+    });
   }
-}
+};
 module.exports = helpers;

@@ -1,8 +1,8 @@
 {
-  "tilesUrl": "http://144.76.137.99:81/map/{z}/{x}/{y}.png",
+  "tilesUrl": "http://144.76.137.99:81/blackwhite/{z}/{x}/{y}.png",
   "imageUrl": "http://144.76.137.99:80",
   "lib": {
-    "mapnikFile": "/home/kartverk/kartverk_vm_services/tilestache/mapnik.xml",
+    "mapnikFile": "/home/kartverk/kartverk_vm_services/tilestache/_model.xml",
     "dtmFile": "/home/kartverk/kartverk_data_seed/dtm/dtm.vrt",
     "mapboxScript": "/home/kartverk/kartverk_vm_services/bin/mapbox"
   },
@@ -17,11 +17,24 @@
     }
   },
   "shapewaysAPI": {
-    "consumerKey": "XXX",
-    "consumerSectret": "YYY",
-    "accessToken": "ZZZ",
-    "accessTokenSecret": "NNN",
-    "callbackURL": "http://localhost:5000/callback"
+    "consumerKey": "xxx",
+    "consumerSecret": "yyy",
+    "accessToken": "zzz",
+    "accessTokenSecret": "xxx",
+    "callbackURL": "http://localhost:5000/callback",
+    "defaultMaterialId": "26",
+    "defaultPrice": 100,
+    "modelPostOptions": {
+      "title": "Terrafab generated model",
+      "tags": ["terrafab", "usergenerated"],
+      "uploadScale": 1,
+      "hasRightsToModel": 1,
+      "acceptTermsAndConditions": 1,
+      "isPublic": 1,
+      "isForSale": 1,
+      "isDownloadable": 1,
+      "defaultMaterialId": 26
+    }
   },
   "leaflet": {
     "attribution": "Map data: CCBY 3.0; Kartverket, Imagery: Bengler CCBY 3.0 <3"

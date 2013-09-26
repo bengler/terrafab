@@ -29,7 +29,6 @@
     "leaflet": "~0.6.4",
     "jquery": "git://github.com/bjoerge/jquery-node",
     "request": "*",
-    "localStorage": "*",
     "events": "*",
     "http-get": "~0.5.10",
     "coffee-script": "~1.6.3",
