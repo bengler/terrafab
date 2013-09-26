@@ -11,7 +11,6 @@ class LoadIndicator
     @hide()
     @_timeout = clearTimeout(@_timeout)
 
-
   toggle: (showOrHide)->
     if (showOrHide) then @show() else @hide()
   

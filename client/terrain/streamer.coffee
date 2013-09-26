@@ -168,8 +168,7 @@ class TerrainStreamer
     clearTimeout(@rawRezTimer)
     @rawRezTimer = setTimeout((=> @loadRawRez()), 1700)
   loadRawRez: ->
-    @rawRez = new TerrainRawRez @bounds, @pxWidth, =>
-      @onupdate({loading: true}) if @onupdate?
+    @rawRez = new TerrainRawRez @bounds, @pxWidth, => @update()
   hasRawRez: ->
     @rawRez? && @rawRez.isLoaded()
 
@@ -207,7 +206,7 @@ class TerrainStreamer
           @resolution = effectiveResolution
           if tile.isLoaded()
             loadedResolution = effectiveResolution
-          break if loadedResolution>= 1.0
+          break if @resolution >= 1.0
     @onupdate({loading: loadedResolution < 1}) if @onupdate
 
 module.exports = TerrainStreamer
