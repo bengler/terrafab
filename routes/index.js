@@ -62,6 +62,7 @@ exports.dtm = function(req, res){
   var out_extension;
   var out_type;
   var out_scale;
+  var fast_pipeline = true;
   switch(req.query.format) {
     case "bin":
       out_extension  = "bin";
@@ -70,6 +71,7 @@ exports.dtm = function(req, res){
       out_scale = "0 2469 0 32767";
       out_options = null
       out_content_type = {'Content-Type': 'application/octet-stream'};
+      fast_pipeline = false;
       break;
     default:
       out_extension  = "png";
@@ -87,22 +89,28 @@ exports.dtm = function(req, res){
 
   var tif_file = out_file.replace('.'+out_extension, '.tif');
 
-  var command = "bash -c '" +
-      "GDAL_CACHEMAX=1000 gdalwarp -wm 1000 -s_srs EPSG:32633 -t_srs EPSG:32633" +
-      " -r cubic -ts "+ outsize[0] + " " + outsize[1] +
-      " -of GTiff " +
-      "-te " + [box[0], box[3], box[2], box[1]].join(' ') + " " +
-      dtm_file + " " + tif_file +
-      " && " +
-      "gdal_translate -q" +
-        " -scale " + out_scale +
-        " -ot " + out_type +
-        (out_options ? " -co " + out_options + " " : "") +
-        " -of " + out_format +
-//      " -outsize " + outsize[0] + " " + outsize[1] +
-        " -projwin " + box.join(', ') +
-        " " + tif_file + " " + out_file +
-      " && rm " + tif_file +"'";
+  var command = false
+  if (fast_pipeline) {
+    command = "bash -c 'gdal_translate -q -outsize "+outsize[0]+' '+outsize[1]+" -a_srs EPSG:32633 -scale " + out_scale +
+      "-ot "+out_type+" -of "+out_format+" -projwin +"+box.join(', ')+' '+dtm_file+' '+out_file+"'"
+  } else {
+    command = "bash -c '" +
+        "GDAL_CACHEMAX=1000 gdalwarp -wm 1000 -s_srs EPSG:32633 -t_srs EPSG:32633" +
+        " -r cubic -ts "+ outsize[0] + " " + outsize[1] +
+        " -of GTiff " +
+        "-te " + [box[0], box[3], box[2], box[1]].join(' ') + " " +
+        dtm_file + " " + tif_file +
+        " && " +
+        "gdal_translate -q" +
+          " -scale " + out_scale +
+          " -ot " + out_type +
+          (out_options ? " -co " + out_options + " " : "") +
+          " -of " + out_format +
+  //      " -outsize " + outsize[0] + " " + outsize[1] +
+          " -projwin " + box.join(', ') +
+          " " + tif_file + " " + out_file +
+        " && rm " + tif_file +"'";
+  }
   console.log("Running command:" + command);
 
   // Output cached file if exists
