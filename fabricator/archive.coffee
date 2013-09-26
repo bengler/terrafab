@@ -32,7 +32,7 @@ class Archive
     console.log "Getting texture"
     httpGetOpts =
       bufferType: "buffer"
-      url: "#{config.imageUrl}/map?box=#{boxParams}&outsize=2000,2000"
+      url: "#{config.imageUrl}/map?box=#{boxParams}&outsize=2000,2000&shading=true"
     http.get httpGetOpts, (err, result) =>
       if err?
         console.log "Failed getting texture @ #{httpGetOpts.url}"
