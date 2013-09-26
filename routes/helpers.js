@@ -15,18 +15,18 @@ helpers = {
       param = param.split("|")[0];
       box = param.split(',');
     }
-    // if (box[0] > box[2] && !(box[0]<0 && box[2]<0)) {
-    //   p = box[2]
-    //   box[2] = box[0]
-    //   box[0] = p
-    //   console.log("Swapped box 0 <-> 2")
-    // }
-    // if (box[1] < box[3]) {
-    //   p = box[3]
-    //   box[3] = box[1]
-    //   box[1] = p
-    //   console.log("Swapped box 1 <-> 3")
-    // }
+    if (box[0] > box[2]) {
+      p = box[2]
+      box[2] = box[0]
+      box[0] = p
+      console.log("Swapped box 0 <-> 2")
+    }
+    if (box[1] < box[3]) {
+      p = box[3]
+      box[3] = box[1]
+      box[1] = p
+      console.log("Swapped box 1 <-> 3")
+    }
     return box;
   },
 
