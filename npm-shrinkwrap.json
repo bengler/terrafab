@@ -88,8 +88,7 @@
       "dependencies": {
         "commander": {
           "version": "2.0.0",
-          "from": "commander@2.0.0",
-          "resolved": "https://registry.npmjs.org/commander/-/commander-2.0.0.tgz"
+          "from": "commander@2.0.0"
         },
         "transformers": {
           "version": "2.1.0",
@@ -190,7 +189,6 @@
     "stylus": {
       "version": "0.38.0",
       "from": "stylus@*",
-      "resolved": "https://registry.npmjs.org/stylus/-/stylus-0.38.0.tgz",
       "dependencies": {
         "cssom": {
           "version": "0.2.5",
@@ -376,7 +374,7 @@
                 },
                 "through": {
                   "version": "2.2.7",
-                  "from": "through@~2.2.0"
+                  "from": "through@~2.2.7"
                 },
                 "duplexer": {
                   "version": "0.0.4",
@@ -578,7 +576,7 @@
         },
         "convert-source-map": {
           "version": "0.2.6",
-          "from": "convert-source-map@~0.2.3"
+          "from": "convert-source-map@~0.2.5"
         }
       }
     },
@@ -788,10 +786,6 @@
         }
       }
     },
-    "localStorage": {
-      "version": "1.0.2",
-      "from": "localStorage@*"
-    },
     "events": {
       "version": "0.5.0",
       "from": "events@*"
@@ -838,7 +832,7 @@
       "dependencies": {
         "through": {
           "version": "2.2.7",
-          "from": "through@~2.2.0"
+          "from": "through@~2.2.7"
         },
         "convert-source-map": {
           "version": "0.2.6",
@@ -1152,7 +1146,7 @@
             },
             "uglify-js": {
               "version": "2.2.5",
-              "from": "uglify-js@~2.2.5",
+              "from": "uglify-js@2.2.5",
               "dependencies": {
                 "source-map": {
                   "version": "0.1.29",
@@ -1190,7 +1184,7 @@
       "dependencies": {
         "async": {
           "version": "0.2.9",
-          "from": "async@~0.2.6"
+          "from": "async@~0.2.9"
         },
         "source-map": {
           "version": "0.1.29",
@@ -1220,7 +1214,7 @@
     },
     "oauth": {
       "version": "0.9.10",
-      "from": "oauth@latest"
+      "from": "oauth@0.9.10"
     }
   }
 }
