@@ -182,7 +182,7 @@ class TerrainStreamer
     doLoad = =>
       # If there is no coarse data to provide adequate preview, we need to load a new atlas area
       unless @resolution >= 0.05
-        @loadExtended(5.0, 0.3)
+        @loadExtended(15.0, 0.1)
       # If the effective resolution is anything less than full, we will order some more data from the server allowing for
       # some scrolling and resizing
       unless @resolution >= 1.0
