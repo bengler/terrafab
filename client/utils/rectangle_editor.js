@@ -33,6 +33,9 @@ L.RectangleEditor = L.Polygon.extend ({
     var markerGroup = new L.LayerGroup(allLayers);
 
     map.addLayer(markerGroup);
+    map.on('zoomend', function() {
+      this._layoutMoveMarker()
+    }.bind(this))
     this._layoutMoveMarker()
   },
 
@@ -113,7 +116,6 @@ L.RectangleEditor = L.Polygon.extend ({
     this._resizeMarkers.ne.setLatLng(this._latLngs[NE]);
     this._resizeMarkers.se.setLatLng(this._latLngs[SE]);
     this._resizeMarkers.nw.setLatLng(this._latLngs[NW]);
-    this.redraw()
   },
   _layoutMoveMarker: function() {
     var nwPoint = this._map.project(this._latLngs[NW]);
