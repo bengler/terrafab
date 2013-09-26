@@ -2,6 +2,9 @@ Terrain = require('./terrain')
 TerrainStreamer = require('./terrain/streamer.coffee')
 L = require("leaflet")
 
+$ = window.jQuery = require('jquery')
+require('./ext_js/jquery.fileDownload')
+
 parseBoxParams = ->
 	return /(?:box\=)([0-9\.\,]+)/.exec(window.location.search)[1].split(',')
 
@@ -20,6 +23,21 @@ if window.location.href.match("/preview")
 	$('.progress').show()
 	item = 0
 	length = $('.progress p').length
+
+	doDownload = (url) ->
+		return if $('.downloadButton').hasClass('disabled')
+		oldButtonContent = ""
+		document.cookie = "fileDownload=false"
+		download = $.fileDownload url,
+			prepareCallback: ->
+				oldButtonContent = $('.downloadButton').html()
+				$('.downloadButton').addClass('disabled').html("<div class='spinner'></div> Please wait!")
+				console.log "Preparing to download"
+			successCallback: ->
+				$('.downloadButton').removeClass('disabled').html(oldButtonContent)
+			failCallback: ->
+				$('.downloadButton').removeClass('disabled').html(oldButtonContent)
+
 	$( $('.progress p')[item] ).show()
 	progress = ->
 	  $('.progress p').hide()
@@ -28,7 +46,11 @@ if window.location.href.match("/preview")
 	    item++;
 	    if( item == length)
 	      $('.progress').remove()
-      	$('.downloadButton').removeClass('disabled').attr("href", "/download"+window.location.search)
+      	$('.downloadButton').removeClass('disabled').click ->
+      		doDownload("/download"+window.location.search)
+
+
+      	#attr("href", "/download"+window.location.search)
 	      f = ->
 		      $('.buyButton').removeClass('disabled')
 	      setTimeout(f, 600)

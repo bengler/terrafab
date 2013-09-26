@@ -202,7 +202,7 @@ exports.map = function(req, res){
 
 exports.download = function(req, res) {
   var headers = {
-    "Content-Type": "application/force-download",
+    "Content-Type": "application/zip",
     "Content-Disposition": "attachment; filename=\"terrain-model.zip\""
   };
   var box = []
@@ -232,7 +232,8 @@ exports.download = function(req, res) {
     if (code != 0) {
       res.status(500).send("Generator failed with code "+code+"\n <!-- "+output+" -->");
     } else {
-      res.status(200).set(headers).sendfile(filename)
+      console.log(req.url);
+      res.status(200).set(headers).cookie('fileDownload', 'true').sendfile(filename)
     }
   })
 }
