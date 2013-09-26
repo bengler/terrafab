@@ -1,16 +1,13 @@
 extends layout
 block content
   #cartPage
-    .container
-      .col1
-        h3
-          span.progressTxt
-          div.progress-bar.orange.shine(style='display: none')
-            span(style="width: 0%;")
-      .col2
-        div
-          p.infoText
-        div
-          p
-            a.button.buyButton(style='display: none')
-              | Comply
+    h1
+      span.progressTxt
+    h2
+      span.infoTxt
+    div.progress-bar.stripes(style="display:none")
+      span(style="width: 0%;")
+    div
+      p
+        a.button.buyButton.bigOrangeButton(style='display: none')
+          | Comply

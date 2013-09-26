@@ -1,4 +1,4 @@
-$ = require("jquery")
+window.$ = require("jquery")
 
 waitInterval = null
 uploadInterval = null
