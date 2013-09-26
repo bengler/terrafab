@@ -37,7 +37,6 @@ TILE_CACHE_LIMIT = 40
 class TerrainTile
   constructor: (@bounds, @pxWidth, onload = null) ->
     @pxHeight = Math.round(@pxWidth/@meterWidth()*@meterHeight())
-    console.log "Dimensions:", @pxWidth, @pxHeight
     @resolution = @pxWidth/@meterWidth()
     @terrainImage = new Image()
     @terrainImage.onload = onload
