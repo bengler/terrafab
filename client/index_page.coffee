@@ -37,26 +37,19 @@ latLngs = [crs.projection.unproject(selection.sw), crs.projection.unproject(sele
 rectangleEditor = new L.RectangleEditor(latLngs, {projection: crs.projection})
 
 $ ->
-  $('.waitForLoad').show();
-  $('#bubble').hide() if sessionStorage.getItem('seenBubble')
-  $('body').on 'click', '.closeBubbleAction', ->
-    $('#bubble').hide()
-    sessionStorage.setItem('seenBubble', true)
 
-$ ->
+  tileLayer = new L.TileLayer(config.tilesUrl, {
+    attribution: config.leaflet.attribution,
+    minZoom: 1,
+    maxZoom: resolutions.length - 1,
+    continuousWorld: true,
+    worldCopyJump: false,
+    noWrap: true
+  })
   # Setup map, events, etc
   map = new L.Map('map', {
     crs: crs,
-    layers: [
-      new L.TileLayer(config.tilesUrl, {
-        attribution: config.leaflet.attribution,
-        minZoom: 1,
-        maxZoom: resolutions.length - 1,
-        continuousWorld: true,
-        worldCopyJump: false,
-        noWrap: true
-      })
-    ],
+    layers: [tileLayer],
     center: rectangleEditor.getCenter(),
     zoom: selection.zoom || 15
     scale: (zoom) ->
@@ -129,3 +122,18 @@ $ ->
       latLng = new L.LatLng(completion.payload.lat, completion.payload.lng)
       rectangleEditor.setCenter(latLng)
       map.panTo(latLng)
+
+  do ->
+    # Set up load indicator
+    LoadIndicator = require("./utils/load_indicator.coffee")
+
+    loadIndicator = new LoadIndicator($('#loadIndicator'))
+
+    tileLayer.on 'loading', ->
+      dfd = $.Deferred()
+      loadIndicator.queue(dfd)
+      tileLayer.once 'load', dfd.resolve
+
+    $(document).ajaxStart (e, jqXHR)->
+      loadIndicator.queue(jqXHR)
+    
