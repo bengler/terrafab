@@ -5,6 +5,12 @@ var fs = require('fs');
 var request = require('request');
 var Archive = require('../fabricator/archive.coffee')
 
+process.on('message', function(message) {
+    // Process data
+
+    process.send({id: message.id, data: 'some result'});
+});
+
 ShapeWaysClient = require('../fabricator/shapeways.coffee');
 swClient = new ShapeWaysClient(
   config.shapewaysAPI.consumerKey,
@@ -320,15 +326,13 @@ exports.cart = function(req, res) {
  * GET Sends the model to our our Shapeways account for analyzis and availablility.
  */
 exports.shipToShapeways = function(req, res) {
-  req.connection.setTimeout(50000);
-  var box = helpers.boxFromParam(req.query.box, res);
+  var box = helpers.boxFromParam(req.body.box, res);
   if(!box) {
     return;
   }
   if(!helpers.numericParams(box.concat(box), res)) {
     return;
   }
-  console.log("Posting model to Shapeways")
   var filename = config.files.tmpPath +
     "/"+
     helpers.fileHash(
@@ -344,6 +348,7 @@ exports.shipToShapeways = function(req, res) {
         "isActive": 1
       }
     };
+    console.log("Posting model to Shapeways");
     swClient.postModel(
       file,
       modelOptions,
@@ -351,13 +356,14 @@ exports.shipToShapeways = function(req, res) {
       config.shapewaysAPI.accessTokenSecret,
       function(err, result) {
         if(err) {
-          console.error(err);
-          return res.status(err.statusCode || 500).end(JSON.stringify(err));
+          returnconsole.error(err);
         } else {
           console.log(result);
-          res.redirect('/cart?modelId=' +
+          res.status(200).cookie('shippedToShapeways', 'true')
+          res.end('/cart?modelId=' +
               result.modelId
           );
+          res.end(JSON.stringify({cartURL: '/cart?modelId=' + result.modelId}));
         }
       }
     );
@@ -432,7 +438,6 @@ exports.addToCart = function(req, res) {
   if(!req.session || !req.session.oauth_access_token) {
     return res.send(403, "No shapeway session!");
   }
-  console.log(req.body)
   swClient.addToCart(
     req.body.modelId,
     req.body.materialId,

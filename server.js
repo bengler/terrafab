@@ -51,7 +51,7 @@ app.get('/download', routes.download);
 // Shapeways integration
 app.get('/cart', routes.cart);
 app.get('/cartdata', routes.cartData);
-app.get('/ship', routes.shipToShapeways);
+app.post('/ship', routes.shipToShapeways);
 app.post('/addtocart', routes.addToCart);
 
 // oAuth Bonanza
