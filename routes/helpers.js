@@ -16,10 +16,10 @@ helpers = {
       box = param.split(',');
     }
     if (box[0] > box[2]) {
+      console.log("Swapped box 0 <-> 2 because "+box[0]+" is more than "+box[2])
       p = box[2]
       box[2] = box[0]
       box[0] = p
-      console.log("Swapped box 0 <-> 2")
     }
     if (box[1] < box[3]) {
       p = box[3]
