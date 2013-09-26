@@ -49,7 +49,7 @@ class Archive
         ctx.drawImage(img, 0, 0)
         ctx.strokeStyle = "#a3ac8f"
         ctx.lineCap = 'square'
-        ctx.lineWidth = 13
+        ctx.lineWidth = 7
         ctx.strokeRect(0,0,img.width-1, img.height-1)
         # Saves the modified texture
         filename = "#{@options.folder}/texture.png"
