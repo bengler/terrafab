@@ -366,7 +366,7 @@ exports.shipToShapeways = function(req, res) {
     if(req.session && req.session.modelId) {
       res.redirect('/cart?modelId=' + req.session.modelId);
     } else {
-      modelOptions.title = "" + modelOptions.title " " + (new Date()).toString();
+      modelOptions.title = "" + modelOptions.title + " " + (new Date()).toString();
       modelOptions.file = file
       swClient.postModel(
         modelOptions,
