@@ -25,14 +25,18 @@ body
     margin-top: 200px
     text-align: center
   #spinner
+    display: none
+    opacity: .5
     position: fixed
-    top: 20px
-    right: 20px
+    top: 50%
+    right: 50%
     z-index: 5001
-    background-image: url(/images/ajax-loader.gif)
-    height: 40px
-    width: 40px
-    border: 1px solid red
+    height: 32px
+    width: 32px
+    border-radius: 5px
+    box-shadow: 0 0 10px rgba(#333, .2)
+    background-color: #fff
+    padding: 10px
 
 #bubble
   position: fixed
