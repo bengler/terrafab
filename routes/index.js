@@ -37,6 +37,7 @@ exports.index = function(req, res){
 exports.preview = function(req, res){
   res.render('preview', {
       title: 'Preview model',
+      cartURL: '/cart?box='+req.query.box,
       version: require("../package.json").version
     }
   );
