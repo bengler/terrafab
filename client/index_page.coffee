@@ -46,6 +46,23 @@ $ ->
     worldCopyJump: false,
     noWrap: true
   })
+  
+  do ->
+
+    # Set up load indicator
+    LoadIndicator = require("./utils/load_indicator.coffee")
+
+    loadIndicator = new LoadIndicator($('#spinner'))
+
+    tileLayer.on 'loading', ->
+      dfd = $.Deferred()
+      loadIndicator.queue(dfd)
+      tileLayer.once 'load', dfd.resolve
+    
+      $(document).ajaxStart (e, jqXHR)->
+        loadIndicator.queue(jqXHR)
+
+
   # Setup map, events, etc
   map = new L.Map('map', {
     crs: crs,
@@ -121,19 +138,4 @@ $ ->
     suggestionCompleter.on 'submit', (completion) ->
       latLng = new L.LatLng(completion.payload.lat, completion.payload.lng)
       rectangleEditor.setCenter(latLng)
-      map.panTo(latLng)
-
-  do ->
-    # Set up load indicator
-    LoadIndicator = require("./utils/load_indicator.coffee")
-
-    loadIndicator = new LoadIndicator($('#loadIndicator'))
-
-    tileLayer.on 'loading', ->
-      dfd = $.Deferred()
-      loadIndicator.queue(dfd)
-      tileLayer.once 'load', dfd.resolve
-
-    $(document).ajaxStart (e, jqXHR)->
-      loadIndicator.queue(jqXHR)
-    
+      map.panTo(latLng)    
