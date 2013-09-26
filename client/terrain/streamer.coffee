@@ -176,7 +176,7 @@ class TerrainStreamer
     @rawRezTimer = setTimeout((=> @loadRawRez()), 3000)
   loadRawRez: ->
     @rawRez = new TerrainRawRez @bounds, @pxWidth, => @update()
-    @loadExtended(1.1, 1.0, {shading: true})
+    @loadExtended(1.1, 1.1, {shading: true})
   hasRawRez: ->
     @rawRez? && @rawRez.isLoaded()
 
@@ -210,12 +210,12 @@ class TerrainStreamer
       loadedResolution = 0
       for tile in @relevantTiles()
         effectiveResolution = @drawTile(tile)
-        #console.log effectiveResolution, tile.shaded
+        console.log effectiveResolution, tile.shaded
         # We keep track of the effective resolution of the highest resolution tile that covers the whole area
         if tile.bounds.contains(@bounds)
           if effectiveResolution >= 1.0 && tile.shaded
             @shaded = true
-          #console.log "^^ Has coverage"
+          console.log "^^ Has coverage"
           @resolution = effectiveResolution
           if tile.isLoaded()
             loadedResolution = effectiveResolution
