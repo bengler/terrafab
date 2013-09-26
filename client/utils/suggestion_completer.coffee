@@ -3,7 +3,6 @@ EventEmitter = require("events").EventEmitter
 class SuggestionCompleter extends EventEmitter
 
   ###
-
      Give it a qQuery @intputEl (the input(type='text') field)
      and a @listEl (a UL) to move the suggestion elements into.
 

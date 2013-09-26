@@ -1,1 +1,1 @@
-require("./app.coffee");
+require("./routes.coffee");

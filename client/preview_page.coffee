@@ -1,22 +1,22 @@
+# Scripts for the model preview page
+
+$ = require("jquery")
+require('./ext_js/jquery.fileDownload')
+
 Terrain = require('./terrain')
 TerrainStreamer = require('./terrain/streamer.coffee')
 L = require("leaflet")
 
-$ = window.jQuery = require('jquery')
-require('./ext_js/jquery.fileDownload')
+BoxParams = require("./utils/boxparam.coffee")
 
-parseBoxParams = ->
-	return /(?:box\=)([0-9\.\,]+)/.exec(window.location.search)[1].split(',')
+$ ->
+  canvas = $('canvas#terrain')[0]
+  terrain = new Terrain(canvas)
+  terrain.scene.continousRotation = true
+  terrain.run()
+  {ne, sw} = BoxParams.fromUrl(document.location)
+  terrain.show(ne, sw)
 
-# Scripts for the model preview page
-if window.location.href.match("/preview")
-	$ ->
-    canvas = $('canvas#terrain')[0]
-    terrain = new Terrain(canvas)
-    terrain.scene.continousRotation = true
-    terrain.run()
-    box = parseBoxParams()
-    terrain.show(new L.Point(box[0], box[1]), new L.Point(box[2], box[3]))
 
 	# Yeah, the progress report is just smoke and mirrors.
 	$('.progress p').hide()
@@ -63,4 +63,4 @@ if window.location.href.match("/preview")
 	      setTimeout(f, 300)
 	      clearInterval(interval)
 
-	interval = setInterval(progress, 1200)
+interval = setInterval(progress, 1200)

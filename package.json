@@ -38,6 +38,8 @@
     "caching-coffeeify": "~0.2.0",
     "browserify": "~2.32.4",
     "uglify-js": "~2.4.0",
-    "oauth": "0.9.10"
+    "oauth": "latest",
+    "lodash.debounce": "~2.1.0",
+    "pather": "git://github.com/bjoerge/pather#v0.1-beta"
   }
 }

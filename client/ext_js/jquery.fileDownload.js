@@ -424,4 +424,4 @@ $.extend({
     }
 });
 
-})(jQuery, this);
+})(require("jquery"), window);
