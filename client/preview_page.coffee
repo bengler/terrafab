@@ -53,6 +53,11 @@ if window.location.href.match("/preview")
       	#attr("href", "/download"+window.location.search)
 	      f = ->
 		      $('.buyButton').removeClass('disabled')
+		      $('.buyButton').on('click', (e) ->
+		      	url = ""+window.location+""
+		      	window.location = url.replace("/preview", "/cart")
+		      	false
+		      )
 	      setTimeout(f, 600)
 	      f = -> $('.readyHeader').html("Your model is ready")
 	      setTimeout(f, 300)
