@@ -142,12 +142,12 @@ class TerrainStreamer
     # a lower value means the bitmap has been stretched to fit.
     effectiveResolution = sourceRect.getSize().x/targetRect.getSize().x
     # Only draw if the terrain has been loaded
-    if tile.terrainImage.width > 0
+    if tile.terrainImage.complete
       @terrainCtx.drawImage(tile.terrainImage,
         sourceRect.min.x, (tile.pxHeight-sourceRect.max.y), sourceRect.getSize().x, sourceRect.getSize().y,
         targetRect.min.x, (@pxHeight-targetRect.max.y), targetRect.getSize().x, targetRect.getSize().y)
     # Only draw if the map has been loaded
-    if tile.mapImage.width > 0
+    if tile.mapImage.complete
       @mapCtx.drawImage(tile.mapImage,
         sourceRect.min.x*MAP_SCALE, (tile.pxHeight-sourceRect.max.y)*MAP_SCALE, sourceRect.getSize().x*MAP_SCALE, sourceRect.getSize().y*MAP_SCALE,
         targetRect.min.x*MAP_SCALE, (@pxHeight-targetRect.max.y)*MAP_SCALE, targetRect.getSize().x*MAP_SCALE, targetRect.getSize().y*MAP_SCALE)
@@ -213,12 +213,13 @@ class TerrainStreamer
         console.log effectiveResolution, tile.shaded
         # We keep track of the effective resolution of the highest resolution tile that covers the whole area
         if tile.bounds.contains(@bounds)
-          if effectiveResolution >= 1.0 && tile.shaded
+          if effectiveResolution >= 1.0 && tile.shaded && tile.isLoaded()
             @shaded = true
           console.log "^^ Has coverage"
           @resolution = effectiveResolution
           if tile.isLoaded()
             loadedResolution = effectiveResolution
+    console.log loadedResolution < 1, !@shaded
     @onupdate({loading: (loadedResolution < 1 || !@shaded)}) if @onupdate
 
 module.exports = TerrainStreamer
