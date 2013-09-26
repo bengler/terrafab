@@ -173,7 +173,7 @@ class TerrainStreamer
   resetRawRez: ->
     @rawRez = null
     clearTimeout(@rawRezTimer)
-    @rawRezTimer = setTimeout((=> @loadRawRez()), 2300)
+    @rawRezTimer = setTimeout((=> @loadRawRez()), 3000)
   loadRawRez: ->
     @rawRez = new TerrainRawRez @bounds, @pxWidth, => @update()
     @loadExtended(1.0, 1.0, {shading: true})
