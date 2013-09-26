@@ -18,32 +18,37 @@
   p.version
     display: none
   #q
+    font-size: 120%
     margin-top: 11px
     width: 200px
     margin-right: 140px
+    margin-bottom: 0
   #locationsContainer
     position: absolute
     top: 9px
     right: 10px
     label
       display: none
+    select
+      font-size: 120%
 
   #autocomplete
-    height: 200px
+    max-height: 600px
     width: 200px
     margin: 0
     padding 0
-    overflow: scroll
+    overflow: auto
     li
       list-style-type: none
-      font-size: 11px
-      border: 1px solid #999
-      padding: 3px
+      font-size: 13px
+      padding: 4px
+      margin: 1px
+      border-radius: 3px
       background-color: white
       opacity: 0.8
       cursor: pointer
     li:hover
-      opacity: 0.9
+      opacity: 1
     li.selected
       background-color: #777
       opacity: 1

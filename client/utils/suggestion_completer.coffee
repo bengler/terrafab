@@ -21,10 +21,11 @@ class SuggestionCompleter extends EventEmitter
   constructor: (@inputEl, @listEl, @options={}) ->
     @host = @options.host || 'localhost'
     @port = @options.port || '9200'
+    @listEl.hide()
     @suggestionField = @options.suggestionField || "suggest"
     @suggestionName = @options.suggestionName || "placesuggest"
     @indexName = @options.indexName || "places"
-    @nrOfResults = @options.nrOfResults || 6
+    @nrOfResults = @options.nrOfResults || 10
     @q = null
     @index = 0
     @payload = null
@@ -40,7 +41,7 @@ class SuggestionCompleter extends EventEmitter
       @getResults(q).then (result) =>
         @emit('result', result)
         completions = result[@suggestionName][0].options
-        @listEl.empty()
+        @listEl.empty().show()
         $.map(completions, (completion) =>
           li = $("<li data-payload='" +
               JSON.stringify(completion.payload) +
