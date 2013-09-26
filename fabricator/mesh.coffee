@@ -26,7 +26,7 @@ class TerrainMesh
     @builder.applyElevation(@terrainData, zScale: (@terrainZScale()))
     @geometry = @builder.geom
     @uvs = @builder.uvs
-    console.log "Done buidin'"
+    console.log "Done building mesh"
     @builder
 
   getBuilder: ->
@@ -46,8 +46,9 @@ class TerrainMesh
     toSTL(@getGeometry())
 
   asX3D: ->
+    builder = @getBuilder()
     console.log "Converting mesh to X3D"
-    toX3D(@getBuilder(), "terrain")
+    toX3D(builder, "terrain")
 
   asSC: ->
     console.log "Converting mesh to Sunflow-scene"
