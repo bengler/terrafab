@@ -1,7 +1,7 @@
 TerrainData = require('./data.coffee')
 TerrainMesh = require('./mesh.coffee')
 config = require('../config/app.json')
-http = require('http-get')
+httpGet = require('http-get')
 exec = require('child_process').exec
 mkdirp = require('mkdirp')
 rimraf = require('rimraf')
@@ -19,27 +19,26 @@ class Archive
       @options.filename += '.zip'
     @options.folder = @options.filename.split('.').slice(0,-1).join('.')
     mkdirp.sync(@options.folder)
-  _saveMesh: (callback) ->
+  _loadMesh: (callback) ->
     data = new TerrainData(@options.box.nw[0], @options.box.nw[1], @options.box.se[0], @options.box.se[1],
       @options.terrainSamples, @options.terrainSamples)
     console.log "Loading terrain data"
     data.load =>
-      mesh = new TerrainMesh(data, true) # Mesh with carved underside for color printers
-      fs.writeFileSync("#{@options.folder}/terrain.x3d", mesh.asX3D())
+      @mesh = new TerrainMesh(data, true) # Mesh with carved underside for color printers
       callback()
   _saveTexture: (callback) ->
     console.log "_saveTexture"
-    boxParams = [@options.box.nw[0], @options.box.nw[1], @options.box.se[0], @options.box.se[1]]
+    boxParams = [@options.box.nw[0], @options.box.nw[1], @options.box.se[0], @options.box.se[1]].join(',')
     console.log "Getting texture"
     httpGetOpts =
       bufferType: "buffer"
       url: "#{config.imageUrl}/map?box=#{boxParams}&outsize=800,800&shading=true"
     console.log "Getting texture from: #{httpGetOpts.url}"
-    http.get httpGetOpts, (err, result) =>
+    httpGet.get httpGetOpts, (err, result) =>
       if err?
         console.log "Failed getting texture @ #{httpGetOpts.url}"
         console.log err
-        callback(err, null)
+        process.exit(9)
       else
         console.log "Adding decals to texture"
         # Draws a white border on the texture
@@ -68,16 +67,19 @@ class Archive
     textureDone = false
     doneHandler = =>
       if meshDone && textureDone
-        console.log "Done buildin'"
+        meshText = @mesh.asX3D()
+        console.log "Writing .x3d file"
+        fs.writeFileSync("#{@options.folder}/terrain.x3d", meshText)
+        console.log "Files ready to be archived"
         @built = true
         callback(null, true)
-    @_saveMesh =>
-      console.log "Mesh done"
-      meshDone = true
-      doneHandler()
     @_saveTexture (err, filename) =>
       console.log "Texture done"
       textureDone = true
+      doneHandler()
+    @_loadMesh =>
+      console.log "Terrain loaded"
+      meshDone = true
       doneHandler()
   # Builds the archive then pipes the zip-archive to the provided stream. When done the callback is called
   # (err, exit_code)
