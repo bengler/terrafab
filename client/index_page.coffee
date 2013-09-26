@@ -138,7 +138,8 @@ $ ->
       {sw, ne, zoom} = BoxParam.decode($select.val())
       rectangleEditor.setNorthEast(crs.projection.unproject(ne))
       rectangleEditor.setSouthWest(crs.projection.unproject(sw))
-      map.fitBounds(rectangleEditor.getBounds())
+      map.panTo(rectangleEditor.getCenter())
+      map.setZoom(zoom)
 
   do ->
     # Set up place search autocompleter
