@@ -58,31 +58,18 @@ $ ->
   $warnings.find(activateClass).addClass('active')
 
 $ ->
-
-  tileLayer = new L.TileLayer(config.tilesUrl, {
-    attribution: config.leaflet.attribution,
-    minZoom: 1,
-    maxZoom: resolutions.length - 1,
-    continuousWorld: true,
-    worldCopyJump: false,
-    noWrap: true
-  })
   
-  do ->
-
-    # Set up load indicator for tiles
-
-    tileLoadIndicator = new LoadIndicator($('#tileSpinner'))
-
-    tileLayer.on 'loading', ->
-      dfd = $.Deferred()
-      tileLoadIndicator.queue(dfd)
-      tileLayer.once 'load', dfd.resolve
-
   # Setup map, events, etc
   map = new L.Map('map', {
     crs: crs,
-    layers: [tileLayer],
+    layers: [new L.TileLayer(config.tilesUrl, {
+      attribution: config.leaflet.attribution,
+      minZoom: 1,
+      maxZoom: resolutions.length - 1,
+      continuousWorld: true,
+      worldCopyJump: false,
+      noWrap: true
+    })],
     center: rectangleEditor.getCenter(),
     zoom: selection.zoom || 15
     scale: (zoom) ->
