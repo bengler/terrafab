@@ -49,7 +49,7 @@ class TerrainTile
   meterWidth: ->
     Math.abs(@bounds.max.x-@bounds.min.x)
   isLoaded: ->
-    (@terrainImage.width > 0) && (@mapImage.width > 0)
+    @terrainImage.complete and @mapImage.complete
   # Converts the provided bounds in UTM33 meters to the same rectangle in tile-local pixel coordinates at the given scale
   meterSelectionToTerrainPixelBounds: (selection) ->
     meterSelectionToPixelBounds(selection, @bounds, @resolution, 1.0)
