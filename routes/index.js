@@ -190,6 +190,7 @@ exports.map = function(req, res){
     res.end(img, 'binary');
   } else {
     // Generate file
+    console.log("Running command: "+command)
     exec(command, function (err, stdout, stderr) {
         if (err) {
           console.error(err);
