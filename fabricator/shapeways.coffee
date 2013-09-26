@@ -82,6 +82,7 @@ class ShapewaysClient
       model_upload = fs.readFile file, (err, fileData) =>
         fileData = encodeURIComponent fileData.toString('base64')
         params.file = fileData;
+        params.title = params.title+" ("+(new Date().toString())+")"
         params.fileName = file;
         @oa.post(
           API_HOST+"/models/v1",
@@ -89,6 +90,7 @@ class ShapewaysClient
           oauth_access_token_secret,
           JSON.stringify(params),
           (error, data, response) ->
+            console.log error, data, response
             if error
               callback error, null
             else
