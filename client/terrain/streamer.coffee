@@ -44,7 +44,7 @@ class TerrainTile
     @mapImage = new Image()
     @mapImage.onload = onload
     imgUrl = "/map?box=#{[@bounds.min.x, @bounds.max.y, @bounds.max.x, @bounds.min.y].join(',')}&outsize=#{Math.round(@pxWidth*MAP_SCALE)},#{Math.round(@pxHeight*MAP_SCALE)}"
-    imgUrl += "&shade=true" if options.shade
+    imgUrl += "&shading=true" if options.shading
     @mapImage.src = imgUrl
   meterHeight: ->
     Math.abs(@bounds.max.y-@bounds.min.y)
@@ -187,7 +187,7 @@ class TerrainStreamer
       # If the effective resolution is anything less than full, we will order some more data from the server allowing for
       # some scrolling and resizing
       unless @resolution >= 1.0
-        @loadExtended(1.5, 1.2, {shade: true})
+        @loadExtended(1.5, 1.2, {shading: true})
     @timer = setTimeout(doLoad, 400)
 
   # Called when new data arrive or bounds are updated to redraw map and terrain

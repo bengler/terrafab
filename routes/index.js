@@ -170,6 +170,7 @@ exports.map = function(req, res){
   }
 
   var withShading = (req.query.shading != null) && (req.query.shading != 'false')
+  console.log("With shading?", withShading)
 
   var content_type = {'Content-Type': 'image/png'};
   var png_file = config.files.tmpPath+"/" +
@@ -186,7 +187,7 @@ exports.map = function(req, res){
 
   // Set up mapbox command
   var command = "bash -c '" + config.lib.mapboxScript +
-      " -i " + config.lib.mapnikFile +
+      " -i " + mapnikFile +
       " -o "+png_file +
       " --outsize "+outsize.join(',') +
       " --box "+box.join(',') +
