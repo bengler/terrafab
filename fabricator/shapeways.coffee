@@ -77,38 +77,49 @@ class ShapewaysClient
           callback null, JSON.parse(data)
     )
 
-  postModel: (file, params, oauth_access_token, oauth_access_token_secret, callback) ->
-      # TODO: check if file already is posted to Shapeways through the API.
-      model_upload = fs.readFile file, (err, fileData) =>
-        fileData = encodeURIComponent fileData.toString('base64')
-        params.file = fileData;
-        params.title = params.title+" ("+(new Date().toString())+")"
-        params.fileName = file;
-        @oa.post(
-          API_HOST+"/models/v1",
-          oauth_access_token,
-          oauth_access_token_secret,
-          JSON.stringify(params),
-          (error, data, response) ->
-            console.log error, data, response
-            if error
-              callback error, null
-            else
-              callback null, JSON.parse(data)
-        )
+  postModel: (params, oauth_access_token, oauth_access_token_secret, callback) ->
+    # TODO: check if file already is posted to Shapeways through the API.
+    fileName = ""+params.file
+    model_upload = fs.readFile params.file, (err, fileData) =>
+      fileData = encodeURIComponent fileData.toString('base64')
+      params.file = fileData
+      params.fileName = fileName
+      @oa.post(
+        API_HOST+"/models/v1",
+        oauth_access_token,
+        oauth_access_token_secret,
+        JSON.stringify(params),
+        (error, data, response) ->
+          console.log error, data, response
+          if error
+            callback error, null
+          else
+            callback null, JSON.parse(data)
+      )
 
   updateModel: (modelId, params, oauth_access_token, oauth_access_token_secret, callback) ->
-    @oa.put(
-      API_HOST+"/models/"+modelId+"/info/v1",
-      oauth_access_token,
-      oauth_access_token_secret,
-      JSON.stringify(params),
-      (error, data, response) ->
-        if error
-          callback error, null
-        else
-          callback null, JSON.parse(data)
-    )
+    put = (params) =>
+      @oa.put(
+        API_HOST+"/models/"+modelId+"/info/v1",
+        oauth_access_token,
+        oauth_access_token_secret,
+        JSON.stringify(params),
+        (error, data, response) ->
+          console.log error, data, response
+          if error
+            callback error, null
+          else
+            callback null, JSON.parse(data)
+      )
+    if params.file
+      fileName = ""+params.file
+      model_upload = fs.readFile params.file, (err, fileData) =>
+        fileData = encodeURIComponent fileData.toString('base64')
+        params.file = fileData
+        params.fileName = fileName
+        post(params)
+    else
+      put(params)
 
   addToCart: (modelId, materialId, quantity, oauth_access_token, oauth_access_token_secret, callback) ->
     params = {

@@ -363,11 +363,14 @@ exports.shipToShapeways = function(req, res) {
       }
     };
     console.log("Posting model to Shapeways");
-    if(req.cookie && req.cookie.modelId) {
-      res.redirect('/cart?modelId=' + cookie.modelId);
+    if(req.session && req.session.modelId) {
+      res.redirect('/cart?modelId=' + req.session.modelId);
     } else {
+      config.shapewaysAPI.modelPostOptions.title = "" +
+        config.shapewaysAPI.modelPostOptions.title + (new Date()).toString();
+      modelOptions.title = "" + modelOptions.title + (new Date()).toString();
+      modelOptions.file = file
       swClient.postModel(
-        file,
         modelOptions,
         config.shapewaysAPI.accessToken,
         config.shapewaysAPI.accessTokenSecret,
