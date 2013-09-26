@@ -102,7 +102,7 @@ exports.dtm = function(req, res){
       " -ot "+out_type+" -of "+out_format+" -projwin "+box.join(' ')+' '+dtm_file+' '+out_file+"'"
   } else {
     command = "bash -c '" +
-        "rm "+tif_file+" && GDAL_CACHEMAX=1000 gdalwarp -wm 1000 -s_srs EPSG:32633 -t_srs EPSG:32633" +
+        "rm -f "+tif_file+" && GDAL_CACHEMAX=1000 gdalwarp -wm 1000 -s_srs EPSG:32633 -t_srs EPSG:32633" +
         " -r cubic -ts "+ outsize[0] + " " + outsize[1] +
         " -of GTiff " +
         "-te " + box.join(' ') + " " +
