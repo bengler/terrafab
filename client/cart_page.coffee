@@ -32,9 +32,9 @@ getCartData = ->
       ).then((cart) =>
         cart = JSON.parse(cart)
         if cart.ready and !cartPosted
+          cartPosted = true
           $.post('/addtocart', {modelId: searchToObject().modelId, materialId: cart.materialId}).then( (result) =>
             clearInterval(waitInterval)
-            cartPosted = true
             window.location = JSON.parse(result).cartURL
           )
         else
