@@ -402,6 +402,12 @@ exports.cartData = function(req, res) {
         if(basePrice) {
           basePrice = parseFloat(basePrice);
           var markupPrice = config.shapewaysAPI.defaultPrice - basePrice;
+          if(markupPrice < 0) {
+            markupPrice = 0;
+          }
+          if(markupPrice > 20) {
+            markupPrice = 20;
+          }
           swClient.updateModel(
             model.modelId,
             {
