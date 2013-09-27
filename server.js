@@ -24,6 +24,8 @@ app.use(express.cookieParser('terrafabshapeways'));
 app.use(cookieSessions('shapewaysterrafab'));
 app.use(app.router);
 app.use(require('stylus').middleware(__dirname + '/public'));
+app.use(express.compress());
+app.use(express.staticCache())
 app.use(express.static(path.join(__dirname, 'public')));
 
 //provide browserified versions of all the files in a directory
