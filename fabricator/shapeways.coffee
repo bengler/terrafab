@@ -139,4 +139,17 @@ class ShapewaysClient
           callback null, JSON.parse(data)
     )
 
+  getCart: (oauth_access_token, oauth_access_token_secret, callback) ->
+      @oa.get(
+        API_HOST+"/orders/cart/v1",
+        oauth_access_token,
+        oauth_access_token_secret,
+        JSON.stringify(params),
+        (error, data, response) ->
+          if error
+            callback error, null
+          else
+            callback null, JSON.parse(data)
+      )
+
 module.exports = ShapewaysClient
