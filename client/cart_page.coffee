@@ -40,7 +40,7 @@ getCartData = ->
         else
           progressCount = progressCount+2 if progressCount < 99
           $(".progressTxt").html("Waiting for Shapeways...")
-          $(".infoText").html("Shapeways is preparing the model for printing.<br/>You will be redirected to your Shapeways cart then ready.")
+          $(".infoText").html("Shapeways is preparing the model for printing.<br/>You will be redirected to your Shapeways cart when ready.")
           $(".progress-bar").show()
           $(".progress-bar span").css("width", progressCount+"%")
       )
