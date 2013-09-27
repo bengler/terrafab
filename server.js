@@ -10,11 +10,12 @@ var path = require('path');
 var browserify = require('browserify-middleware');
 
 
-var numCPUs = require('os').cpus().length;
+//var numCPUs = require('os').cpus().length;
+var numWorkers = 12;
 
 if (cluster.isMaster) {
   // Fork workers.
-  for (var i = 0; i < numCPUs; i++) {
+  for (var i = 0; i < numWorkers; i++) {
     cluster.fork();
   }
   cluster.on('exit', function (worker, code, signal) {
