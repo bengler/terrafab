@@ -18,51 +18,51 @@ $ ->
   terrain.show(ne, sw)
 
 
-	# Yeah, the progress report is just smoke and mirrors.
-	$('.progress p').hide()
-	$('.progress').show()
-	item = 0
-	length = $('.progress p').length
+  # Yeah, the progress report is just smoke and mirrors.
+  $('.progress p').hide()
+  $('.progress').show()
+  item = 0
+  length = $('.progress p').length
 
-	doDownload = (url) ->
-		return if $('.downloadButton').hasClass('disabled')
-		oldButtonContent = ""
-		document.cookie = "fileDownload=false"
-		download = $.fileDownload url,
-			prepareCallback: ->
-				oldButtonContent = $('.downloadButton').html()
-				$('.downloadButton').addClass('disabled').html("<div class='spinner'></div> Please wait!")
-				console.log "Preparing to download"
-			successCallback: ->
-				$('.downloadButton').removeClass('disabled').html(oldButtonContent)
-			failCallback: ->
-				$('.downloadButton').removeClass('disabled').html(oldButtonContent)
+  doDownload = (url) ->
+    return if $('.downloadButton').hasClass('disabled')
+    oldButtonContent = ""
+    document.cookie = "fileDownload=false"
+    download = $.fileDownload url,
+      prepareCallback: ->
+        oldButtonContent = $('.downloadButton').html()
+        $('.downloadButton').addClass('disabled').html("<div class='spinner'></div> Please wait!")
+        console.log "Preparing to download"
+      successCallback: ->
+        $('.downloadButton').removeClass('disabled').html(oldButtonContent)
+      failCallback: ->
+        $('.downloadButton').removeClass('disabled').html(oldButtonContent)
 
-	$( $('.progress p')[item] ).show()
-	progress = ->
-		console.log "Progress tick"
-	  $('.progress p').hide()
-	  if(item<length)
-	    $( $('.progress p')[item] ).show()
-	    item++;
-	    if( item == length)
-	      $('.progress').remove()
-      	$('.downloadButton').removeClass('disabled').click ->
-      		doDownload("/download"+window.location.search)
+  $( $('.progress p')[item] ).show()
+  progress = ->
+    console.log "Progress tick"
+    $('.progress p').hide()
+    if(item<length)
+      $( $('.progress p')[item] ).show()
+      item++;
+      if( item == length)
+        $('.progress').remove()
+        $('.downloadButton').removeClass('disabled').click ->
+          doDownload("/download"+window.location.search)
 
 
-      	#attr("href", "/download"+window.location.search)
-	      f = ->
-		      $('.buyButton').removeClass('disabled')
-		      $('.buyButton').on('click', (e) ->
-		      	url = ""+window.location+""
-		      	window.location = url.replace("/preview", "/cart")
-		      	false
-		      )
-	      setTimeout(f, 600)
-	      f = -> $('.readyHeader').html("Your model is ready")
-	      setTimeout(f, 300)
-	      clearInterval(interval)
+        #attr("href", "/download"+window.location.search)
+        f = ->
+          $('.buyButton').removeClass('disabled')
+          $('.buyButton').on('click', (e) ->
+            url = ""+window.location+""
+            window.location = url.replace("/preview", "/cart")
+            false
+          )
+        setTimeout(f, 600)
+        f = -> $('.readyHeader').html("Your model is ready")
+        setTimeout(f, 300)
+        clearInterval(interval)
 
-	console.log "Starting progress ticker"
-	interval = setInterval(progress, 800)
+  console.log "Starting progress ticker"
+  interval = setInterval(progress, 800)
