@@ -63,4 +63,4 @@ $ ->
 	      setTimeout(f, 300)
 	      clearInterval(interval)
 
-interval = setInterval(progress, 1200)
+	interval = setInterval(progress, 800)
