@@ -1,6 +1,6 @@
 L = require("leaflet")
 
-RE = /(?:box\=)([0-9\.\,\|\d]+)/
+RE = /(?:box\=)([0-9\.\-\,\|\d]+)/
 
 matches = (str)->
   RE.test(str)
