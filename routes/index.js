@@ -5,12 +5,6 @@ var fs = require('fs');
 var request = require('request');
 var Archive = require('../fabricator/archive.coffee')
 
-process.on('message', function(message) {
-    // Process data
-
-    process.send({id: message.id, data: 'some result'});
-});
-
 ShapeWaysClient = require('../fabricator/shapeways.coffee');
 swClient = new ShapeWaysClient(
   config.shapewaysAPI.consumerKey,
