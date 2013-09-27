@@ -10,8 +10,8 @@ var path = require('path');
 var browserify = require('browserify-middleware');
 
 
-//var numCPUs = require('os').cpus().length;
-var numWorkers = 12;
+var numCPUs = require('os').cpus().length;
+var numWorkers = numCPUs * 2;
 
 if (cluster.isMaster) {
   // Fork workers.
