@@ -350,7 +350,7 @@ exports.shipToShapeways = function(req, res) {
 
   console.log("About to generate archive "+filename);
 
-  helpers.generate(filename, box, function(err, file) {
+  helpers.generateSync(filename, box, function(err, file) {
     if(err) {
       console.error(err);
       return res.status(500).end(err);

@@ -1,6 +1,7 @@
 var crypto = require("crypto");
 var exec = require('child_process').exec;
 var fs = require('fs');
+var execSync = require('exec-sync');
 
 helpers = {
 
@@ -96,6 +97,29 @@ helpers = {
         callback(null, filename);
       }
     });
+  },
+  generateSync: function(filename, box, callback) {
+    if(fs.existsSync(filename)) {
+      console.log("generator: Using cached archive");
+      return callback(null, filename);
+    }
+    var output = "";
+    var generator = execSync("node "+__dirname+"/../generate.js "+filename+" \""+box.join(',')+"\"", function(err, stdout, stderr) {
+      if (err) {
+        output += err;
+      };
+      if (stdout) {
+        console.log("generator: ", stdout.toString())
+        output += stdout.toString();
+      };
+      if (stderr) {
+        console.log("generator: ", stderr.toString())
+        output += stderr.toString();
+        return callback(output, null);
+      }
+    });
+    callback(null, filename);
   }
 };
+
 module.exports = helpers;
