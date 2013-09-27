@@ -38,6 +38,6 @@
     }
   },
   "leaflet": {
-    "attribution": "Map data: CCBY 3.0; Kartverket, Imagery: Bengler CCBY 3.0 <3"
+    "attribution": "<a href=\"http://threejs.org/\" target=\"_blank\">Three.js</a> | <a href=\"http://mapnik.org/\" target=\"_blank\" target=\"_blank\">Mapnik</a> | <a href=\"http://postgis.net/\" target=\"_blank\">PostGIS</a> | <a href=\"http://www.gdal.org/\" target=\"_blank\">GDAL</a> | <a href=\"http://tilestache.org/\" target=\"_blank\">TileStache</a> | Map data: CCBY 3.0; Kartverket, Imagery: Bengler CCBY 3.0 <3"
   }
 }
