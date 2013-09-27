@@ -75,6 +75,7 @@ $ ->
     scale: (zoom) ->
       return 1 / resolutions[zoom]
   })
+  map.panBy(L.point(200, 0), {animate: false})
 
   rectangleEditor.addTo(map)
 
