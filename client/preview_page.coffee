@@ -40,6 +40,7 @@ $ ->
 
 	$( $('.progress p')[item] ).show()
 	progress = ->
+		console.log "Progress tick"
 	  $('.progress p').hide()
 	  if(item<length)
 	    $( $('.progress p')[item] ).show()
@@ -63,4 +64,5 @@ $ ->
 	      setTimeout(f, 300)
 	      clearInterval(interval)
 
+	console.log "Starting progress ticker"
 	interval = setInterval(progress, 800)
