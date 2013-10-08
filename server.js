@@ -26,9 +26,10 @@ else {
   
   var app = express();
 
-  app.use(function(req, res) {
+  app.use(function(req, res, next) {
     if (req.host == 'terrafab.no') {
       res.redirect('http://terrafab.bengler.no');
+      res.end();
     }
   });
 
