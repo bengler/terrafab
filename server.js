@@ -26,6 +26,12 @@ else {
   
   var app = express();
 
+  app.use(function(req, res) {
+    if (req.host == 'terrafab.no') {
+      res.redirect('http://terrafab.bengler.no');
+    }
+  });
+
 // all environments
   app.set('port', process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
