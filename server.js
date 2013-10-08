@@ -31,6 +31,7 @@ else {
       res.redirect('http://terrafab.bengler.no');
       res.end();
     }
+    else next();
   });
 
 // all environments
